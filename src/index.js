@@ -24,6 +24,7 @@ let groundGroup;
 let cursors;
 let sword;
 let armed = false;
+let left = false
 
 const game = new Phaser.Game(config);
 
@@ -41,7 +42,7 @@ function create ()
     //background
     this.add.image(400, 300, 'sky')
 
-    var logo = this.add.image(400, 150, 'logo');
+    // var logo = this.add.image(400, 150, 'logo');
 
     //ground
     groundGroup = this.physics.add.staticGroup()
@@ -82,7 +83,7 @@ function create ()
     this.anims.create({
         key: 'jump',
         frames: [ {key: 'josh', frame: 17}],
-        frameRate: 10,
+        frameRate: 20,
     })
 
     this.anims.create({
@@ -100,29 +101,42 @@ function create ()
 
     cursors = this.input.keyboard.createCursorKeys()
 
-    this.tweens.add({
-        targets: logo,
-        y: 450,
-        duration: 2000,
-        ease: 'Power2',
-        yoyo: true,
-        loop: -1
-    });
+    // this.tweens.add({
+    //     targets: logo,
+    //     y: 450,
+    //     duration: 2000,
+    //     ease: 'Power2',
+    //     yoyo: true,
+    //     loop: -1
+    // });
 
 }
 
 function update () {
     if (cursors.left.isDown)
 {
+    if (!left) {
+        player.flipX = !player.flipX
+        left = true
+    }
     player.setVelocityX(-160);
+    if(player.body.touching.down) {
+        player.anims.play('runUnarmed', true);
 
-    player.anims.play('runUnarmed', true);
+    }
 }
 else if (cursors.right.isDown)
 {
+    if (left) {
+        player.flipX = !player.flipX
+        left = false
+    }
     player.setVelocityX(160);
 
-    player.anims.play('runUnarmed', true);
+    if(player.body.touching.down) {
+
+        player.anims.play('runUnarmed', true);
+    }
 }
 else
 {
@@ -137,9 +151,11 @@ else
 if (cursors.up.isDown && player.body.touching.down)
 {
     player.setVelocityY(-330);
-
-    player.anims.play('jump')
 }
+
+if(!player.body.touching.down) {
+    player.anims.play('jump')
+        }
 }
 
 function createGround (x,y) {
