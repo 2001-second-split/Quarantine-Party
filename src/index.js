@@ -22,7 +22,7 @@ const config = {
 let player;
 let groundGroup;
 let cursors;
-let sword;
+let gun;
 let armed = false;
 let left = false
 
@@ -33,8 +33,8 @@ function preload ()
     this.load.image('logo', 'assets/logo.png');
     this.load.image('ground', 'assets/sprites/ground.png')
     this.load.image('sky', 'assets/backgrounds/sky.png')
-    this.load.spritesheet('josh', 'assets/spriteSheets/josh.png', {frameWidth: 380, frameHeight: 460})
-    this.load.image('sword', 'assets/sprites/sword.png')
+    this.load.spritesheet('josh', 'assets/spriteSheets/josh.png', {frameWidth: 340, frameHeight: 460})
+    this.load.image('gun', 'assets/sprites/gun.png')
 }
 
 function create ()
@@ -52,20 +52,18 @@ function create ()
 
     //player
     player = this.physics.add.sprite(20, 400, 'josh').setScale(.25)
-
-    player.setBounce(.2);
     //ensure player can't walk off camera
     player.setCollideWorldBounds(true);
     //allow the player to collide with ground
     this.physics.add.collider(player, groundGroup)
     //sword
-    sword = this.physics.add.sprite(300, 400, 'sword').setScale(.25)
+    gun = this.physics.add.sprite(300, 400, 'gun').setScale(.25)
     //allow the sword to be collided with
-    this.physics.add.collider(sword, groundGroup)
+    this.physics.add.collider(gun, groundGroup)
     // create a checker to see if the player collides with the sword
-    this.physics.add.overlap(player, sword, collectSword, null, this)
+    this.physics.add.overlap(player, gun, collectGun, null, this)
 
-
+    // create player's animations
     this.anims.create({
         key: 'runUnarmed',
         frames: this.anims.generateFrameNumbers('josh', { start: 17, end: 20}),
@@ -94,11 +92,11 @@ function create ()
 
     this.anims.create({
         key: 'idleArmed',
-        frames: [ {key: 'josh', frame: 5}],
+        frames: [ {key: 'josh', frame: 6}],
         frameRate: 10,
     })
 
-
+    // assign the curors
     cursors = this.input.keyboard.createCursorKeys()
 
     // this.tweens.add({
@@ -113,6 +111,7 @@ function create ()
 }
 
 function update () {
+
     if (cursors.left.isDown)
 {
     if (!left) {
@@ -164,8 +163,8 @@ function createGround (x,y) {
     )
 }
 
-function collectSword(player, sword) {
-    sword.disableBody(true, true)
+function collectGun(player, gun) {
+    gun.disableBody(true, true)
     armed = true
 }
 
