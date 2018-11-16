@@ -25,6 +25,9 @@ let cursors;
 let gun;
 let armed = false;
 let left = false
+let brandon
+let lasers
+let lastFired = 0
 
 const game = new Phaser.Game(config);
 
@@ -35,6 +38,8 @@ function preload ()
     this.load.image('sky', 'assets/backgrounds/sky.png')
     this.load.spritesheet('josh', 'assets/spriteSheets/josh.png', {frameWidth: 340, frameHeight: 460})
     this.load.image('gun', 'assets/sprites/gun.png')
+    this.load.image('brandon', 'assets/sprites/brandon.png')
+    this.load.image('laserBolt', 'assets/sprites/laserBolt.png')
 }
 
 function create ()
@@ -50,18 +55,51 @@ function create ()
     createGround(160, 540,)
     createGround(600, 540)
 
+    //brandon
+    brandon = this.physics.add.sprite(600, 400, 'brandon').setScale(.25)
+    this.physics.add.collider(brandon, groundGroup)
+    brandon.flipX = !brandon.flipX
     //player
     player = this.physics.add.sprite(20, 400, 'josh').setScale(.25)
     //ensure player can't walk off camera
     player.setCollideWorldBounds(true);
     //allow the player to collide with ground
     this.physics.add.collider(player, groundGroup)
-    //sword
+    //gun
     gun = this.physics.add.sprite(300, 400, 'gun').setScale(.25)
-    //allow the sword to be collided with
+    //allow the gun to be collided with
     this.physics.add.collider(gun, groundGroup)
-    // create a checker to see if the player collides with the sword
+    // create a checker to see if the player collides with the gun
     this.physics.add.overlap(player, gun, collectGun, null, this)
+    this.physics.add.overlap(brandon, lasers, hit, null, this)
+
+    //gun stuff
+    let Laser = new Phaser.Class({
+        Extends: Phaser.GameObjects.Image,
+        initialize:
+        function Laser (scene) {
+            Phaser.GameObjects.Image.call(this, scene, 0, 0, 'laserBolt')
+            this.speed = Phaser.Math.GetSpeed(400, 1);
+        },
+        fire: function (x, y) {
+            this.setPosition(x + 56, y + 14) ;
+            this.setActive(true);
+            this.setVisible(true);
+            this.setScale(.25)
+        },
+        update: function (time, delta) {
+            this.x += this.speed * delta;
+            if (this.x > 800) {
+                this.setActive(false);
+                this.setVisible(false);
+            }
+        }
+    });
+    lasers = this.add.group({
+        classType: Laser,
+        maxSize: 40,
+        runChildUpdate: true
+    })
 
     // create player's animations
     this.anims.create({
@@ -73,7 +111,14 @@ function create ()
 
     this.anims.create({
         key: 'attackArmed',
-        frames: this.anims.generateFrameNumbers('josh', { start: 6, end: 11}),
+        frames: this.anims.generateFrameNumbers('josh', { start: 6, end: 10}),
+        frameRate: 10,
+        repeat: -1
+    })
+
+    this.anims.create({
+        key: 'attackUnarmed',
+        frames: this.anims.generateFrameNumbers('josh', { start: 11, end: 16}),
         frameRate: 10,
         repeat: -1
     })
@@ -96,6 +141,13 @@ function create ()
         frameRate: 10,
     })
 
+    this.anims.create({
+        key: 'pickupGun',
+        frames: this.anims.generateFrameNumbers('josh', { start: 1, end: 5}),
+        frameRate: 10,
+        repeat: -1
+    })
+
     // assign the curors
     cursors = this.input.keyboard.createCursorKeys()
 
@@ -110,7 +162,7 @@ function create ()
 
 }
 
-function update () {
+function update (time, delta) {
 
     if (cursors.left.isDown)
 {
@@ -155,6 +207,17 @@ if (cursors.up.isDown && player.body.touching.down)
 if(!player.body.touching.down) {
     player.anims.play('jump')
         }
+
+
+if (cursors.space.isDown && time > lastFired) {
+    if(armed) {
+        let laser = lasers.get();
+        if(laser) {
+            laser.fire(player.x, player.y);
+            lastFired = time + 1000
+        }
+    }
+}
 }
 
 function createGround (x,y) {
@@ -166,5 +229,10 @@ function createGround (x,y) {
 function collectGun(player, gun) {
     gun.disableBody(true, true)
     armed = true
+    // player.setVelocityX(0)
+    // player.anims.play('pickupGun')
 }
 
+function hit(brandon, lasers) {
+    lasers.disableBody(true, true)
+}
