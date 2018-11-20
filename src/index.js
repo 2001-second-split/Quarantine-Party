@@ -29,6 +29,9 @@ let brandon
 let lasers
 let lastFired = 0
 
+
+
+
 const game = new Phaser.Game(config);
 
 function preload ()
@@ -69,9 +72,11 @@ function create ()
     gun = this.physics.add.sprite(300, 400, 'gun').setScale(.25)
     //allow the gun to be collided with
     this.physics.add.collider(gun, groundGroup)
+
+    this.physics.add.collider(player, brandon)
+
     // create a checker to see if the player collides with the gun
     this.physics.add.overlap(player, gun, collectGun, null, this)
-    this.physics.add.overlap(brandon, lasers, hit, null, this)
 
     //gun stuff
     let Laser = new Phaser.Class({
@@ -82,46 +87,70 @@ function create ()
             this.speed = Phaser.Math.GetSpeed(400, 1);
         },
         fire: function (x, y) {
-            this.setPosition(x + 56, y + 14) ;
-            this.setActive(true);
-            this.setVisible(true);
-            this.setScale(.25)
+            if(!left) {
+                this.setPosition(x + 56, y + 14) ;
+                this.setActive(true);
+                this.setVisible(true);
+                this.setScale(.25)
+                this.body.allowGravity = false
+                this.direction = 'right'
+            } else {
+                this.setPosition(x - 56, y + 14) ;
+                this.setActive(true);
+                this.setVisible(true);
+                this.setScale(.25)
+                this.body.allowGravity = false
+                this.direction = 'left'
+            }
         },
         update: function (time, delta) {
-            this.x += this.speed * delta;
-            if (this.x > 800) {
-                this.setActive(false);
-                this.setVisible(false);
-            }
+            if(this.direction === 'right') {
+                this.x += this.speed * delta;
+                if (this.x > 800) {
+                    this.setActive(false);
+                    this.setVisible(false);
+
+                }
+            } else {
+                this.x -= this.speed * delta;
+                if (this.x < 0) {
+                    this.setActive(false);
+                    this.setVisible(false);
+
+                }
         }
+    }
     });
-    lasers = this.add.group({
+    lasers = this.physics.add.group({
         classType: Laser,
         maxSize: 40,
         runChildUpdate: true
     })
 
+
+    this.physics.add.collider(lasers, brandon)
+    this.physics.add.overlap(brandon, lasers, hit, null, this)
     // create player's animations
     this.anims.create({
-        key: 'runUnarmed',
+        key: 'run',
         frames: this.anims.generateFrameNumbers('josh', { start: 17, end: 20}),
         frameRate: 10,
         repeat: -1
     })
 
-    this.anims.create({
-        key: 'attackArmed',
-        frames: this.anims.generateFrameNumbers('josh', { start: 6, end: 10}),
-        frameRate: 10,
-        repeat: -1
-    })
+    // this.anims.create({
+    //     key: 'attackArmed',
+    //     frames: this.anims.generateFrameNumbers('josh', { start: 6, end: 10}),
+    //     frameRate: 10,
+    //     repeat: -1
+    // })
 
-    this.anims.create({
-        key: 'attackUnarmed',
-        frames: this.anims.generateFrameNumbers('josh', { start: 11, end: 16}),
-        frameRate: 10,
-        repeat: -1
-    })
+    // this.anims.create({
+    //     key: 'attackUnarmed',
+    //     frames: this.anims.generateFrameNumbers('josh', { start: 11, end: 16}),
+    //     frameRate: 10,
+    //     repeat: -1
+    // })
 
     this.anims.create({
         key: 'jump',
@@ -141,12 +170,12 @@ function create ()
         frameRate: 10,
     })
 
-    this.anims.create({
-        key: 'pickupGun',
-        frames: this.anims.generateFrameNumbers('josh', { start: 1, end: 5}),
-        frameRate: 10,
-        repeat: -1
-    })
+    // this.anims.create({
+    //     key: 'pickupGun',
+    //     frames: this.anims.generateFrameNumbers('josh', { start: 1, end: 5}),
+    //     frameRate: 10,
+    //     repeat: -1
+    // })
 
     // assign the curors
     cursors = this.input.keyboard.createCursorKeys()
@@ -172,7 +201,7 @@ function update (time, delta) {
     }
     player.setVelocityX(-160);
     if(player.body.touching.down) {
-        player.anims.play('runUnarmed', true);
+        player.anims.play('run', true);
 
     }
 }
@@ -186,7 +215,7 @@ else if (cursors.right.isDown)
 
     if(player.body.touching.down) {
 
-        player.anims.play('runUnarmed', true);
+        player.anims.play('run', true);
     }
 }
 else
@@ -233,6 +262,7 @@ function collectGun(player, gun) {
     // player.anims.play('pickupGun')
 }
 
-function hit(brandon, lasers) {
-    lasers.disableBody(true, true)
+function hit(brandon, laser) {
+    laser.setActive(false);
+    laser.setVisible(false);
 }
