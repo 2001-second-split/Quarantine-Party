@@ -1,41 +1,14 @@
-let player;
-let groundGroup;
-let cursors;
-let gun;
-let armed = false;
-let left = false;
-let brandon;
-let lasers;
-let lastFired = 0;
 
-function createGround(x, y) {
-  let ground = groundGroup.create(x, y, 'ground');
-}
-
-function collectGun(player, gun) {
-  gun.disableBody(true, true);
-  armed = true;
-  // player.setVelocityX(0)
-  // player.anims.play('pickupGun')
-}
-
-function hit(brandon, laser) {
-  laser.setActive(false);
-  laser.setVisible(false);
-}
+import gs from './GameState'
 
 export default class FgScene extends Phaser.Scene {
   constructor() {
     super('FgScene');
-    // this.player;
-    // this.groundGroup;
-    // this.cursors;
-    // this.gun;
-    // this.armed = false;
-    // this.left = false;
-    // this.brandon;
-    // this.lasers;
-    // this.lastFired = 0;
+
+    // Bind callback functions to the object context
+    this.hit = this.hit.bind(this)
+    this.collectGun = this.collectGun.bind(this)
+    this.createGround = this.createGround.bind(this)
   }
 
   preload() {
@@ -52,34 +25,34 @@ export default class FgScene extends Phaser.Scene {
 
   create() {
     //ground
-    groundGroup = this.physics.add.staticGroup();
-    groundGroup.enableBody = true;
-    createGround(160, 540);
-    createGround(600, 540);
+    gs.groundGroup = this.physics.add.staticGroup();
+    gs.groundGroup.enableBody = true;
+    this.createGround(160, 540);
+    this.createGround(600, 540);
 
     // Brandon. The enemy.
-    brandon = this.physics.add.sprite(600, 400, 'brandon').setScale(0.25)
+    gs.brandon = this.physics.add.sprite(600, 400, 'brandon').setScale(0.25)
     // setImmovable(true) will make him not "pushable"
     // brandon = brandon.setImmovable(true).setGravityY(-300);
 
-    this.physics.add.collider(brandon, groundGroup);
-    brandon.flipX = !brandon.flipX;
+    this.physics.add.collider(gs.brandon, gs.groundGroup);
+    gs.brandon.flipX = !gs.brandon.flipX;
 
     // Josh. The player.
-    player = this.physics.add.sprite(20, 400, 'josh').setScale(0.25);
+    gs.player = this.physics.add.sprite(20, 400, 'josh').setScale(0.25);
     //ensure player can't walk off camera
-    player.setCollideWorldBounds(true);
+    gs.player.setCollideWorldBounds(true);
     //allow the player to collide with ground
-    this.physics.add.collider(player, groundGroup);
+    this.physics.add.collider(gs.player, gs.groundGroup);
     //gun
-    gun = this.physics.add.sprite(300, 400, 'gun').setScale(0.25);
-    //allow the gun to be collided with
-    this.physics.add.collider(gun, groundGroup);
+    gs.gun = this.physics.add.sprite(300, 400, 'gun').setScale(0.25);
+    //allow the gun to be collided with the ground
+    this.physics.add.collider(gs.gun, gs.groundGroup);
 
-    this.physics.add.collider(player, brandon);
+    this.physics.add.collider(gs.player, gs.brandon);
 
     // create a checker to see if the player collides with the gun
-    this.physics.add.overlap(player, gun, collectGun, null, this);
+    this.physics.add.overlap(gs.player, gs.gun, this.collectGun, null, this);
 
     //gun stuff
     let Laser = new Phaser.Class({
@@ -89,7 +62,7 @@ export default class FgScene extends Phaser.Scene {
         this.speed = Phaser.Math.GetSpeed(800, 1);
       },
       fire: function(x, y) {
-        if (!left) {
+        if (!gs.left) {
           this.setPosition(x + 56, y + 14);
           this.setActive(true);
           this.setVisible(true);
@@ -121,14 +94,14 @@ export default class FgScene extends Phaser.Scene {
         }
       },
     });
-    lasers = this.physics.add.group({
+    gs.lasers = this.physics.add.group({
       classType: Laser,
       maxSize: 40,
       runChildUpdate: true,
     });
 
-    this.physics.add.collider(lasers, brandon);
-    this.physics.add.overlap(brandon, lasers, hit, null, this);
+    this.physics.add.collider(gs.lasers, gs.brandon);
+    this.physics.add.overlap(gs.brandon, gs.lasers, this.hit, null, this);
     // create player's animations
     this.anims.create({
       key: 'run',
@@ -177,7 +150,7 @@ export default class FgScene extends Phaser.Scene {
     // })
 
     // assign the curors
-    cursors = this.input.keyboard.createCursorKeys();
+    gs.cursors = this.input.keyboard.createCursorKeys();
 
     // this.tweens.add({
     //     targets: logo,
@@ -192,50 +165,71 @@ export default class FgScene extends Phaser.Scene {
   // time: total time elapsed (ms)
   // delta: time elapsed (ms) since last update() call. 16.666 ms @ 60fps
   update(time, delta) {
-    if (cursors.left.isDown) {
-      if (!left) {
-        player.flipX = !player.flipX;
-        left = true;
+    if (gs.cursors.left.isDown) {
+      if (!gs.left) {
+        gs.player.flipX = !gs.player.flipX;
+        gs.left = true;
       }
-      player.setVelocityX(-360);
-      if (player.body.touching.down) {
-        player.anims.play('run', true);
+      gs.player.setVelocityX(-360);
+      if (gs.player.body.touching.down) {
+        gs.player.anims.play('run', true);
       }
-    } else if (cursors.right.isDown) {
-      if (left) {
-        player.flipX = !player.flipX;
-        left = false;
+    } else if (gs.cursors.right.isDown) {
+      if (gs.left) {
+        gs.player.flipX = !gs.player.flipX;
+        gs.left = false;
       }
-      player.setVelocityX(360);
+      gs.player.setVelocityX(360);
 
-      if (player.body.touching.down) {
-        player.anims.play('run', true);
+      if (gs.player.body.touching.down) {
+        gs.player.anims.play('run', true);
       }
     } else {
-      player.setVelocityX(0);
-      if (!armed) {
-        player.anims.play('idleUnarmed');
+      gs.player.setVelocityX(0);
+      if (!gs.armed) {
+        gs.player.anims.play('idleUnarmed');
       } else {
-        player.anims.play('idleArmed');
+        gs.player.anims.play('idleArmed');
       }
     }
 
-    if (cursors.up.isDown && player.body.touching.down) {
-      player.setVelocityY(-800);
+    if (gs.cursors.up.isDown && gs.player.body.touching.down) {
+      gs.player.setVelocityY(-800);
     }
 
-    if (!player.body.touching.down) {
-      player.anims.play('jump');
+    if (!gs.player.body.touching.down) {
+      gs.player.anims.play('jump');
     }
 
-    if (cursors.space.isDown && time > lastFired) {
-      if (armed) {
-        let laser = lasers.get();
+    if (gs.cursors.space.isDown && time > gs.lastFired) {
+      if (gs.armed) {
+        // console.log('gs.lasers:', gs.lasers)
+        let laser = gs.lasers.get();
+        // console.log('laser:', laser)
         if (laser) {
-          laser.fire(player.x, player.y);
-          lastFired = time + 100;
+          laser.fire(gs.player.x, gs.player.y);
+          gs.lastFired = time + 100;
         }
       }
     }
+  }
+
+  // Callback fn
+  createGround(x, y) {
+    let ground = gs.groundGroup.create(x, y, 'ground');
+  }
+
+  // Callback fn
+  collectGun(player, gun) {
+    gun.disableBody(true, true);
+    gs.armed = true;
+    // player.setVelocityX(0)
+    // player.anims.play('pickupGun')
+  }
+
+  // Callback fn
+  hit(brandon, laser) {
+    laser.setActive(false);
+    laser.setVisible(false);
   }
 }
