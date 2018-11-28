@@ -86,7 +86,7 @@ export default class FgScene extends Phaser.Scene {
       Extends: Phaser.GameObjects.Image,
       initialize: function Laser(scene) {
         Phaser.GameObjects.Image.call(this, scene, 0, 0, 'laserBolt');
-        this.speed = Phaser.Math.GetSpeed(400, 1);
+        this.speed = Phaser.Math.GetSpeed(800, 1);
       },
       fire: function(x, y) {
         if (!left) {
@@ -197,7 +197,7 @@ export default class FgScene extends Phaser.Scene {
         player.flipX = !player.flipX;
         left = true;
       }
-      player.setVelocityX(-160);
+      player.setVelocityX(-360);
       if (player.body.touching.down) {
         player.anims.play('run', true);
       }
@@ -206,7 +206,7 @@ export default class FgScene extends Phaser.Scene {
         player.flipX = !player.flipX;
         left = false;
       }
-      player.setVelocityX(160);
+      player.setVelocityX(360);
 
       if (player.body.touching.down) {
         player.anims.play('run', true);
@@ -221,7 +221,7 @@ export default class FgScene extends Phaser.Scene {
     }
 
     if (cursors.up.isDown && player.body.touching.down) {
-      player.setVelocityY(-330);
+      player.setVelocityY(-800);
     }
 
     if (!player.body.touching.down) {
@@ -233,7 +233,7 @@ export default class FgScene extends Phaser.Scene {
         let laser = lasers.get();
         if (laser) {
           laser.fire(player.x, player.y);
-          lastFired = time + 1000;
+          lastFired = time + 100;
         }
       }
     }
