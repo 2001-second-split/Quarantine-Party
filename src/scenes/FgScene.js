@@ -1,30 +1,5 @@
-<<<<<<< HEAD:src/scenes/FgScene.js
-import 'phaser'
 
-let player;
-let groundGroup;
-let cursors;
-let gun;
-let armed = false;
-let left = false;
-let brandon;
-let lasers;
-let lastFired = 0;
-
-function createGround(x, y) {
-  let ground = groundGroup.create(x, y, 'ground');
-}
-
-function collectGun(player, gun) {
-  gun.disableBody(true, true);
-  armed = true;
-  // player.setVelocityX(0)
-  // player.anims.play('pickupGun')
-}
-=======
->>>>>>> 848c4d2ef017da8889f8a7e157baff42af0dab5a:src/FgScene.js
-
-import gs from './GameState'
+import gs from '../GameState'
 
 export default class FgScene extends Phaser.Scene {
   constructor() {
