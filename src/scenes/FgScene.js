@@ -1,3 +1,5 @@
+import 'phaser'
+
 let player;
 let groundGroup;
 let cursors;

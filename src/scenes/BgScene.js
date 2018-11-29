@@ -1,3 +1,5 @@
+import 'phaser'
+
 export default class BgScene extends Phaser.Scene {
   constructor() {
     super('BgScene');
