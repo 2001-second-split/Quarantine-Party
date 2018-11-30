@@ -128,7 +128,6 @@ export default class FgScene extends Phaser.Scene {
   addLaser(x, y, left) {
     let laser = this.lasers.getFirstDead()
     if(!laser) {
-      console.log('made new laser')
       laser = new Laser(this, 0, 0);
       this.lasers.add(laser)
     }

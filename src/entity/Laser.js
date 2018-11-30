@@ -40,11 +40,9 @@ export default class Laser extends Phaser.GameObjects.Image {
     if (!left) {
       this.setPosition(x + 56, y + 14);
       this.direction = 'right';
-      console.log(this.direction)
     } else {
       this.setPosition(x - 56, y + 14);
       this.direction = 'left';
-      console.log(this.direction)
     }
   }
 }
