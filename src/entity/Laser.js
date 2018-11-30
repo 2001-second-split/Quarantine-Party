@@ -19,6 +19,7 @@ export default class Laser extends Phaser.GameObjects.Image {
   }
 
     update(direction, delta) {
+      // console.log('hot')
       this.lifespan -= delta
       if(this.direction === 'right') {
         this.x += this.speed * delta
