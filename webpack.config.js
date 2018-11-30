@@ -9,11 +9,12 @@ module.exports = {
 
     // devServer: {
     //   contentBase: './public',
-    //   publicPath: '/public'
+    //   inline: true,
+    //   hot: true
     // },
     output: {
         path: path.resolve(__dirname, 'public'),
-        publicPath: '/',
+        publicPath: '/public/',
         filename: 'bundle.js'
     },
 
