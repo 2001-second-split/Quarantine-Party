@@ -8,8 +8,7 @@ module.exports = {
     entry: './src/index.js',
 
     // devServer: {
-    //   contentBase: './public',
-    //   publicPath: '/public'
+    //   contentBase: './public'
     // },
     output: {
         path: path.resolve(__dirname, 'public'),

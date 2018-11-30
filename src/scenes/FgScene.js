@@ -2,6 +2,8 @@
 import gs from '../GameState'
 import player from '../entity/Player'
 import brandon from '../entity/Brandon'
+import gun from '../entity/Gun';
+import Laser from '../entity/Laser'
 
 
 export default class FgScene extends Phaser.Scene {
@@ -39,61 +41,17 @@ export default class FgScene extends Phaser.Scene {
     // Josh. The player.
     this.player = new player(this, 20, 400)
     //gun
-    gs.gun = this.physics.add.sprite(300, 400, 'gun').setScale(0.25);
-    //create collions for all entities
-    this.createCollisions()
+    this.gun = new gun(this, 300, 400, 'gun')
     // create a checker to see if the player collides with the gun
-    this.physics.add.overlap(this.player, gs.gun, this.collectGun, null, this);
-    //change scope of the player as temp fix
-    const thePlayer = this.player
-    //gun stuff
-    let Laser = new Phaser.Class({
-      Extends: Phaser.GameObjects.Image,
-      initialize: function Laser(scene) {
-        Phaser.GameObjects.Image.call(this, scene, 0, 0, 'laserBolt');
-        this.speed = Phaser.Math.GetSpeed(800, 1);
-      },
-      fire: function(x, y) {
-        if (!thePlayer.left) {
-          this.setPosition(x + 56, y + 14);
-          this.setActive(true);
-          this.setVisible(true);
-          this.setScale(0.25);
-          this.body.allowGravity = false;
-          this.direction = 'right';
-        } else {
-          this.setPosition(x - 56, y + 14);
-          this.setActive(true);
-          this.setVisible(true);
-          this.setScale(0.25);
-          this.body.allowGravity = false;
-          this.direction = 'left';
-        }
-      },
-      update: function(time, delta) {
-        if (this.direction === 'right') {
-          this.x += this.speed * delta;
-          if (this.x > 800) {
-            this.setActive(false);
-            this.setVisible(false);
-          }
-        } else {
-          this.x -= this.speed * delta;
-          if (this.x < 0) {
-            this.setActive(false);
-            this.setVisible(false);
-          }
-        }
-      },
-    });
-    gs.lasers = this.physics.add.group({
+    this.physics.add.overlap(this.player, this.gun, this.collectGun, null, this);
+    //laser stuff
+    this.lasers = this.physics.add.group({
       classType: Laser,
       maxSize: 40,
       runChildUpdate: true,
     });
 
-    this.physics.add.collider(gs.lasers, this.brandon);
-    this.physics.add.overlap(this.brandon, gs.lasers, this.hit, null, this);
+    this.physics.add.overlap(this.brandon, this.lasers, this.hit, null, this);
     // create player's animations
     this.anims.create({
       key: 'run',
@@ -122,6 +80,8 @@ export default class FgScene extends Phaser.Scene {
 
     // assign the curors
     gs.cursors = this.input.keyboard.createCursorKeys();
+     //create collions for all entities
+     this.createCollisions()
   }
 
   // time: total time elapsed (ms)
@@ -131,13 +91,8 @@ export default class FgScene extends Phaser.Scene {
 
     if (gs.cursors.space.isDown && time > gs.lastFired) {
       if (this.player.armed) {
-        // console.log('gs.lasers:', gs.lasers)
-        let laser = gs.lasers.get();
-        // console.log('laser:', laser)
-        if (laser) {
-          laser.fire(this.player.x, this.player.y);
-          gs.lastFired = time + 100;
-        }
+        this.addLaser(this.player.x, this.player.y, this.player.left)
+        gs.lastFired = time + 100;
       }
     }
   }
@@ -163,9 +118,20 @@ export default class FgScene extends Phaser.Scene {
 
   //Callback fn
   createCollisions() {
-    this.physics.add.collider(gs.gun, gs.groundGroup);
+    this.physics.add.collider(this.gun, gs.groundGroup);
     this.physics.add.collider(this.player, gs.groundGroup);
     this.physics.add.collider(this.player, this.brandon);
     this.physics.add.collider(this.brandon, gs.groundGroup);
+    this.physics.add.collider(this.lasers, this.brandon);
+  }
+
+  addLaser(x, y, left) {
+    let laser = this.lasers.getFirstDead()
+    if(!laser) {
+      console.log('made new laser')
+      laser = new Laser(this, 0, 0);
+      this.lasers.add(laser)
+    }
+    laser.fire(x, y, left)
   }
 }
