@@ -26,24 +26,14 @@ export default class FgScene extends Phaser.Scene {
   }
 
   create() {
-    // Ground
-    // this.createGroups()
-    this.groundGroup = this.physics.add.staticGroup();
-    this.groundGroup.enableBody = true;
-    this.createGround(160, 540);
-    this.createGround(600, 540);
+    // Create the ground and lasers
+    this.createGroups()
     // Brandon. The enemy.
     this.brandon = new brandon(this, 600, 400)
     // Josh. The player.
     this.player = new player(this, 20, 400)
     // Gun
     this.gun = new gun(this, 300, 400, 'gun')
-    this.lasers = this.physics.add.group({
-      classType: Laser,
-      maxSize: 40,
-      runChildUpdate: true,
-    });
-
     // Create player's animations
     this.createAnimations()
     // Assign the curors
@@ -64,16 +54,21 @@ export default class FgScene extends Phaser.Scene {
   }
   // Make all the groups
   createGroups() {
-
-
+    this.groundGroup = this.physics.add.staticGroup({classType: Ground});
+    //add ground to group
+    this.createGround(160, 540);
+    this.createGround(600, 540);
+    this.lasers = this.physics.add.group({
+      classType: Laser,
+      maxSize: 40,
+      runChildUpdate: true,
+    });
   }
 
   // Callback fn
   collectGun(player, gun) {
     gun.disableBody(true, true);
     this.player.armed = true;
-    // player.setVelocityX(0)
-    // player.anims.play('pickupGun')
   }
   // Callback fn
   hit(brandon, laser) {
