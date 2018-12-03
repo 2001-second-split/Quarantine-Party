@@ -6,7 +6,6 @@ export default class BgScene extends Phaser.Scene {
   }
 
   preload() {
-    // Bg layer
     this.load.image('sky', 'assets/backgrounds/sky.png');
     this.load.image('logo', 'assets/backgrounds/fullBlastLogo.png')
   }

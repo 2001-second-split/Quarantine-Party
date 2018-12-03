@@ -1,20 +1,21 @@
-import player from '../entity/Player'
-import brandon from '../entity/Brandon'
+import player from '../entity/Player';
+import brandon from '../entity/Brandon';
 import gun from '../entity/Gun';
-import Laser from '../entity/Laser'
-import Ground from '../entity/Ground'
+import Laser from '../entity/Laser';
+import Ground from '../entity/Ground';
 
 export default class FgScene extends Phaser.Scene {
   constructor() {
     super('FgScene');
+
     // Bind callback functions to the object context
-    this.hit = this.hit.bind(this)
-    this.collectGun = this.collectGun.bind(this)
-    this.addLaser = this.addLaser.bind(this)
+    this.hit = this.hit.bind(this);
+    this.collectGun = this.collectGun.bind(this);
+    this.addLaser = this.addLaser.bind(this);
   }
 
   preload() {
-    // Fg layer
+    // Sprites
     this.load.image('ground', 'assets/sprites/ground.png');
     this.load.spritesheet('josh', 'assets/spriteSheets/josh.png', {
       frameWidth: 340,
@@ -23,30 +24,49 @@ export default class FgScene extends Phaser.Scene {
     this.load.image('gun', 'assets/sprites/gun.png');
     this.load.image('brandon', 'assets/sprites/brandon.png');
     this.load.image('laserBolt', 'assets/sprites/laserBolt.png');
+
+    // Sounds
+    this.load.audio('jump', 'assets/audio/jump.wav');
+    this.load.audio('laser', 'assets/audio/laser.wav');
+    this.load.audio('scream', 'assets/audio/scream.wav');
   }
 
   create() {
     // Create the ground and lasers
-    this.createGroups()
+    this.createGroups();
     // Brandon. The enemy.
-    this.brandon = new brandon(this, 600, 400)
+    this.brandon = new brandon(this, 600, 400);
     // Josh. The player.
-    this.player = new player(this, 20, 400)
+    this.player = new player(this, 20, 400);
     // Gun
-    this.gun = new gun(this, 300, 400, 'gun')
+    this.gun = new gun(this, 300, 400, 'gun');
     // Create player's animations
-    this.createAnimations()
+    this.createAnimations();
+
+    // Create sounds
+    this.jumpSound = this.sound.add('jump');
+    this.laserSound = this.sound.add('laser');
+    this.laserSound.volume = 0.5;
+    this.screamSound = this.sound.add('scream');
+
     // Assign the curors
     this.cursors = this.input.keyboard.createCursorKeys();
-     // Create collions for all entities
-    this.createCollisions()
+    // Create collions for all entities
+    this.createCollisions();
   }
 
   // time: total time elapsed (ms)
   // delta: time elapsed (ms) since last update() call. 16.666 ms @ 60fps
   update(time, delta) {
-   this.player.update(this.cursors)
-   this.gun.update(time, this.player, this.cursors, this.addLaser)
+    this.player.update(this.cursors, this.jumpSound);
+    this.gun.update(
+      time,
+      this.player,
+      this.cursors,
+      this.addLaser,
+      this.laserSound
+    );
+    this.brandon.update(this.screamSound);
   }
   // Make the ground
   createGround(x, y) {
@@ -54,7 +74,7 @@ export default class FgScene extends Phaser.Scene {
   }
   // Make all the groups
   createGroups() {
-    this.groundGroup = this.physics.add.staticGroup({classType: Ground});
+    this.groundGroup = this.physics.add.staticGroup({ classType: Ground });
     //add ground to group
     this.createGround(160, 540);
     this.createGround(600, 540);
@@ -83,18 +103,24 @@ export default class FgScene extends Phaser.Scene {
     this.physics.add.collider(this.brandon, this.groundGroup);
     this.physics.add.collider(this.lasers, this.brandon);
     // create a checker to see if the player collides with the gun
-    this.physics.add.overlap(this.player, this.gun, this.collectGun, null, this);
+    this.physics.add.overlap(
+      this.player,
+      this.gun,
+      this.collectGun,
+      null,
+      this
+    );
     // create a checker to see if the laser hits brandon
     this.physics.add.overlap(this.brandon, this.lasers, this.hit, null, this);
   }
   // Callback fn
   addLaser(x, y, left) {
-    let laser = this.lasers.getFirstDead()
-    if(!laser) {
+    let laser = this.lasers.getFirstDead();
+    if (!laser) {
       laser = new Laser(this, 0, 0);
-      this.lasers.add(laser)
+      this.lasers.add(laser);
     }
-    laser.fire(x, y, left)
+    laser.fire(x, y, left);
   }
   // Player animations
   createAnimations() {
