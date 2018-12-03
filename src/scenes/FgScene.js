@@ -2,6 +2,7 @@ import player from '../entity/Player'
 import brandon from '../entity/Brandon'
 import gun from '../entity/Gun';
 import Laser from '../entity/Laser'
+import Ground from '../entity/Ground'
 
 export default class FgScene extends Phaser.Scene {
   constructor() {
@@ -26,6 +27,7 @@ export default class FgScene extends Phaser.Scene {
 
   create() {
     // Ground
+    // this.createGroups()
     this.groundGroup = this.physics.add.staticGroup();
     this.groundGroup.enableBody = true;
     this.createGround(160, 540);
@@ -36,12 +38,12 @@ export default class FgScene extends Phaser.Scene {
     this.player = new player(this, 20, 400)
     // Gun
     this.gun = new gun(this, 300, 400, 'gun')
-    // Laser stuff
     this.lasers = this.physics.add.group({
       classType: Laser,
       maxSize: 40,
       runChildUpdate: true,
     });
+
     // Create player's animations
     this.createAnimations()
     // Assign the curors
@@ -60,6 +62,12 @@ export default class FgScene extends Phaser.Scene {
   createGround(x, y) {
     let ground = this.groundGroup.create(x, y, 'ground');
   }
+  // Make all the groups
+  createGroups() {
+
+
+  }
+
   // Callback fn
   collectGun(player, gun) {
     gun.disableBody(true, true);
