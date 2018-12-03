@@ -16,7 +16,7 @@ export default class Laser extends Phaser.GameObjects.Image {
     this.setScale(.25)
   }
 // Check which direction the player is facing and move the laserbolt in that direction as long as it lives
-    update(delta) {
+    update(direction, delta) {
       this.lifespan -= delta
       if(this.direction === 'right') {
         this.x += this.speed * delta
