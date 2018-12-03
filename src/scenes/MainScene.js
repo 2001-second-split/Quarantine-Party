@@ -1,5 +1,4 @@
-import BgScene from './BgScene';
-import FgScene from './FgScene';
+import 'phaser'
 
 export default class MainScene extends Phaser.Scene {
   constructor() {

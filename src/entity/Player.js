@@ -1,35 +1,30 @@
-import gs from '../GameState'
 import 'phaser'
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
     super(scene, x, y, 'josh')
-
-    //store reference of scene passed to constructor
+    // Store reference of scene passed to constructor
     this.scene = scene;
-
-    // add player to scene and enable physics
+    // Add player to scene and enable physics
     this.scene.physics.world.enable(this)
     this.scene.add.existing(this)
-
-    //scale player
+    // Scale player
     this.setScale(.25)
-
-    //armed?
+    // Armed?
     this.armed = false;
-    // Is the player facing left
+    // Is the player facing left?
     this.left = false;
-    //player can't walk off camera
+    // Player can't walk off camera
     this.setCollideWorldBounds(true)
   }
-
+// Load our player spritesheet into game
   preload() {
     this.load.spritesheet('josh', 'assets/spriteSheets/josh.png', {
       frameWidth: 340,
       frameHeight: 460,
     });
   }
-
+// Check which controller button is being pushed and execute movement & animation
   update(cursors) {
     if (cursors.left.isDown) {
       if (!this.left) {
@@ -58,11 +53,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.anims.play('idleArmed');
       }
     }
-
     if (cursors.up.isDown && this.body.touching.down) {
       this.setVelocityY(-800);
     }
-
     if (!this.body.touching.down) {
       this.anims.play('jump');
     }
