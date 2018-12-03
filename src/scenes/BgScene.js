@@ -1,4 +1,4 @@
-import 'phaser'
+import 'phaser';
 
 export default class BgScene extends Phaser.Scene {
   constructor() {
@@ -6,13 +6,12 @@ export default class BgScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('sky', 'assets/backgrounds/sky.png');
-    this.load.image('logo', 'assets/backgrounds/fullBlastLogo.png')
+    // Preload Sprites
+    // << LOAD SPRITE HERE >>
   }
 
   create() {
-    // Background
-    this.add.image(-160, 0, 'sky').setOrigin(0).setScale(.5);
-    this.add.image(380,80,'logo').setScale(5)
+    // Create Sprites
+    // << CREATE SPRITE HERE >>
   }
 }
