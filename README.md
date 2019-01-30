@@ -1,9 +1,7 @@
-# PhaserWorkshop
-Fullstack mini stackathon
+# FullBlast Academy
 
-https://docs.google.com/document/d/1ev-y_9pOmx4faScFDqtU4NCWDQWhiGIEJzkvwbBAlqY/edit?usp=sharing
+Let's build a game!
 
-First use npm to install http-server globally:
-npm install -g http-server
-
-Then run http-server from this directory. It'll automatically notice the index.html file in the /public folder and serve static files from there.
+1. 🍴 Fork this repo to your own GitHub account (if you haven't done so already)
+2. 👽 After cloning to your local machine, install the dependencies: `npm install`
+3. 🚀 Start it up! `npm start` will start a server running at http://localhost:8080. Head on over there in your browser, and navigate to the 'public/' directory, which is where the Phaser application is served.
