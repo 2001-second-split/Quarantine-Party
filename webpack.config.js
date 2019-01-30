@@ -12,6 +12,7 @@ module.exports = {
     //   inline: true,
     //   hot: true
     // },
+    mode: 'development',
     output: {
         path: path.resolve(__dirname, 'public'),
         publicPath: '/public/',
