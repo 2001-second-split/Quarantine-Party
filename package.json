@@ -1,5 +1,5 @@
 {
-  "name": "PhaserWorkshop",
+  "name": "Quarantine Party",
   "version": "1.0.0",
   "description": "A workshop for getting started with Phaser",
   "main": "src/index.js",
@@ -12,6 +12,6 @@
   "devDependencies": {
     "raw-loader": "^0.5.1",
     "webpack": "^3.4.1",
-    "webpack-dev-server": "^3.1.11"
+    "webpack-dev-server": "^2.11.0"
   }
 }
