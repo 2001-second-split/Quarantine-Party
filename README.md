@@ -1,4 +1,19 @@
-# FullBlast Academy
+# Quarantine Party
+
+Created by: Ayse Erduran, Patty Arunyavikul, Stephanie Chiang, Tiffany Ma
+
+# Wireframe
+
+> to be added
+
+# Tech Stack / Libraries
+
+* Phaser3.js
+* socket.io
+* Node.js
+* Express.js
+
+---
 
 Let's build a game!
 
