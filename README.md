@@ -4,7 +4,7 @@ Created by: Ayse Erduran, Patty Arunyavikul, Stephanie Chiang, Tiffany Ma
 
 # Wireframe
 
-> ![Wireframe](/public/wireframe.png)
+![Wireframe](/public/wireframe.png)
 
 # Tech Stack / Libraries
 
