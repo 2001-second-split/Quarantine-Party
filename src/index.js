@@ -21,7 +21,7 @@ import BgSceneFBA from './scenes/BgScene-FBA';
 import FgSceneFBA from './scenes/FgScene-FBA';
 
 //minigame scenes
-import minigameScene from './scenes/MinigameTP';
+import minigameTPScene from './scenes/MinigameTP';
 
 //main game scene
 import WaitingScene from './scenes/WaitingScene';
@@ -40,7 +40,7 @@ class Game extends Phaser.Game {
     super(config);
 
     // Add all the scenes
-
+    // var newScene = game.scene.add(key, sceneConfig, autoStart, data);
     this.scene.add('BgSceneWait', BgSceneWait)
     this.scene.add('FgSceneWait', FgSceneWait)
     this.scene.add('WaitingScene', WaitingScene)
@@ -48,6 +48,9 @@ class Game extends Phaser.Game {
     this.scene.add('BgSceneBoard', BgSceneBoard)
     this.scene.add('FgSceneBoard', FgSceneBoard)
     this.scene.add('BoardScene', BoardScene)
+
+    this.scene.add('minigameTPScene', minigameTPScene)
+
 
     // Start the game with the mainscene
     this.scene.start('WaitingScene')
@@ -73,9 +76,9 @@ class MiniGameTP extends Phaser.Game {
   constructor() {
     super(minigameTPconfig);
 
-    this.scene.add('minigameScene', minigameScene)
+    this.scene.add('minigameTPScene', minigameTPScene)
 
-    this.scene.start('minigameScene')
+    this.scene.start('minigameTPScene')
   }
 }
 

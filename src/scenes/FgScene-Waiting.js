@@ -83,7 +83,7 @@ export default class FgSceneWait extends Phaser.Scene {
 
     //testing scene change
     this.input.on('pointerup', function (pointer) { //on click the scene will change
-      this.scene.get('BoardScene');
+      // this.scene.get('BoardScene');
       this.scene.start('BoardScene');
     }, this);
 

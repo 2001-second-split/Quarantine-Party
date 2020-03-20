@@ -1,6 +1,6 @@
-export default class minigameScene extends Phaser.Scene {
+export default class minigameTPScene extends Phaser.Scene {
   constructor() {
-    super('minigameScene');
+    super('minigameTPScene');
 
     this.gameOver = false;
     this.score = 0;
@@ -12,7 +12,7 @@ export default class minigameScene extends Phaser.Scene {
   preload() {
     this.load.path = '/public/assets/minigameTP/'
     this.load.image('sky', 'sky.png');
-    this.load.image('ground', 'platform.png');
+    this.load.image('platform', 'platform.png');
     this.load.image('star', 'tp.png');
     this.load.image('bomb', 'bomb.png');
     this.load.spritesheet('dude', 'dude.png', { frameWidth: 32, frameHeight: 48 });
@@ -57,12 +57,12 @@ export default class minigameScene extends Phaser.Scene {
 
     //  Here we create the ground.
     //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-    this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
+    this.platforms.create(400, 568, 'platform').setScale(2).refreshBody();
 
     //  Now let's create some ledges
-    this.platforms.create(600, 400, 'ground');
-    this.platforms.create(50, 250, 'ground');
-    this.platforms.create(750, 220, 'ground');
+    // this.platforms.create(600, 400, 'platform');
+    // this.platforms.create(50, 250, 'platform');
+    // this.platforms.create(750, 220, 'platform');
 
     // The player and its settings
     this.player = this.physics.add.sprite(100, 450, 'dude');
@@ -108,12 +108,19 @@ export default class minigameScene extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
     this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
 
+
   }
 
   update () {
     if (this.gameOver) {
-        return;
-    }
+      // return;
+      // this.scene.pause('MinigameTPScene');
+
+      // this.scene.run('BoardScene');
+      // this.scene.start('BoardScene');
+      this.scene.switch('BoardScene');
+      this.gameOver = false;
+  }
 
     if (this.cursors.left.isDown) {
       this.player.setVelocityX(-160);

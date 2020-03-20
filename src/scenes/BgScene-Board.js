@@ -8,14 +8,14 @@ export default class BgSceneBoard extends Phaser.Scene {
   preload() {
     // Preload Sprites
     // << LOAD SPRITE HERE >>
-    this.load.image('sky', 'assets/backgrounds/sky.png');
+    this.load.image('board', 'assets/backgrounds/board.png');
     // this.load.image('logo', 'assets/backgrounds/fullBlastLogo.png')
   }
 
   create() {
     // Create Sprites
     // << CREATE SPRITE HERE >>
-    this.add.image(-160, 0, 'sky').setOrigin(0).setScale(.5);
+    this.add.image(-160, 0, 'board').setOrigin(0).setScale(.25);
     // this.add.image(380,80,'logo').setScale(5)
   }
 }

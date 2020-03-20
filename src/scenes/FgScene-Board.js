@@ -21,13 +21,11 @@ export default class FgSceneBoard extends Phaser.Scene {
     });
 
     this.load.image('steph', 'assets/sprites/steph.png');
-    this.load.image('ground', 'assets/sprites/ground.png');
+    // this.load.image('ground', 'assets/sprites/ground.png');
 
     // Preload Sounds
     // << LOAD SOUNDS HERE >>
     this.load.audio('jump', 'assets/audio/jump.wav');
-    this.load.audio('laser', 'assets/audio/laser.wav');
-    this.load.audio('scream', 'assets/audio/scream.wav');
   }
 
   createGround(x, y) {
@@ -64,40 +62,22 @@ export default class FgSceneBoard extends Phaser.Scene {
 
     // Josh. The player. Our sprite is a little large, so we'll scale it down
     this.player = new Player(this, 50, 400, 'josh').setScale(0.25);
-    // this.enemy = new Enemy(this, 600, 400, 'steph').setScale(2);
-    // this.gun = new Gun(this, 300, 400, 'gun').setScale(0.25);
+    this.player.setCollideWorldBounds(true);
 
     // Create the animations during the FgScene's create phase
     this.createAnimations();
 
-    // Define the single frame in the tilesheet that represents the player idle and holding a gun
-    // this.anims.create({
-    //   key: 'idleArmed',
-    //   frames: [{ key: 'josh', frame: 6 }],
-    //   frameRate: 10,
-    // });
 
-    this.groundGroup = this.physics.add.staticGroup({ classType: Ground });
-    this.createGround(160, 540);
-    this.createGround(600, 540);
+    // this.groundGroup = this.physics.add.staticGroup({ classType: Ground });
+    // this.createGround(160, 540);
+    // this.createGround(600, 540);
 
-    this.lasers = this.physics.add.group({
-      classType: Laser,
-      runChildUpdate: true,
-      allowGravity: false,   // Important! When an obj is added to a group, it will inherit
-                          // the group's attributes. So if this group's gravity is enabled,
-                          // the individual lasers will also have gravity enabled when they're
-                          // added to this group
-      maxSize: 40
-    });
 
     this.cursors = this.input.keyboard.createCursorKeys()
 
     // Create sounds
     // << CREATE SOUNDS HERE >>
     this.jumpSound = this.sound.add('jump');
-    // this.laserSound = this.sound.add('laser');
-    // this.screamSound = this.sound.add('scream');
 
 
     // Create collisions for all entities
@@ -114,21 +94,13 @@ export default class FgSceneBoard extends Phaser.Scene {
     //   this.player,
     // );
 
-    // When the laser collides with the enemy
-    // this.physics.add.overlap(
-    //   this.lasers,
-    //   this.enemy,
-    //   this.hit,
-    //   null,
-    //   this
-    // );
 
     //testing scene change
-    // this.input.on('pointerup', function (pointer) { //on click the scene will change
-    //   this.scene.get('minigameScene');
-    //   this.scene.start('minigameScene');
-    // }, this);
 
+    this.input.on('pointerup', function (pointer) { //on click the scene will change
+      // this.scene.pause('BoardScene')
+      this.scene.start('minigameTPScene');
+    }, this);
 
   }
 
@@ -139,19 +111,9 @@ export default class FgSceneBoard extends Phaser.Scene {
     // << DO UPDATE LOGIC HERE >>
     this.player.update(this.cursors, this.jumpSound); // Add a parameter for the jumpSound
 
-    // this.player.update(this.cursors);
 
-    // this.gun.update(
-    //   time,
-    //   this.player,
-    //   this.cursors,
-    //   this.fireLaser,  // Callback fn for creating lasers
-    //   this.laserSound
-    // );
-
-    // this.enemy.update(this.screamSound)
   }
 
-  // Callback fn. We implement it here b/c our scene has references to the lasers group and the player
+
 
 }

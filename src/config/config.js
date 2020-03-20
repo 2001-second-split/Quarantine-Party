@@ -6,7 +6,26 @@ import MainScene from '../scenes/MainScene-FBA'
 //minigame imports
 import MinigameScene from '../scenes/MinigameTP';
 
+const config = {
+  key: 'default',
+  type: Phaser.AUTO,  // rendering engine (AUTO, CANVAS, WEBGL)
+  width: 800,   // Game width in pixels
+  height: 600,  // Game height in pixels
 
+  // Since we'll be using pixel art, we want every beautiful pixel untouched!
+  render: {
+    pixelArt: true,   // This option is to turn off the default behavior of images being automatically sharpened.
+  },
+
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: { y: 300 },  // Game objects will be pulled down along the y-axis
+      debug: false,
+    }
+  },
+
+}
 
 export const fbaConfig = {
   type: Phaser.AUTO,  // Specify the underlying browser rendering engine (AUTO, CANVAS, WEBGL)
@@ -36,6 +55,7 @@ export const fbaConfig = {
 };
 
 export const minigameTPconfig = {
+  key: 'minigameTP',
   type: Phaser.AUTO,
   width: 800,
   height: 600,
@@ -52,25 +72,5 @@ export const minigameTPconfig = {
       update: this.update
   }
 };
-
-const config = {
-  type: Phaser.AUTO,  // rendering engine (AUTO, CANVAS, WEBGL)
-  width: 800,   // Game width in pixels
-  height: 600,  // Game height in pixels
-
-  // Since we'll be using pixel art, we want every beautiful pixel untouched!
-  render: {
-    pixelArt: true,   // This option is to turn off the default behavior of images being automatically sharpened.
-  },
-
-  physics: {
-    default: 'arcade',
-    arcade: {
-      gravity: { y: 1500 },  // Game objects will be pulled down along the y-axis
-      debug: false,
-    }
-  },
-
-}
 
 export default config;
