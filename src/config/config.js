@@ -1,4 +1,11 @@
-export default {
+import FgScene from '../scenes/FgScene'
+import BgScene from '../scenes/BgScene'
+import MainScene from '../scenes/MainScene'
+import MinigameScene from '../scenes/MinigameTP';
+
+
+
+export const maingameConfig = {
   type: Phaser.AUTO,  // Specify the underlying browser rendering engine (AUTO, CANVAS, WEBGL)
                       // AUTO will attempt to use WEBGL, but if not available it'll default to CANVAS
   width: 800,   // Game width in pixels
@@ -17,5 +24,30 @@ export default {
                         // A negative value will pull game objects up along the y-axis
       debug: false,     // Whether physics engine should run in debug mode
     }
+  },
+
+  // scene: [ MinigameScene, MainScene ]
+  // scene: [ FgScene, BgScene ]
+  scene: [ FgScene, MinigameScene ]
+  // scene starts on FG. once you click anywhere in FG, it changes to miniGame
+};
+
+export const minigameTPconfig = {
+  type: Phaser.AUTO,
+  width: 800,
+  height: 600,
+  physics: {
+      default: 'arcade',
+      arcade: {
+          gravity: { y: 300 },
+          debug: false
+      }
+  },
+  scene: {
+      preload: this.preload,
+      create: this.create,
+      update: this.update
   }
 };
+
+export default maingameConfig
