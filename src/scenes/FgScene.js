@@ -133,6 +133,13 @@ export default class FgScene extends Phaser.Scene {
       null,
       this
     );
+
+    //testing scene change
+    this.input.on('pointerup', function (pointer) { //on click the scene will change
+      this.scene.start('minigameScene');
+    }, this);
+
+
   }
 
   collectGun(player, gun) {

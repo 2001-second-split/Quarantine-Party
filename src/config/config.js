@@ -1,3 +1,10 @@
+import FgScene from '../scenes/FgScene'
+import BgScene from '../scenes/BgScene'
+import MainScene from '../scenes/MainScene'
+import MinigameScene from '../scenes/MinigameTP';
+
+
+
 export const maingameConfig = {
   type: Phaser.AUTO,  // Specify the underlying browser rendering engine (AUTO, CANVAS, WEBGL)
                       // AUTO will attempt to use WEBGL, but if not available it'll default to CANVAS
@@ -19,7 +26,10 @@ export const maingameConfig = {
     }
   },
 
-  // scene: [Game, minigameTP]
+  // scene: [ MinigameScene, MainScene ]
+  // scene: [ FgScene, BgScene ]
+  scene: [ FgScene, MinigameScene ]
+  // scene starts on FG. once you click anywhere in FG, it changes to miniGame
 };
 
 export const minigameTPconfig = {
@@ -38,7 +48,6 @@ export const minigameTPconfig = {
       create: this.create,
       update: this.update
   }
-  // scene: this,
 };
 
 export default maingameConfig

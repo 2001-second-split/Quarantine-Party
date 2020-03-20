@@ -22,24 +22,24 @@ import minigameScene from './scenes/MinigameTP';
 
 import {maingameConfig, minigameTPconfig } from './config/config'
 
-// class Game extends Phaser.Game {
-//   constructor() {
-//     // Add the config file to the game
-//     super(maingameConfig);
+class Game extends Phaser.Game {
+  constructor() {
+    // Add the config file to the game
+    super(maingameConfig);
 
-//     // Add all the scenes
-//     // << ADD ALL SCENES HERE >>
-//     this.scene.add('BgScene', BgScene)
-//     this.scene.add('FgScene', FgScene)
-//     this.scene.add('MainScene', MainScene)
+    // Add all the scenes
+    // // << ADD ALL SCENES HERE >>
+    // this.scene.add('BgScene', BgScene)
+    // this.scene.add('FgScene', FgScene)
+    // this.scene.add('MainScene', MainScene)
 
-//     // Start the game with the mainscene
-//     // << START GAME WITH MAIN SCENE HERE >>
-//     this.scene.start('MainScene')
-//   }
-// }
+    // Start the game with the mainscene
+    // << START GAME WITH MAIN SCENE HERE >>
+    this.scene.start('MainScene')
+  }
+}
 
-class MiniGame extends Phaser.Game {
+class MiniGameTP extends Phaser.Game {
   constructor() {
     // Add the config file to the game
     super(minigameTPconfig);
@@ -54,6 +54,7 @@ class MiniGame extends Phaser.Game {
 
 // Create new instance of game
 window.onload = function () {
-  // window.game = new Game();
-  window.game = new MiniGame();
+  window.game = new Game();
+  // window.game = new MiniGameTP();
+  // comment out the game you don't want to play
 }
