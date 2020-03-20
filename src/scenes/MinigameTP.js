@@ -1,9 +1,3 @@
-// import Player from '../entity/Player'
-// import Ground from '../entity/Ground'
-// import Enemy from '../entity/Enemy';
-// import Gun from '../entity/Gun'
-// import Laser from '../entity/Laser'
-
 export default class minigameScene extends Phaser.Scene {
   constructor() {
     super('minigameScene');
