@@ -28,7 +28,7 @@ import WaitingScene from './scenes/WaitingScene';
 import FgSceneWait from './scenes/FgScene-Waiting'
 import BgSceneWait from './scenes/BgScene-Waiting'
 
-import BoardScene from './scenes/BoardScene'
+//import BoardScene from './scenes/BoardScene'
 import FgSceneBoard from './scenes/FgScene-Board'
 import BgSceneBoard from './scenes/BgScene-Board'
 
@@ -47,7 +47,7 @@ class Game extends Phaser.Game {
 
     this.scene.add('BgSceneBoard', BgSceneBoard)
     this.scene.add('FgSceneBoard', FgSceneBoard)
-    this.scene.add('BoardScene', BoardScene)
+    //this.scene.add('BoardScene', BoardScene)
 
     this.scene.add('minigameTPScene', minigameTPScene)
 

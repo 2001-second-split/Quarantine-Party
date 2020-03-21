@@ -73,4 +73,16 @@ export const minigameTPconfig = {
   }
 };
 
+export const boardConfig = {
+  type: Phaser.AUTO,
+  width: window.innerWidth,   // Game width in pixels
+  height: window.innerHeight,  // Game height in pixels
+  render:{
+    pixelArt: true
+  },
+  physics: {
+    default: 'arcade'
+  }
+}
+
 export default config;
