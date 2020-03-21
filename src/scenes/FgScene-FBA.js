@@ -4,9 +4,9 @@ import Enemy from '../entity/Enemy';
 import Gun from '../entity/Gun'
 import Laser from '../entity/Laser'
 
-export default class FgScene extends Phaser.Scene {
+export default class FgSceneFBA extends Phaser.Scene {
   constructor() {
-    super('FgScene');
+    super('FgSceneFBA');
 
     this.collectGun = this.collectGun.bind(this);
     this.fireLaser = this.fireLaser.bind(this);
@@ -135,9 +135,10 @@ export default class FgScene extends Phaser.Scene {
     );
 
     //testing scene change
-    this.input.on('pointerup', function (pointer) { //on click the scene will change
-      this.scene.start('minigameScene');
-    }, this);
+    // this.input.on('pointerup', function (pointer) { //on click the scene will change
+    //   this.scene.get('minigameScene');
+    //   this.scene.start('minigameScene');
+    // }, this);
 
 
   }

@@ -1,8 +1,8 @@
 import 'phaser';
 
-export default class BgScene extends Phaser.Scene {
+export default class BgSceneFBA extends Phaser.Scene {
   constructor() {
-    super('BgScene');
+    super('BgSceneFBA');
   }
 
   preload() {

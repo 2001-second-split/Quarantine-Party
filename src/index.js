@@ -14,47 +14,79 @@ But this hasn't happened yet!
 
 // Bring in all the scenes
 import 'phaser';
-import MainScene from './scenes/MainScene'
-import BgScene from './scenes/BgScene';
-import FgScene from './scenes/FgScene';
 
-import minigameScene from './scenes/MinigameTP';
+//fullblast academy scenes
+import MainSceneFBA from './scenes/MainScene-FBA'
+import BgSceneFBA from './scenes/BgScene-FBA';
+import FgSceneFBA from './scenes/FgScene-FBA';
 
-import {maingameConfig, minigameTPconfig } from './config/config'
+//minigame scenes
+import minigameTPScene from './scenes/MinigameTP';
+
+//main game scene
+import WaitingScene from './scenes/WaitingScene';
+import FgSceneWait from './scenes/FgScene-Waiting'
+import BgSceneWait from './scenes/BgScene-Waiting'
+
+import BoardScene from './scenes/BoardScene'
+import FgSceneBoard from './scenes/FgScene-Board'
+import BgSceneBoard from './scenes/BgScene-Board'
+
+import config, {fbaConfig, minigameTPconfig } from './config/config'
 
 class Game extends Phaser.Game {
   constructor() {
     // Add the config file to the game
-    super(maingameConfig);
+    super(config);
 
     // Add all the scenes
-    // // << ADD ALL SCENES HERE >>
-    // this.scene.add('BgScene', BgScene)
-    // this.scene.add('FgScene', FgScene)
-    // this.scene.add('MainScene', MainScene)
+    // var newScene = game.scene.add(key, sceneConfig, autoStart, data);
+    this.scene.add('BgSceneWait', BgSceneWait)
+    this.scene.add('FgSceneWait', FgSceneWait)
+    this.scene.add('WaitingScene', WaitingScene)
+
+    this.scene.add('BgSceneBoard', BgSceneBoard)
+    this.scene.add('FgSceneBoard', FgSceneBoard)
+    this.scene.add('BoardScene', BoardScene)
+
+    this.scene.add('minigameTPScene', minigameTPScene)
+
 
     // Start the game with the mainscene
-    // << START GAME WITH MAIN SCENE HERE >>
-    this.scene.start('MainScene')
+    this.scene.start('WaitingScene')
+  }
+}
+
+class FullBlastAcademy extends Phaser.Game {
+  constructor() {
+    // Add the config file to the game
+    super(fbaConfig);
+
+    // Add all the scenes
+    this.scene.add('BgSceneFBA', BgSceneFBA)
+    this.scene.add('FgSceneFBA', FgSceneFBA)
+    this.scene.add('MainSceneFBA', MainSceneFBA)
+
+    // Start the game with the mainscene
+    this.scene.start('MainSceneFBA')
   }
 }
 
 class MiniGameTP extends Phaser.Game {
   constructor() {
-    // Add the config file to the game
     super(minigameTPconfig);
 
-    // Add all the scenes
-    this.scene.add('minigameScene', minigameScene)
+    this.scene.add('minigameTPScene', minigameTPScene)
 
-    // Start the game with the mainscene
-    this.scene.start('minigameScene')
+    this.scene.start('minigameTPScene')
   }
 }
 
 // Create new instance of game
 window.onload = function () {
   window.game = new Game();
-  // window.game = new MiniGameTP();
+
   // comment out the game you don't want to play
+  // window.game = new FullBlastAcademy();
+  // window.game = new MiniGameTP();
 }
