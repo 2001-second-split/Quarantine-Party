@@ -15,24 +15,19 @@ But this hasn't happened yet!
 // Bring in all the scenes
 import 'phaser';
 
-//fullblast academy scenes
-import MainSceneFBA from './scenes/MainScene-FBA'
-import BgSceneFBA from './scenes/BgScene-FBA';
-import FgSceneFBA from './scenes/FgScene-FBA';
-
 //minigame scenes
 import minigameTPScene from './scenes/MinigameTP';
 
 //main game scene
-import WaitingScene from './scenes/WaitingScene';
-import FgSceneWait from './scenes/FgScene-Waiting'
-import BgSceneWait from './scenes/BgScene-Waiting'
+import WaitScene from './scenes/WaitScene';
+import WaitFg from './scenes/WaitFg'
+import WaitBg from './scenes/WaitBg'
 
-//import BoardScene from './scenes/BoardScene'
-import FgSceneBoard from './scenes/FgScene-Board'
-import BgSceneBoard from './scenes/BgScene-Board'
+import BoardScene from './scenes/BoardScene'
+import BoardFg from './scenes/BoardFg'
+import BoardBg from './scenes/BoardBg'
 
-import config, {fbaConfig, minigameTPconfig } from './config/config'
+import config from './config/config'
 
 class Game extends Phaser.Game {
   constructor() {
@@ -41,46 +36,23 @@ class Game extends Phaser.Game {
 
     // Add all the scenes
     // var newScene = game.scene.add(key, sceneConfig, autoStart, data);
-    this.scene.add('BgSceneWait', BgSceneWait)
-    this.scene.add('FgSceneWait', FgSceneWait)
-    this.scene.add('WaitingScene', WaitingScene)
+    this.scene.add('WaitBg', WaitBg)
+    this.scene.add('WaitFg', WaitFg)
+    this.scene.add('WaitScene', WaitScene)
 
-    this.scene.add('BgSceneBoard', BgSceneBoard)
-    this.scene.add('FgSceneBoard', FgSceneBoard)
-    //this.scene.add('BoardScene', BoardScene)
+    this.scene.add('BoardBg', BoardBg)
+    this.scene.add('BoardFg', BoardFg)
+    this.scene.add('BoardScene', BoardScene)
 
     this.scene.add('minigameTPScene', minigameTPScene)
 
 
     // Start the game with the mainscene
-    this.scene.start('WaitingScene')
+    this.scene.start('WaitScene')
   }
 }
 
-class FullBlastAcademy extends Phaser.Game {
-  constructor() {
-    // Add the config file to the game
-    super(fbaConfig);
 
-    // Add all the scenes
-    this.scene.add('BgSceneFBA', BgSceneFBA)
-    this.scene.add('FgSceneFBA', FgSceneFBA)
-    this.scene.add('MainSceneFBA', MainSceneFBA)
-
-    // Start the game with the mainscene
-    this.scene.start('MainSceneFBA')
-  }
-}
-
-class MiniGameTP extends Phaser.Game {
-  constructor() {
-    super(minigameTPconfig);
-
-    this.scene.add('minigameTPScene', minigameTPScene)
-
-    this.scene.start('minigameTPScene')
-  }
-}
 
 // Create new instance of game
 window.onload = function () {

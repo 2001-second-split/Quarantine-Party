@@ -1,8 +1,8 @@
 import 'phaser';
 
-export default class BgSceneBoard extends Phaser.Scene {
+export default class BoardBg extends Phaser.Scene {
   constructor() {
-    super('BgSceneBoard');
+    super('BoardBg');
   }
 
   preload() {
@@ -26,22 +26,22 @@ export default class BgSceneBoard extends Phaser.Scene {
     const tileWidthHalf = tilewidth / 2;
     const tileHeightHalf = tileheight / 2;
 
-    for (const k = 0; k < data.layers.length; k++){
-      const layer = data.layers[k].data;
+    for (let i = 0; i < data.layers.length; i++){
+      const layer = data.layers[i].data;
 
-        const mapwidth = data.layers[k].width;
-        const mapheight = data.layers[k].height;
+        const mapwidth = data.layers[i].width;
+        const mapheight = data.layers[i].height;
 
         const centerX = mapwidth * tileWidthHalf + 50;
         const centerY = 80;
 
-        const i = 0;
+        let j = 0;
 
         for (let y = 0; y < mapheight; y++)
         {
             for (let x = 0; x < mapwidth; x++)
             {
-                const id = layer[i] - 1;
+                const id = layer[j] - 1;
 
                 if(id >= 0) {
                   const tx = (x - y) * tileWidthHalf;
@@ -51,7 +51,7 @@ export default class BgSceneBoard extends Phaser.Scene {
 
                   tile.depth = centerY + ty;
                 }
-                i++;
+                j++;
             }
         }
     }

@@ -2,7 +2,7 @@ import 'phaser';
 
 export default class BgSceneWait extends Phaser.Scene {
   constructor() {
-    super('BgSceneWait');
+    super('WaitBg');
   }
 
   preload() {
