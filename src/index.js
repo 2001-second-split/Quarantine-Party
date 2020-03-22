@@ -27,7 +27,6 @@ import BoardScene from './scenes/BoardScene'
 import BoardFg from './scenes/BoardFg'
 import BoardBg from './scenes/BoardBg'
 
-import MainScene from './scenes/MainScene'
 import config from './config/config'
 
 class Game extends Phaser.Game {
