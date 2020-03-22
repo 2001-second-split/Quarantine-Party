@@ -10,4 +10,5 @@ export default class WaitScene extends Phaser.Scene {
     this.scene.launch('WaitBg');
     this.scene.launch('WaitFg');
   }
+
 }

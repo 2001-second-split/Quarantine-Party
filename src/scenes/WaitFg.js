@@ -79,15 +79,12 @@ export default class WaitFg extends Phaser.Scene {
     this.physics.add.collider(this.player, this.ground)
     this.physics.add.collider(this.enemy, this.ground)
     this.physics.add.collider(this.player, this.enemy)
-
-
     //testing scene change
     this.input.on('pointerup', function (pointer) { //on click the scene will change
+      //this.scene.stop()
       this.scene.get('BoardScene');
       this.scene.start('BoardScene');
     }, this);
-
-
   }
 
   update(time, delta) {
