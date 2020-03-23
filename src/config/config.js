@@ -6,6 +6,10 @@ const config = {
   key: 'default',
   type: Phaser.AUTO,  // rendering engine (AUTO, CANVAS, WEBGL)
   parent: 'parent',   //not sure if necessary but adding just in case
+  scale:{
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH
+  },
   width: window.innerWidth,   // Game width in pixels
   height: window.innerHeight,  // Game height in pixels
 
