@@ -68,7 +68,7 @@ export default class BoardFg extends Phaser.Scene {
 
 
     // Create the animations during the FgScene's create phase
-    // this.createAnimations();
+    this.createAnimations();
 
 
     // this.groundGroup = this.physics.add.staticGroup({ classType: Ground });
