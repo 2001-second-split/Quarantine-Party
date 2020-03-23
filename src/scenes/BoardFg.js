@@ -3,6 +3,7 @@ import Ground from '../entity/Ground'
 import Enemy from '../entity/Enemy';
 import Gun from '../entity/Gun'
 import Laser from '../entity/Laser'
+import Dice from '../entity/Dice';
 
 export default class BoardFg extends Phaser.Scene {
   constructor() {
@@ -22,6 +23,11 @@ export default class BoardFg extends Phaser.Scene {
 
     this.load.image('steph', 'assets/sprites/steph.png');
     // this.load.image('ground', 'assets/sprites/ground.png');
+
+    this.load.spritesheet('dice', 'assets/spriteSheets/dice.png', {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
 
     // Preload Sounds
     // << LOAD SOUNDS HERE >>
@@ -54,6 +60,22 @@ export default class BoardFg extends Phaser.Scene {
       frames: [{ key: 'josh', frame: 6 }],
       frameRate: 10,
     });
+    this.anims.create({
+      key: 'roll',
+      frames: this.anims.generateFrameNumbers('dice', { start: 0, end: 5 }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: 'unrolled',
+      frames: [{ key: 'dice', frame: 0 }],
+      frameRate: 10,
+    });
+    this.anims.create({
+      key: 'random',
+      frames: [{ key: 'dice', frame: Math.floor(Math.random() * 6) }],
+      frameRate: 10,
+    });
   }
 
   create() {
@@ -63,6 +85,9 @@ export default class BoardFg extends Phaser.Scene {
     // Josh. The player. Our sprite is a little large, so we'll scale it down
     this.player = new Player(this, 50, 400, 'josh').setScale(0.25);
     this.player.setCollideWorldBounds(true);
+    this.dice = new Dice(this, 190, 400, 'dice')
+    this.dice.setCollideWorldBounds(true);
+
 
     // Create the animations during the FgScene's create phase
     this.createAnimations();
@@ -83,6 +108,8 @@ export default class BoardFg extends Phaser.Scene {
     // Create collisions for all entities
     // << CREATE COLLISIONS HERE >>
     this.physics.add.collider(this.player, this.groundGroup)
+    this.physics.add.collider(this.dice, this.groundGroup)
+
 
     // this.physics.add.collider(this.enemy, this.groundGroup)
     // this.physics.add.collider(this.player, this.enemy)
@@ -110,6 +137,7 @@ export default class BoardFg extends Phaser.Scene {
   update(time, delta) {
     // << DO UPDATE LOGIC HERE >>
     this.player.update(this.cursors, this.jumpSound); // Add a parameter for the jumpSound
+    this.dice.update(this.cursors)
 
 
   }
