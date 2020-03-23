@@ -9,8 +9,6 @@ export default class BoardFg extends Phaser.Scene {
   constructor() {
     super('BoardFg');
 
-
-    // this.hit = this.hit.bind(this);
   }
 
   preload() {
@@ -39,27 +37,7 @@ export default class BoardFg extends Phaser.Scene {
   }
 
   createAnimations() {
-    this.anims.create({
-      key: 'run',
-      frames: this.anims.generateFrameNumbers('josh', { start: 17, end: 20 }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: 'jump',
-      frames: [{ key: 'josh', frame: 17 }],
-      frameRate: 20,
-    });
-    this.anims.create({
-      key: 'idleUnarmed',
-      frames: [{ key: 'josh', frame: 11 }],
-      frameRate: 10,
-    });
-    this.anims.create({
-      key: 'idleArmed',
-      frames: [{ key: 'josh', frame: 6 }],
-      frameRate: 10,
-    });
+
     this.anims.create({
       key: 'roll',
       frames: this.anims.generateFrameNumbers('dice', { start: 0, end: 5 }),
@@ -90,7 +68,7 @@ export default class BoardFg extends Phaser.Scene {
 
 
     // Create the animations during the FgScene's create phase
-    this.createAnimations();
+    // this.createAnimations();
 
 
     // this.groundGroup = this.physics.add.staticGroup({ classType: Ground });
@@ -125,7 +103,7 @@ export default class BoardFg extends Phaser.Scene {
     //testing scene change
 
     this.input.on('pointerup', function (pointer) { //on click the scene will change
-      // this.scene.pause('BoardScene')
+      this.scene.pause('BoardScene')
       this.scene.start('minigameTPScene');
     }, this);
 

@@ -57,7 +57,7 @@ export default class minigameTPScene extends Phaser.Scene {
 
     //  Here we create the ground.
     //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-    this.platforms.create(400, 568, 'platform').setScale(2).refreshBody();
+    this.platforms.create(600, 1000, 'platform').setScale(3).refreshBody();
 
     //  Now let's create some ledges
     // this.platforms.create(600, 400, 'platform');
@@ -114,12 +114,12 @@ export default class minigameTPScene extends Phaser.Scene {
   update () {
     if (this.gameOver) {
       // return;
-      // this.scene.pause('MinigameTPScene');
+      this.scene.stop('MinigameTPScene');
 
       // this.scene.run('BoardScene');
       // this.scene.start('BoardScene');
       this.scene.switch('BoardScene');
-      this.gameOver = false;
+      // this.gameOver = false;
   }
 
     if (this.cursors.left.isDown) {
