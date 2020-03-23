@@ -5,7 +5,7 @@ export default class minigameTPScene extends Phaser.Scene {
     this.gameOver = false;
     this.score = 0;
 
-    this.collectStar = this.collectStar.bind(this);
+    this.collectTP = this.collectTP.bind(this);
     this.hitBomb = this.hitBomb.bind(this);
   }
 
@@ -13,7 +13,7 @@ export default class minigameTPScene extends Phaser.Scene {
     this.load.path = '/public/assets/minigameTP/'
     this.load.image('sky', 'sky.png');
     this.load.image('platform', 'platform.png');
-    this.load.image('star', 'tp.png');
+    this.load.image('tp', 'tp.png');
     this.load.image('bomb', 'bomb.png');
     this.load.spritesheet('dude', 'dude.png', { frameWidth: 32, frameHeight: 48 });
   }
@@ -75,14 +75,14 @@ export default class minigameTPScene extends Phaser.Scene {
     //  Input Events
     this.cursors = this.input.keyboard.createCursorKeys();
 
-    //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
-    this.stars = this.physics.add.group({
-        key: 'star',
+    //  Some toiletpaper to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
+    this.toiletpaper = this.physics.add.group({
+        key: 'tp',
         repeat: 11,
         setXY: { x: 12, y: 0, stepX: 70 }
     });
 
-    this.stars.children.iterate(function (child) {
+    this.toiletpaper.children.iterate(function (child) {
 
         //  Give each star a slightly different bounce
         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
@@ -99,13 +99,13 @@ export default class minigameTPScene extends Phaser.Scene {
 
 
     // Create collisions for all entities
-    //  Collide the player and the stars with the platforms
+    //  Collide the player and the toiletpaper with the platforms
     this.physics.add.collider(this.player, this.platforms);
-    this.physics.add.collider(this.stars, this.platforms);
+    this.physics.add.collider(this.toiletpaper, this.platforms);
     this.physics.add.collider(this.bombs, this.platforms);
 
-    //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
-    this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
+    //  Checks to see if the player overlaps with any of the toiletpaper, if he does call the collectTP function
+    this.physics.add.overlap(this.player, this.toiletpaper, this.collectTP, null, this);
     this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
 
 
@@ -140,17 +140,17 @@ export default class minigameTPScene extends Phaser.Scene {
     }
   }
 
-  collectStar(player, star) {
-    star.disableBody(true, true);
+  collectTP(player, toiletpaper) {
+    toiletpaper.disableBody(true, true);
 
     //  Add and update the score
     this.score += 10;
     this.scoreText.setText('Score: ' + this.score);
 
-    if (this.stars.countActive(true) === 0)
+    if (this.toiletpaper.countActive(true) === 0)
     {
-        //  A new batch of stars to collect
-        this.stars.children.iterate(function (child) {
+        //  A new batch of toiletpaper to collect
+        this.toiletpaper.children.iterate(function (child) {
 
             child.enableBody(true, child.x, 0, true, true);
 
