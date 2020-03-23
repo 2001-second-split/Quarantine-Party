@@ -1,15 +1,10 @@
 import Player from '../entity/Player'
-import Ground from '../entity/Ground'
-import Enemy from '../entity/Enemy';
-import Gun from '../entity/Gun'
-import Laser from '../entity/Laser'
+
 
 export default class BoardFg extends Phaser.Scene {
   constructor() {
     super('BoardFg');
 
-
-    // this.hit = this.hit.bind(this);
   }
 
   preload() {
@@ -37,29 +32,6 @@ export default class BoardFg extends Phaser.Scene {
     this.groundGroup.create(x, y, 'ground');
   }
 
-  createAnimations() {
-    this.anims.create({
-      key: 'run',
-      frames: this.anims.generateFrameNumbers('josh', { start: 17, end: 20 }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: 'jump',
-      frames: [{ key: 'josh', frame: 17 }],
-      frameRate: 20,
-    });
-    this.anims.create({
-      key: 'idleUnarmed',
-      frames: [{ key: 'josh', frame: 11 }],
-      frameRate: 10,
-    });
-    this.anims.create({
-      key: 'idleArmed',
-      frames: [{ key: 'josh', frame: 6 }],
-      frameRate: 10,
-    });
-  }
 
   create() {
     // Create game entities
@@ -73,8 +45,8 @@ export default class BoardFg extends Phaser.Scene {
 
 
 
+
     // Create the animations during the FgScene's create phase
-    this.createAnimations();
 
 
     // this.groundGroup = this.physics.add.staticGroup({ classType: Ground });
@@ -93,6 +65,7 @@ export default class BoardFg extends Phaser.Scene {
     // << CREATE COLLISIONS HERE >>
     this.physics.add.collider(this.player, this.groundGroup)
 
+
     // this.physics.add.collider(this.enemy, this.groundGroup)
     // this.physics.add.collider(this.player, this.enemy)
 
@@ -107,7 +80,8 @@ export default class BoardFg extends Phaser.Scene {
     //testing scene change
 
     this.input.on('pointerup', function (pointer) { //on click the scene will change
-      // this.scene.pause('BoardScene')
+      this.scene.pause('BoardScene')
+      this.scene.pause('BoardDice')
       this.scene.start('minigameTPScene');
     }, this);
 
@@ -119,7 +93,6 @@ export default class BoardFg extends Phaser.Scene {
   update(time, delta) {
     // << DO UPDATE LOGIC HERE >>
     this.player.update(this.cursors, this.jumpSound); // Add a parameter for the jumpSound
-
 
   }
 
