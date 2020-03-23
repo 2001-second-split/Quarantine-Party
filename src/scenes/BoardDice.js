@@ -5,6 +5,7 @@ export default class BoardDice extends Phaser.Scene {
     super('BoardDice');
 
     this.numRolls = 0;
+    // this.rollDice = this.rollDice.bind(this)
 
   }
 
@@ -19,6 +20,11 @@ export default class BoardDice extends Phaser.Scene {
 
   }
 
+  // rollDice() {
+
+  //   console.log(this.numRolls)
+  //   this.numRolls++;
+  // }
 
   diceRollAnimations() {
 
@@ -39,8 +45,7 @@ export default class BoardDice extends Phaser.Scene {
       frameRate: 10,
     });
 
-    this.numRolls += 1;
-    console.log(this.numRolls)
+
   }
 
   create() {

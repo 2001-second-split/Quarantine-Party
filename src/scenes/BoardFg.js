@@ -72,6 +72,7 @@ export default class BoardFg extends Phaser.Scene {
 
     this.input.on('pointerup', function (pointer) { //on click the scene will change
       this.scene.pause('BoardScene')
+      this.scene.pause('BoardDice')
       this.scene.start('minigameTPScene');
     }, this);
 
