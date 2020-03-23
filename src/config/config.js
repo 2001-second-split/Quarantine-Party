@@ -5,7 +5,6 @@ import MinigameScene from '../scenes/MinigameTP';
 const config = {
   key: 'Game',
   type: Phaser.AUTO,  // rendering engine (AUTO, CANVAS, WEBGL)
-  //parent: 'parent',   //not sure if necessary but adding just in case
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
