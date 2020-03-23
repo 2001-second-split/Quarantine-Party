@@ -1,5 +1,4 @@
 import 'phaser'
-
 export default class WaitScene extends Phaser.Scene {
   constructor() {
     super('WaitScene');
