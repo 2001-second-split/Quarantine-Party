@@ -26,6 +26,7 @@ import WaitBg from './scenes/WaitBg'
 import BoardScene from './scenes/BoardScene'
 import BoardFg from './scenes/BoardFg'
 import BoardBg from './scenes/BoardBg'
+import BoardDice from './scenes/BoardDice'
 
 import config from './config/config'
 
@@ -43,6 +44,7 @@ class Game extends Phaser.Game {
     this.scene.add('BoardBg', BoardBg)
     this.scene.add('BoardFg', BoardFg)
     this.scene.add('BoardScene', BoardScene)
+    this.scene.add('BoardDice', BoardDice)
 
     this.scene.add('minigameTPScene', minigameTPScene)
 
