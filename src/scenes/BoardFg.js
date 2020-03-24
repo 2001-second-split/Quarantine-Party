@@ -10,7 +10,7 @@ export default class BoardFg extends Phaser.Scene {
   preload() {
     // Preload Sprites
     // << LOAD SPRITES HERE >>
-    this.load.spritesheet('josh', 'assets/spriteSheets/josh.png', {
+    this.load.spritesheet('ayse', 'assets/spriteSheets/ayse.png', {
       frameWidth: 340,
       frameHeight: 460,
     });
@@ -33,7 +33,7 @@ export default class BoardFg extends Phaser.Scene {
     // << CREATE GAME ENTITIES HERE >>
 
     // Josh. The player. Our sprite is a little large, so we'll scale it down
-    this.player = new Player(this, 50, 400, 'josh').setScale(0.25);
+    this.player = new Player(this, 50, 400, 'ayse').setScale(0.2);
     this.player.setCollideWorldBounds(true);
 
 

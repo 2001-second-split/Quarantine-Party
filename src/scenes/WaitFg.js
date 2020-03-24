@@ -12,9 +12,9 @@ export default class WaitFg extends Phaser.Scene {
   preload() {
 
     // << LOAD SPRITES HERE >>
-    this.load.spritesheet('josh', 'assets/spriteSheets/josh.png', {
-      frameWidth: 340,
-      frameHeight: 460,
+    this.load.spritesheet('ayse', 'assets/spriteSheets/ayse.png', {
+      frameWidth: 2000,
+      frameHeight: 2000,
     });
 
     this.load.image('steph', 'assets/sprites/steph.png');
@@ -28,13 +28,13 @@ export default class WaitFg extends Phaser.Scene {
   createAnimations() {
     this.anims.create({
       key: 'run',
-      frames: this.anims.generateFrameNumbers('josh', { start: 17, end: 20 }),
+      frames: this.anims.generateFrameNumbers('ayse', { start: 17, end: 20 }),
       frameRate: 10,
       repeat: -1,
     });
     this.anims.create({
       key: 'jump',
-      frames: [{ key: 'josh', frame: 17 }],
+      frames: [{ key: 'ayse', frame: 17 }],
       frameRate: 20,
     });
     // this.anims.create({
@@ -53,7 +53,7 @@ export default class WaitFg extends Phaser.Scene {
     // Create game entities
     // << CREATE GAME ENTITIES HERE >>
 
-    this.player = new Player(this, 50, 400, 'josh').setScale(0.25);
+    this.player = new Player(this, 50, 50, 'ayse').setScale(0.1);
     this.enemy = new Enemy(this, 600, 400, 'steph').setScale(2);
 
     this.player.setBounce(0.2);
