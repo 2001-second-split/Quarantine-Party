@@ -15,10 +15,10 @@ export default class BoardFg extends Phaser.Scene {
       frameHeight: 460,
     });
 
-    this.load.spritesheet('ayse', 'assets/spriteSheets/ayse-sprite.png', {
-      frameWidth: 2000,
-      frameHeight: 2000
-    })
+    // this.load.spritesheet('ayse', 'assets/spriteSheets/ayse-sprite.png', {
+    //   frameWidth: 2000,
+    //   frameHeight: 2000
+    // })
 
     this.load.image('steph', 'assets/sprites/steph.png');
     // this.load.image('ground', 'assets/sprites/ground.png');
@@ -41,7 +41,7 @@ export default class BoardFg extends Phaser.Scene {
     this.player = new Player(this, 50, 400, 'josh').setScale(0.25);
     this.player.setCollideWorldBounds(true);
     // Ayse. The player. Scaling it down
-    const ayseSprite = this.add.sprite(50,50,"ayse").setScale(.1)
+    // const ayseSprite = this.add.sprite(50,50,"ayse").setScale(.1)
 
 
 

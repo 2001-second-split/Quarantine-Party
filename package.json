@@ -9,7 +9,7 @@
     "server": "nodemon src/server.js -e html,js,scss --ignore public --ignore client"
   },
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.15.2",
     "nodemon": "^2.0.2",
     "phaser": "^3.22.0",
     "socket.io": "^2.3.0",
