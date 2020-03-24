@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "npm run client & npm run start-server",
+    "start": "npm run client & npm run server",
     "client": "webpack-dev-server",
     "server": "nodemon src/server.js -e html,js,scss --ignore public --ignore client"
   },
