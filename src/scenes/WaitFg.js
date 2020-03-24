@@ -37,11 +37,11 @@ export default class WaitFg extends Phaser.Scene {
       frames: [{ key: 'josh', frame: 17 }],
       frameRate: 20,
     });
-    // this.anims.create({
-    //   key: 'idleUnarmed',
-    //   frames: [{ key: 'josh', frame: 11 }],
-    //   frameRate: 10,
-    // });
+    this.anims.create({
+      key: 'idleUnarmed',
+      frames: [{ key: 'josh', frame: 11 }],
+      frameRate: 10,
+    });
     // this.anims.create({
     //   key: 'idleArmed',
     //   frames: [{ key: 'josh', frame: 6 }],
@@ -63,7 +63,7 @@ export default class WaitFg extends Phaser.Scene {
     // Create the animations during the FgScene's create phase
     this.createAnimations();
 
-    this.cursors = this.input.keyboard.createCursorKeys()
+    this.cursors = this.input.keyboard.createCursorKeys();
 
     //create ground
     this.ground = this.physics.add.staticGroup();
