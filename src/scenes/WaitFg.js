@@ -16,7 +16,10 @@ export default class WaitFg extends Phaser.Scene {
       frameWidth: 340,
       frameHeight: 460,
     });
-
+    // LOAD AYSE SPRITE
+    this.load.spritesheet('stephanie', 'assets/spriteSheets/step-sheet.png', {
+      frameWidth: 300,
+      frameHeight: 300    });
     this.load.image('steph', 'assets/sprites/steph.png');
     this.load.image('platform', 'assets/sprites/platform.png');
 
@@ -55,7 +58,7 @@ export default class WaitFg extends Phaser.Scene {
 
     this.player = new Player(this, 50, 400, 'josh').setScale(0.25);
     this.enemy = new Enemy(this, 600, 400, 'steph').setScale(2);
-
+    const stepSprite = this.add.sprite(200,510,"stephanie").setScale(0.5)
     this.player.setBounce(0.2);
     this.player.setCollideWorldBounds(true);
     this.enemy.setCollideWorldBounds(true);

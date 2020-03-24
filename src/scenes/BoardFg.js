@@ -15,6 +15,11 @@ export default class BoardFg extends Phaser.Scene {
       frameHeight: 460,
     });
 
+    // this.load.spritesheet('ayse', 'assets/spriteSheets/ayse-sprite.png', {
+    //   frameWidth: 2000,
+    //   frameHeight: 2000
+    // })
+
     this.load.image('steph', 'assets/sprites/steph.png');
     // this.load.image('ground', 'assets/sprites/ground.png');
 
@@ -35,6 +40,10 @@ export default class BoardFg extends Phaser.Scene {
     // Josh. The player. Our sprite is a little large, so we'll scale it down
     this.player = new Player(this, 50, 400, 'josh').setScale(0.25);
     this.player.setCollideWorldBounds(true);
+    // Ayse. The player. Scaling it down
+    // const ayseSprite = this.add.sprite(50,50,"ayse").setScale(.1)
+
+
 
 
     // Create the animations during the FgScene's create phase
