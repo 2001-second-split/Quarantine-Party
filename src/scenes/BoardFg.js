@@ -54,7 +54,7 @@ export default class BoardFg extends Phaser.Scene {
     // this.createGround(600, 540);
 
 
-    this.cursors = this.input.keyboard.createCursorKeys()
+    // this.cursors = this.input.keyboard.createCursorKeys()
 
     // Create sounds
     // << CREATE SOUNDS HERE >>
@@ -92,7 +92,7 @@ export default class BoardFg extends Phaser.Scene {
   // delta: time elapsed (ms) since last update() call. 16.666 ms @ 60fps
   update(time, delta) {
     // << DO UPDATE LOGIC HERE >>
-    this.player.update(this.cursors, this.jumpSound); // Add a parameter for the jumpSound
+    // this.player.update(this.cursors, this.jumpSound); // Add a parameter for the jumpSound
 
   }
 
