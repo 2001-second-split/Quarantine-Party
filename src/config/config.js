@@ -3,9 +3,12 @@
 import MinigameScene from '../scenes/MinigameTP';
 
 const config = {
-  key: 'default',
+  key: 'Game',
   type: Phaser.AUTO,  // rendering engine (AUTO, CANVAS, WEBGL)
-  parent: 'parent',   //not sure if necessary but adding just in case
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
   width: window.innerWidth,   // Game width in pixels
   height: window.innerHeight,  // Game height in pixels
 
@@ -24,6 +27,13 @@ const config = {
 
 }
 
+// export const waitConfig = {
+//   key: "WaitScene",
+//   parent: 'game',
+//   type: Phaser.AUTO,
+//   width: window.innerWidth,
+//   height: window.innerHeight
+// }
 // export const fbaConfig = {
 //   type: Phaser.AUTO,  // Specify the underlying browser rendering engine (AUTO, CANVAS, WEBGL)
 //                       // AUTO will attempt to use WEBGL, but if not available it'll default to CANVAS

@@ -12,7 +12,7 @@ export default class WaitScene extends Phaser.Scene {
     this.scene.launch('WaitBg');
     this.scene.launch('WaitFg');
 
-    console.log("in create")
+    console.log("in waitscen create")
     var self = this;
     this.socket = io('http://localhost:3000');
     this.otherPlayers = this.physics.add.group();

@@ -10,12 +10,13 @@
   },
   "dependencies": {
     "express": "^4.17.1",
+    "nodemon": "^2.0.2",
     "phaser": "^3.22.0",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "raw-loader": "^0.5.1",
-    "webpack": "^3.4.1",
-    "webpack-dev-server": "^2.11.0"
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
   }
 }

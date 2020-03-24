@@ -1,5 +1,5 @@
 # Quarantine Party
-
+A Mario-Party style multiplayer game.
 Created by: Ayse Erduran, Patty Arunyavikul, Stephanie Chiang, Tiffany Ma
 
 # Wireframe
