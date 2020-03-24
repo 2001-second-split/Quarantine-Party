@@ -70,7 +70,6 @@ export default class WaitScene extends Phaser.Scene {
       }, null, self);
     });
 
-    this.cursors = this.input.keyboard.createCursorKeys();
   }
 
   addPlayer(self, playerInfo) {
