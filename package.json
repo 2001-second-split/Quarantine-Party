@@ -4,10 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start-dev": "NODE_ENV='development' npm run build-client-watch & NODE_ENV='development' npm run start-server",
-    "build-client-watch": "webpack -w",
-    "start-server": "nodemon server -e html,js,scss --ignore public --ignore client",
-    "start": "node server.js"
+    "start": "npm run client & npm run start-server",
+    "client": "webpack-dev-server",
+    "server": "nodemon src/server.js -e html,js,scss --ignore public --ignore client"
   },
   "dependencies": {
     "express": "^4.17.1",
