@@ -2,7 +2,40 @@
 //minigame imports
 import MinigameScene from '../scenes/MinigameTP';
 
+
 const config = {
+  type: Phaser.AUTO,
+  width: window.innerWidth,
+  height: window.innerHeight,
+  parent: 'parent',
+  //resize and recenter height/width when browser size is changed
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
+  //create dom element on top of canvas to prompt the user to join a game
+  dom: {
+      createContainer: true
+  },
+  // scene: [{
+  //     preload: preload,
+  //     create: create
+  // }].concat(scenes),
+  // scene: WaitScene,
+  render: {
+    pixelArt: true,
+  },
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: { y: 300 },  // Game objects will be pulled down along the y-axis
+      debug: false,
+    }
+  }
+};
+
+
+const oldConfig = {
   key: 'Game',
   type: Phaser.AUTO,  // rendering engine (AUTO, CANVAS, WEBGL)
   scale: {
