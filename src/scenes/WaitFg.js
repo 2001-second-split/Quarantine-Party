@@ -16,8 +16,8 @@ export default class WaitFg extends Phaser.Scene {
       frameWidth: 340,
       frameHeight: 460,
     });
-    // LOAD AYSE SPRITE
-    this.load.spritesheet('stephanie', 'assets/spriteSheets/step-sheet.png', {
+    // LOAD STEPHANIE SPRITE
+    this.load.spritesheet('stephanie', 'assets/spriteSheets/stephanie-sheet.png', {
       frameWidth: 300,
       frameHeight: 300    });
     this.load.image('steph', 'assets/sprites/steph.png');
