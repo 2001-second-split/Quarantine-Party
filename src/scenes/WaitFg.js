@@ -1,6 +1,7 @@
 import Player from '../entity/Player'
 import Ground from '../entity/Ground'
 import Enemy from '../entity/Enemy';
+import socket from '../index'
 
 
 export default class WaitFg extends Phaser.Scene {
@@ -10,7 +11,6 @@ export default class WaitFg extends Phaser.Scene {
   }
 
   preload() {
-
     // << LOAD SPRITES HERE >>
     this.load.spritesheet('josh', 'assets/spriteSheets/josh.png', {
       frameWidth: 340,
@@ -52,13 +52,13 @@ export default class WaitFg extends Phaser.Scene {
   create() {
     // Create game entities
     // << CREATE GAME ENTITIES HERE >>
+    //this.player = new Player(this, 50, 400, 'josh').setScale(0.25);
+    this.otherPlayers = this.physics.add.group();
+    //this.enemy = new Enemy(this, 600, 400, 'steph').setScale(2);
 
-    this.player = new Player(this, 50, 400, 'josh').setScale(0.25);
-    this.enemy = new Enemy(this, 600, 400, 'steph').setScale(2);
-
-    this.player.setBounce(0.2);
-    this.player.setCollideWorldBounds(true);
-    this.enemy.setCollideWorldBounds(true);
+    // this.player.setBounce(0.2);
+    // this.player.setCollideWorldBounds(true);
+    //this.enemy.setCollideWorldBounds(true);
 
     // Create the animations during the FgScene's create phase
     this.createAnimations();
@@ -68,8 +68,6 @@ export default class WaitFg extends Phaser.Scene {
     //create ground
     this.ground = this.physics.add.staticGroup();
     this.ground.create(400, 600, 'platform').setScale(2).refreshBody();
-
-
 
     // Create sounds
     this.jumpSound = this.sound.add('jump');
@@ -84,8 +82,7 @@ export default class WaitFg extends Phaser.Scene {
 
   update(time, delta) {
     // << DO UPDATE LOGIC HERE >>
-    this.player.update(this.cursors, this.jumpSound); // Add a parameter for the jumpSound
+    //this.player.update(this.cursors, this.jumpSound); // Add a parameter for the jumpSound
   }
-
 
 }

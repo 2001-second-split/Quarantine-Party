@@ -1,25 +1,17 @@
 'use strict';
+const isDev = process.env.NODE_ENV === 'development'
 
 const webpack = require('webpack');
 const path = require('path');
 
 module.exports = {
-
-    mode: 'development',
-
+    mode: isDev ? 'development': 'production',
     entry: './src/index.js',
-
-    // devServer: {
-    //   contentBase: './public',
-    //   inline: true,
-    //   hot: true
-    // },
     output: {
         path: path.resolve(__dirname, 'public'),
         publicPath: '/public/',
         filename: 'bundle.js'
     },
-
     module: {
         rules: [
           {
@@ -35,5 +27,4 @@ module.exports = {
             'WEBGL_RENDERER': JSON.stringify(true)
         })
     ]
-
 };

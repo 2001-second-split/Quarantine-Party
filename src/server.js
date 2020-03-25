@@ -2,27 +2,29 @@ const express = require('express');
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io').listen(server);
+const path = require('path');
 
 let players = {};
 
+app.use(express.static(path.join(__dirname + '/public')));
 
-app.use(express.static(__dirname + '/public'));
-// app.use(express.static(__dirname + '/src'));
+// sends index.html
+app.get('/', (req, res) => {
+  console.log('INSIDE GET', path.join(__dirname, '../public/index.html'))
+  res.sendFile(path.join(__dirname, '../public/index.html'))
+})
 
-
-io.on('connection', function (socket) {
-  console.log('server: a user connected');
+io.on('connection', (socket)  => {
+  console.log(`${socket.id} connected`);
 
   // create a new player and add it to our players object
   players[socket.id] = {
-    playerId: socket.id,
+    rotation: 0,
+    x: Math.floor(Math.random() * 700) + 50,
+    y: Math.floor(Math.random() * 500) + 50,
+    playerId: socket.id
   };
 
-  // send the players object to the new player
-  socket.emit('currentPlayers', players);
-
-  // update all other players of the new player
-  socket.broadcast.emit('newPlayer', players[socket.id]);
 
   // when a player moves, update the player data
   socket.on('playerMovement', function (movementData) {
@@ -40,9 +42,24 @@ io.on('connection', function (socket) {
     console.log('test key pressed');
   })
 
+  socket.on('subscribe', (room) => {
+    console.log(`A client joined room ${room}`)
+    socket.join(room)
+    // update all other players of the new player
+    players[socket.id].roomId = room
+
+    // send the players object in subscribed room to the new player
+    socket.emit('currentPlayers', players, room);
+    // update all other players of the new player
+    io.to(room).emit('newPlayer', players[socket.id])
+  })
+
+  // update all other players of the new player
+  // socket.broadcast.emit('newPlayer', players[socket.id]);
+
   // disconnecting
-  socket.on('disconnect', function () {
-    console.log('server - user disconnected');
+  socket.on('disconnect', () => {
+    console.log(`${socket.id} disconnected`);
 
     // remove this player from our players object
     delete players[socket.id];
@@ -51,6 +68,6 @@ io.on('connection', function (socket) {
   });
 });
 
-server.listen(3000, function () {
+server.listen(3000, () => {
   console.log(`SERVER Listening on ${server.address().port}`);
 });
