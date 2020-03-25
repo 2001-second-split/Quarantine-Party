@@ -10,7 +10,7 @@ export default class StartingScene extends Phaser.Scene {
   preload () {
     //load html element that will prompt user for input
     this.load.html('roomForm', 'assets/text/roomForm.html');
-    this.load.image('pic', 'assets/backgrounds/pic.png');
+    this.load.image('pic', 'assets/backgrounds/startscenepic.png');
   }
 
   create () {
