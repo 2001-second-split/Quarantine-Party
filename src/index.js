@@ -19,6 +19,8 @@ import 'phaser';
 import minigameTPScene from './scenes/MinigameTP';
 
 //main game scene
+import StartingScene from './scenes/StartingScene';
+
 import WaitScene from './scenes/WaitScene';
 import WaitFg from './scenes/WaitFg'
 import WaitBg from './scenes/WaitBg'
@@ -27,6 +29,9 @@ import BoardScene from './scenes/BoardScene'
 import BoardFg from './scenes/BoardFg'
 import BoardBg from './scenes/BoardBg'
 import BoardDice from './scenes/BoardDice'
+
+import io from 'socket.io-client';
+export const socket = io("http://localhost:3000")
 
 import config from './config/config'
 
@@ -38,6 +43,8 @@ class Game extends Phaser.Game {
 
     // Add all the scenes
     // var newScene = game.scene.add(key, sceneConfig, autoStart, data);
+    this.scene.add('StartingScene', StartingScene)
+
     this.scene.add('WaitBg', WaitBg)
     this.scene.add('WaitFg', WaitFg)
     this.scene.add('WaitScene', WaitScene)
@@ -50,7 +57,7 @@ class Game extends Phaser.Game {
     this.scene.add('minigameTPScene', minigameTPScene)
 
     // Start the game with the mainscene
-    this.scene.start('WaitScene')
+    this.scene.start('StartingScene')
   }
 
   create() {
