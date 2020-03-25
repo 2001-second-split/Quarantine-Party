@@ -15,7 +15,10 @@ export default class WaitFg extends Phaser.Scene {
       frameWidth: 340,
       frameHeight: 460,
     });
-
+    // LOAD AYSE SPRITE
+    this.load.spritesheet('stephanie', 'assets/spriteSheets/step-sheet.png', {
+      frameWidth: 300,
+      frameHeight: 300    });
     this.load.image('steph', 'assets/sprites/steph.png');
     this.load.image('platform', 'assets/sprites/platform.png');
 
@@ -58,6 +61,7 @@ export default class WaitFg extends Phaser.Scene {
     // this.player.setBounce(0.2);
     // this.player.setCollideWorldBounds(true);
     //this.enemy.setCollideWorldBounds(true);
+
 
     // Create the animations during the FgScene's create phase
     this.socket = socket;
