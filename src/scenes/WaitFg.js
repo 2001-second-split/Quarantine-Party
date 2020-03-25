@@ -89,7 +89,7 @@ export default class WaitFg extends Phaser.Scene {
     //  << SOCKET THINGS!!! >>
 
     this.socket = socket;
-    console.log('SCOKET', this.socket)
+    console.log('SOCKET', this.socket)
 
     //get currentPlayers in room and add self and other players
     this.socket.on('currentPlayers', (players, room) => {
@@ -98,7 +98,6 @@ export default class WaitFg extends Phaser.Scene {
       const playersInRoom = Object.keys(players).filter(id => {
         players[id].roomId === room
       })
-
       Object.keys(playersInRoom).forEach(id => {
         if(players[id].playerId === this.socket.id){
           this.addPlayer(players[id])
@@ -124,7 +123,7 @@ export default class WaitFg extends Phaser.Scene {
   // SOCKET RELATED FUNCTIONS
 
   addPlayer(playerInfo){
-    this.player = new Player(this, playerInfo.x, playerInfo.y, 'steph').setScale(0.25);
+    this.player = new Player(this, playerInfo.x, playerInfo.y, 'josh').setScale(0.25);
     this.player.setCollideWorldBounds(true);
   }
 
