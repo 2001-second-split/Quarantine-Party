@@ -7,6 +7,8 @@ import {socket} from '../index'
 export default class WaitFg extends Phaser.Scene {
   constructor() {
     super('WaitFg');
+    this.addPlayer = this.addPlayer.bind(this)
+    this.addOtherPlayers = this.addOtherPlayers.bind(this)
   }
 
   preload() {
@@ -15,11 +17,14 @@ export default class WaitFg extends Phaser.Scene {
       frameWidth: 340,
       frameHeight: 460,
     });
-    // LOAD AYSE SPRITE
-    this.load.spritesheet('stephanie', 'assets/spriteSheets/step-sheet.png', {
+    this.load.spritesheet('stephanie', 'assets/spriteSheets/Sprite-stephanie-Sheet.png', {
       frameWidth: 300,
       frameHeight: 300    });
-    this.load.image('steph', 'assets/sprites/steph.png');
+    this.load.spritesheet('ayse', 'assets/spriteSheets/Sprite-ayse-Sheet.png', {
+      frameWidth: 300,
+      frameHeight: 300
+    })
+
     this.load.image('platform', 'assets/sprites/platform.png');
 
     // << LOAD SOUNDS HERE >>
@@ -27,48 +32,36 @@ export default class WaitFg extends Phaser.Scene {
 
   }
 
-  createAnimations() {
-    this.anims.create({
-      key: 'run',
-      frames: this.anims.generateFrameNumbers('josh', { start: 17, end: 20 }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: 'jump',
-      frames: [{ key: 'josh', frame: 17 }],
-      frameRate: 20,
-    });
-    this.anims.create({
-      key: 'idleUnarmed',
-      frames: [{ key: 'josh', frame: 11 }],
-      frameRate: 10,
-    });
-    // this.anims.create({
-    //   key: 'idleArmed',
-    //   frames: [{ key: 'josh', frame: 6 }],
-    //   frameRate: 10,
-    // });
-  }
+  // createAnimations() {
+  //   this.anims.create({
+  //     key: 'run',
+  //     frames: this.anims.generateFrameNumbers('josh', { start: 17, end: 20 }),
+  //     frameRate: 10,
+  //     repeat: -1,
+  //   });
+  //   this.anims.create({
+  //     key: 'jump',
+  //     frames: [{ key: 'josh', frame: 17 }],
+  //     frameRate: 20,
+  //   });
+  //   this.anims.create({
+  //     key: 'idleUnarmed',
+  //     frames: [{ key: 'josh', frame: 11 }],
+  //     frameRate: 10,
+  //   });
+  //   // this.anims.create({
+  //   //   key: 'idleArmed',
+  //   //   frames: [{ key: 'josh', frame: 6 }],
+  //   //   frameRate: 10,
+  //   // });
+  // }
 
   create() {
-    // Create game entities
-    // << CREATE GAME ENTITIES HERE >>
-    //this.player = new Player(this, 50, 400, 'josh').setScale(0.25);
-    this.otherPlayers = this.physics.add.group();
-    //this.enemy = new Enemy(this, 600, 400, 'steph').setScale(2);
-
-    // this.player.setBounce(0.2);
-    // this.player.setCollideWorldBounds(true);
-    //this.enemy.setCollideWorldBounds(true);
-
-
-    // Create the animations during the FgScene's create phase
     this.socket = socket;
-    console.log('SCOKET', this.socket)
+    this.otherPlayers = this.add.group()
     //get currentPlayers in room and add self and other players
     this.socket.on('currentPlayers', (players, room) => {
-      console.log('CURRENT PLAYER')
+      console.log('CURRENT PLAYER FE')
       const playersInRoom = Object.keys(players).filter(id => {
         players[id].roomId === room
       })
@@ -84,30 +77,14 @@ export default class WaitFg extends Phaser.Scene {
     this.socket.on('newPlayer', playerInfo => {
       console.log('NEW PLAYER')
       this.addOtherPlayers(playerInfo)
+      console.log('OTHER PLAYERS', this.otherPlayers)
     })
-
-    this.createAnimations();
-
-    this.cursors = this.input.keyboard.createCursorKeys();
-
-    //create ground
-    this.ground = this.physics.add.staticGroup();
-    this.ground.create(400, 600, 'platform').setScale(2).refreshBody();
-
-    // Create sounds
-    this.jumpSound = this.sound.add('jump');
-
-
-    // Create collisions for all entities
-    this.physics.add.collider(this.player, this.ground)
-    this.physics.add.collider(this.enemy, this.ground)
-    this.physics.add.collider(this.player, this.enemy)
-
   }
 
   update(time, delta) {
     // << DO UPDATE LOGIC HERE >>
     //this.player.update(this.cursors, this.jumpSound); // Add a parameter for the jumpSound
+
   }
 
   addPlayer(playerInfo){
@@ -115,9 +92,10 @@ export default class WaitFg extends Phaser.Scene {
   }
 
   addOtherPlayers(playerInfo){
-    const otherPlayer = this.add.sprite(playerInfo.x, playerInfo.y, 'otherPlayer').setOrigin(0.5, 0.5);
+    let otherPlayer = this.add.sprite(playerInfo.x, playerInfo.y, 'ayse').setScale(0.5);
     otherPlayer.playerId = playerInfo.playerId;
     this.otherPlayers.add(otherPlayer)
+    console.log('OTHER PLAYERS', this.otherPlayers)
   }
 
 }

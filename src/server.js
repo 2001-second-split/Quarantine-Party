@@ -10,7 +10,6 @@ app.use(express.static(path.join(__dirname + '/public')));
 
 // sends index.html
 app.get('/', (req, res) => {
-  console.log('INSIDE GET', path.join(__dirname, '../public/index.html'))
   res.sendFile(path.join(__dirname, '../public/index.html'))
 })
 
@@ -24,6 +23,7 @@ io.on('connection', (socket)  => {
     y: Math.floor(Math.random() * 500) + 50,
     playerId: socket.id
   };
+
 
 
   // when a player moves, update the player data
@@ -49,13 +49,14 @@ io.on('connection', (socket)  => {
     players[socket.id].roomId = room
 
     // send the players object in subscribed room to the new player
-    socket.emit('currentPlayers', players, room);
+    io.to(socket.id).emit('currentPlayers', players, room);
+    console.log('AFTER EMIT')
     // update all other players of the new player
     io.to(room).emit('newPlayer', players[socket.id])
   })
 
   // update all other players of the new player
-  // socket.broadcast.emit('newPlayer', players[socket.id]);
+  socket.broadcast.emit('newPlayer', players[socket.id]);
 
   // disconnecting
   socket.on('disconnect', () => {
