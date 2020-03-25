@@ -1,13 +1,12 @@
 import Player from '../entity/Player'
 import Ground from '../entity/Ground'
 import Enemy from '../entity/Enemy';
-import socket from '../index'
+import {socket} from '../index'
 
 
 export default class WaitFg extends Phaser.Scene {
   constructor() {
     super('WaitFg');
-
   }
 
   preload() {
@@ -61,6 +60,28 @@ export default class WaitFg extends Phaser.Scene {
     //this.enemy.setCollideWorldBounds(true);
 
     // Create the animations during the FgScene's create phase
+    this.socket = socket;
+    console.log('SCOKET', this.socket)
+    //get currentPlayers in room and add self and other players
+    this.socket.on('currentPlayers', (players, room) => {
+      console.log('CURRENT PLAYER')
+      const playersInRoom = Object.keys(players).filter(id => {
+        players[id].roomId === room
+      })
+      Object.keys(playersInRoom).forEach(id => {
+        if(players[id].playerId === this.socket.id){
+          this.addPlayer(players[id])
+        } else {
+          this.addOtherPlayers(players[id])
+        }
+      })
+    })
+    //add new players as other players
+    this.socket.on('newPlayer', playerInfo => {
+      console.log('NEW PLAYER')
+      this.addOtherPlayers(playerInfo)
+    })
+
     this.createAnimations();
 
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -83,6 +104,16 @@ export default class WaitFg extends Phaser.Scene {
   update(time, delta) {
     // << DO UPDATE LOGIC HERE >>
     //this.player.update(this.cursors, this.jumpSound); // Add a parameter for the jumpSound
+  }
+
+  addPlayer(playerInfo){
+    this.player = new Player(this, playerInfo.x, playerInfo.y, 'josh').setScale(0.25);
+  }
+
+  addOtherPlayers(playerInfo){
+    const otherPlayer = this.add.sprite(playerInfo.x, playerInfo.y, 'otherPlayer').setOrigin(0.5, 0.5);
+    otherPlayer.playerId = playerInfo.playerId;
+    this.otherPlayers.add(otherPlayer)
   }
 
 }
