@@ -11,7 +11,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.physics.world.enable(this);
 
     // Is the player facing left?
-    this.facingLeft = false;
+    // this.facingLeft = false;
   }
 
   updateMovement(cursors) {

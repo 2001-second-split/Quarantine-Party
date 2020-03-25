@@ -49,7 +49,7 @@ io.on('connection', (socket)  => {
     players[socket.id].roomId = room
 
     // send the players object in subscribed room to the new player
-    socket.emit('currentPlayers', players, room);
+    io.emit('currentPlayers', players, room);
 
     // update all other players of the new player
     io.to(room).emit('newPlayer', players[socket.id])
