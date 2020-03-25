@@ -1,7 +1,7 @@
 import Player from '../entity/Player'
-import Ground from '../entity/Ground'
 import Enemy from '../entity/Enemy';
 
+import {socket} from '../index'
 
 export default class WaitFg extends Phaser.Scene {
   constructor() {
@@ -45,16 +45,16 @@ export default class WaitFg extends Phaser.Scene {
       frames: [{ key: 'josh', frame: 11 }],
       frameRate: 10,
     });
-    // this.anims.create({
-    //   key: 'idleArmed',
-    //   frames: [{ key: 'josh', frame: 6 }],
-    //   frameRate: 10,
-    // });
+    this.anims.create({
+      key: 'idleArmed',
+      frames: [{ key: 'josh', frame: 6 }],
+      frameRate: 10,
+    });
   }
 
   create() {
     // Create game entities
-    // << CREATE GAME ENTITIES HERE >>
+    // << START CREATE GAME ENTITIES HERE >>
 
     this.player = new Player(this, 50, 400, 'josh').setScale(0.25);
     this.enemy = new Enemy(this, 600, 400, 'steph').setScale(2);
@@ -72,8 +72,6 @@ export default class WaitFg extends Phaser.Scene {
     this.ground = this.physics.add.staticGroup();
     this.ground.create(400, 600, 'platform').setScale(2).refreshBody();
 
-
-
     // Create sounds
     this.jumpSound = this.sound.add('jump');
 
@@ -83,11 +81,51 @@ export default class WaitFg extends Phaser.Scene {
     this.physics.add.collider(this.enemy, this.ground)
     this.physics.add.collider(this.player, this.enemy)
 
+    // << END CREATE GAME ENTITIES HERE >>
+
+
+
+    //  << SOCKET THINGS!!! >>
+
+    this.socket = socket;
+    console.log('SCOKET', this.socket)
+    //get currentPlayers in room and add self and other players
+    this.socket.on('currentPlayers', (players, room) => {
+      console.log('CURRENT PLAYER')
+      const playersInRoom = Object.keys(players).filter(id => {
+        players[id].roomId === room
+      })
+      Object.keys(playersInRoom).forEach(id => {
+        if(players[id].playerId === this.socket.id){
+          this.addPlayer(players[id])
+        } else {
+          this.addOtherPlayers(players[id])
+        }
+      })
+    })
+    //add new players as other players
+    this.socket.on('newPlayer', playerInfo => {
+      console.log('NEW PLAYER')
+      this.addOtherPlayers(playerInfo)
+    })
+
   }
 
   update(time, delta) {
     // << DO UPDATE LOGIC HERE >>
     this.player.update(this.cursors, this.jumpSound); // Add a parameter for the jumpSound
+  }
+
+  // SOCKET RELATED FUNCTIONS
+
+  addPlayer(playerInfo){
+    this.player = new Player(this, playerInfo.x, playerInfo.y, 'josh').setScale(0.25);
+  }
+
+  addOtherPlayers(playerInfo){
+    const otherPlayer = this.add.sprite(playerInfo.x, playerInfo.y, 'otherPlayer').setOrigin(0.5, 0.5);
+    otherPlayer.playerId = playerInfo.playerId;
+    this.otherPlayers.add(otherPlayer)
   }
 
 

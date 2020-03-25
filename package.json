@@ -6,7 +6,10 @@
   "scripts": {
     "start": "npm run client & npm run server",
     "client": "webpack-dev-server",
-    "server": "nodemon src/server.js -e html,js,scss --ignore public --ignore client"
+    "server": "nodemon src/server.js -e html,js,scss --ignore public --ignore client",
+    "build": "webpack -w",
+    "deploy": "script/deploy",
+    "heroku-token": "script/encrypt-heroku-auth-token.js"
   },
   "dependencies": {
     "express": "^4.17.1",
