@@ -1,6 +1,7 @@
 import 'phaser'
 
 import io from 'socket.io-client';
+import {socket} from '../index'
 
 export default class WaitScene extends Phaser.Scene {
   constructor() {
@@ -18,8 +19,8 @@ export default class WaitScene extends Phaser.Scene {
     // CHANGING USING "THIS" INSTEAD OF "SELF" BREAKS THE CODE
     // but feel free to try and get it to work otherwise
     const self = this;
+    this.socket = socket;
 
-    this.socket = io('http://localhost:3000');
     this.otherPlayers = this.physics.add.group();
 
     // CHECK IF CLIENT CONNECTED
