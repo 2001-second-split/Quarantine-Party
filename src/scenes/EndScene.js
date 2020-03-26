@@ -47,19 +47,19 @@ export default class EndScene extends Phaser.Scene {
 
 
     // Play Again Button?
-    const playAgainButton = this.add.text(250, 250, 'Play Again?', { fontSize: '32px', fill: '#FFF' });
-    playAgainButton.setInteractive();
+    // const playAgainButton = this.add.text(250, 250, 'Play Again?', { fontSize: '32px', fill: '#FFF' });
+    // playAgainButton.setInteractive();
 
 
   }
 
   update() {
     // if Play Again is hit, restart game from beginning
-    playAgainButton.on('pointerup', () => {
-      console.log('playagain pressed')
-      this.scene.stop('EndScene')
-      this.scene.start('StartingScene');
-    })
+    // playAgainButton.on('pointerup', () => {
+    //   console.log('playagain pressed')
+    //   this.scene.stop('EndScene')
+    //   this.scene.start('StartingScene');
+    // })
   }
 
 }
