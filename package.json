@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "engines": {
+    "node": "12.13.x",
+    "npm": "6.x"
+  },
   "scripts": {
     "start": "npm run client & npm run server",
     "client": "webpack-dev-server",

@@ -52,7 +52,7 @@ export default class BoardDice extends Phaser.Scene {
     // Create game entities
     // << CREATE GAME ENTITIES HERE >>
 
-    this.dice = new Dice(this, 190, 400, 'dice')
+    this.dice = new Dice(this, 900, 100, 'dice').setScale(1.75)
     this.dice.setCollideWorldBounds(true);
 
 
@@ -60,18 +60,25 @@ export default class BoardDice extends Phaser.Scene {
     this.diceRollAnimations();
 
 
+
     // this.groundGroup = this.physics.add.staticGroup({ classType: Ground });
     // this.createGround(160, 540);
     // this.createGround(600, 540);
 
     this.cursors = this.input.keyboard.createCursorKeys()
+    this.dice.setInteractive();
 
+    this.dice.on('pointerup', function (pointer) {
+
+      console.log('down');
+
+  }, this);
     // Create sounds
     // placeholder for dice roll sound
     // this.diceSound = this.sound.add('dice');
 
     // Create collisions for all entities
-    this.physics.add.collider(this.dice, this.groundGroup)
+    // this.physics.add.collider(this.dice, this.groundGroup)
 
   }
 
@@ -81,7 +88,7 @@ export default class BoardDice extends Phaser.Scene {
   update(time, delta) {
     // << DO UPDATE LOGIC HERE >>
     // this.dice.update(this.cursors, this.diceSound); // Add a parameter for the diceSound
-    this.dice.update(this.cursors, this.numRolls)
+    this.dice.update(this.cursors)
 
   }
 
