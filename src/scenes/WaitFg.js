@@ -23,23 +23,23 @@ export default class WaitFg extends Phaser.Scene {
   createAnimations() {
     this.anims.create({
       key: "run",
-      frames: this.anims.generateFrameNumbers("ayse", { start: 17, end: 20 }),
+      frames: this.anims.generateFrameNumbers("stephanie", { start: 17, end: 20 }),
       frameRate: 10,
       repeat: -1,
     });
     this.anims.create({
       key: "jump",
-      frames: [{ key: "ayse", frame: 17 }],
+      frames: [{ key: "stephanie", frame: 17 }],
       frameRate: 20,
     });
     this.anims.create({
       key: "idleUnarmed",
-      frames: [{ key: "ayse", frame: 11 }],
+      frames: [{ key: "stephanie", frame: 11 }],
       frameRate: 10,
     });
     this.anims.create({
       key: "idleArmed",
-      frames: [{ key: "ayse", frame: 6 }],
+      frames: [{ key: "stephanie", frame: 6 }],
       frameRate: 10,
     });
   }
@@ -114,9 +114,10 @@ export default class WaitFg extends Phaser.Scene {
   // }
   // SOCKET RELATED FUNCTIONS
   addPlayer(playerInfo){
-    this.player = new Player(this, playerInfo.x, playerInfo.y, "ayse").setScale(0.25);
+    this.player = new Player(this, playerInfo.x, playerInfo.y, "stephanie").setScale(0.5);
     this.player.setCollideWorldBounds(true);
     this.physics.add(this.ground, this.player)
+
   }
   addOtherPlayers(playerInfo){
     const otherPlayer = new Player(this, playerInfo.x, playerInfo.y, "ayse")
