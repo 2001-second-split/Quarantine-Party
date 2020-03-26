@@ -1,8 +1,15 @@
 import Player from '../entity/Player'
 import Ground from '../entity/Ground'
+import Phaser from 'phaser'
+
+
 
 export default class BoardFg extends Phaser.Scene {
   constructor() {
+    const sceneConfig = {
+      key: "IsoInteractionExample",
+      mapAdd: { isoPlugin: "iso" }
+    }
     super('BoardFg');
 
   }
@@ -55,6 +62,13 @@ export default class BoardFg extends Phaser.Scene {
     this.platform.create(755, 375, 'platform').setScale(.1);
     this.platform.create(875, 300, 'platform').setScale(.1);
 
+    // Creating Movements
+
+    moveUp()
+    moveDown()
+    moveLeft()
+    moveRight()
+
     // this.groundGroup = this.physics.add.staticGroup({ classType: Ground });
     // this.createGround(160, 540);
     // this.createGround(600, 540);
@@ -88,9 +102,9 @@ export default class BoardFg extends Phaser.Scene {
 
   }
 
-  createGround(x, y) {
-    this.groundGroup.create(x, y, 'platform');
-  }
+  // createGround(x, y) {
+  //   this.groundGroup.create(x, y, 'platform');
+  // }
 
   // time: total time elapsed (ms)
   // delta: time elapsed (ms) since last update() call. 16.666 ms @ 60fps
