@@ -12,6 +12,8 @@ import BoardFg from './BoardFg'
 import BoardBg from './BoardBg'
 import BoardDice from './BoardDice'
 
+import EndScene from './EndScene'
+
 
 
 let scenes = [ WaitScene]

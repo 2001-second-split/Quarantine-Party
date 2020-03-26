@@ -20,6 +20,7 @@ export default class WaitFg extends Phaser.Scene {
     // << LOAD SOUNDS HERE >>
     this.load.audio("jump", "assets/audio/jump.wav");
   }
+
   createAnimations() {
     this.anims.create({
       key: "run",
@@ -43,6 +44,7 @@ export default class WaitFg extends Phaser.Scene {
       frameRate: 10,
     });
   }
+
   create() {
     // Create game entities
     // << START CREATE GAME ENTITIES HERE >>
@@ -52,6 +54,7 @@ export default class WaitFg extends Phaser.Scene {
     // this.player.setBounce(0.2);
     // this.player.setCollideWorldBounds(true);
     // this.enemy.setCollideWorldBounds(true);
+
     // Create the animations during the FgScene’s create phase
     this.createAnimations();
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -65,6 +68,8 @@ export default class WaitFg extends Phaser.Scene {
     // this.physics.add.collider(this.enemy, this.ground)
     // this.physics.add.collider(this.player, this.enemy)
     // << END CREATE GAME ENTITIES HERE >>
+
+
     //  << SOCKET THINGS!!! >>
     this.socket = socket;
     //AYSE EDIT
@@ -108,17 +113,20 @@ export default class WaitFg extends Phaser.Scene {
     */
     // this.socket.emit(‘subscribe’, roomId.value)
   }
+
   // update(time, delta) {
   //   // << DO UPDATE LOGIC HERE >>
   //   // this.player.update(this.cursors, this.jumpSound); // Add a parameter for the jumpSound
   // }
+
   // SOCKET RELATED FUNCTIONS
   addPlayer(playerInfo){
     this.player = new Player(this, playerInfo.x, playerInfo.y, "stephanie").setScale(0.5);
     this.player.setCollideWorldBounds(true);
-    this.physics.add(this.ground, this.player)
+    this.physics.add.collider(this.ground, this.player)
 
   }
+
   addOtherPlayers(playerInfo){
     const otherPlayer = new Player(this, playerInfo.x, playerInfo.y, "ayse")
     otherPlayer.setCollideWorldBounds(true);
