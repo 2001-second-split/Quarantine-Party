@@ -19,6 +19,8 @@ import 'phaser';
 import minigameTPScene from './scenes/MinigameTP';
 
 //main game scene
+import StartingScene from './scenes/StartingScene';
+
 import WaitScene from './scenes/WaitScene';
 import WaitFg from './scenes/WaitFg'
 import WaitBg from './scenes/WaitBg'
@@ -28,7 +30,12 @@ import BoardFg from './scenes/BoardFg'
 import BoardBg from './scenes/BoardBg'
 import BoardDice from './scenes/BoardDice'
 
+//socket related
+import io from 'socket.io-client';
+export const socket = io("http://localhost:3000") //this is what starts the socket connection
+
 import config from './config/config'
+
 
 class Game extends Phaser.Game {
   constructor() {
@@ -37,6 +44,8 @@ class Game extends Phaser.Game {
 
     // Add all the scenes
     // var newScene = game.scene.add(key, sceneConfig, autoStart, data);
+    this.scene.add('StartingScene', StartingScene)
+
     this.scene.add('WaitBg', WaitBg)
     this.scene.add('WaitFg', WaitFg)
     this.scene.add('WaitScene', WaitScene)
@@ -49,8 +58,32 @@ class Game extends Phaser.Game {
     this.scene.add('minigameTPScene', minigameTPScene)
 
     // Start the game with the mainscene
-    this.scene.start('WaitScene')
+    this.scene.start('StartingScene')
   }
+
+  create() {
+    this.cursors = this.input.keyboard.createCursorKeys();
+  }
+
+  update() {
+    if (this.cursors.left.isDown) {
+      this.player.setVelocityX(-160);
+      this.player.anims.play('left', true);
+    }
+    else if (this.cursors.right.isDown) {
+      this.player.setVelocityX(160);
+      this.player.anims.play('right', true);
+    }
+    else{
+      this.player.setVelocityX(0);
+      this.player.anims.play('turn');
+    }
+
+    if (this.cursors.up.isDown && this.player.body.touching.down) {
+      this.player.setVelocityY(-330);
+    }
+  }
+
 }
 
 
