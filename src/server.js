@@ -17,6 +17,7 @@ app.get('/', (req, res) => {
 io.on('connection', (socket)  => {
   console.log(`${socket.id} connected`);
 
+  // << CURRENTLY USED SOCKET LISTENERS >>
   // create a new player and add it to our players object
   players[socket.id] = {
     rotation: 0,
@@ -24,6 +25,45 @@ io.on('connection', (socket)  => {
     y: Math.floor(Math.random() * 500) + 50,
     playerId: socket.id
   };
+
+  //get current players when you first enter the room
+  socket.on('currentPlayers', function() {
+    console.log('requesting room information');
+    const room = players[socket.id].roomId;
+    socket.emit('currentPlayers', players, room);
+  })
+
+  socket.on('subscribe', (room) => {
+    console.log(`A client joined room ${room}`)
+    socket.join(room)
+    // update all other players of the new player
+    players[socket.id].roomId = room
+
+    // send the players object in subscribed room to the new player
+    socket.emit('currentPlayers', players, room);
+    io.emit('currentPlayers', players, room);
+
+    // update all other players of the new player
+    io.to(room).emit('newPlayer', players[socket.id])
+  })
+
+  // disconnecting
+  socket.on('disconnect', () => {
+    console.log(`${socket.id} disconnected`);
+
+    // remove this player from our players object
+    delete players[socket.id];
+    // emit a message to all players to remove this player
+    io.emit('disconnect', socket.id);
+  });
+
+
+  // << FUTURE SOCKET LISTENER/EVENTS >>
+
+  // // testing key press
+  // socket.on('testKey', function() {
+  //   console.log('test key pressed');
+  // })
 
 
   // when a player moves, update the player data
@@ -37,36 +77,10 @@ io.on('connection', (socket)  => {
     socket.broadcast.emit('playerMoved', players[socket.id]);
   });
 
-  // testing key press
-  socket.on('testKey', function() {
-    console.log('test key pressed');
-  })
-
-  socket.on('subscribe', (room) => {
-    console.log(`A client joined room ${room}`)
-    socket.join(room)
-    // update all other players of the new player
-    players[socket.id].roomId = room
-
-    // send the players object in subscribed room to the new player
-    socket.emit('currentPlayers', players, room);
-
-    // update all other players of the new player
-    io.to(room).emit('newPlayer', players[socket.id])
-  })
-
   // update all other players of the new player
   // socket.broadcast.emit('newPlayer', players[socket.id]);
 
-  // disconnecting
-  socket.on('disconnect', () => {
-    console.log(`${socket.id} disconnected`);
 
-    // remove this player from our players object
-    delete players[socket.id];
-    // emit a message to all players to remove this player
-    io.emit('disconnect', socket.id);
-  });
 });
 
 server.listen(3000, () => {
