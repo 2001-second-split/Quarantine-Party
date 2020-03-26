@@ -37,7 +37,7 @@ export default class StartingScene extends Phaser.Scene {
 
                 //Take user to the waiting scene
                 this.scene.start('WaitScene')
-                this.socket.emit('subscribe', roomId.value)
+                // this.socket.emit('subscribe', roomId.value)
             }
             else
             {

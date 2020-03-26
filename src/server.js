@@ -37,9 +37,12 @@ io.on('connection', (socket)  => {
     socket.broadcast.emit('playerMoved', players[socket.id]);
   });
 
-  // testing key press
-  socket.on('testKey', function() {
-    console.log('test key pressed');
+
+  //get current players when you first enter the room
+  socket.on('currentPlayers', function() {
+    console.log('requesting room information');
+    const room = players[socket.id].roomId;
+    socket.emit('currentPlayers', players, room);
   })
 
   socket.on('subscribe', (room) => {
@@ -48,12 +51,17 @@ io.on('connection', (socket)  => {
     // update all other players of the new player
     players[socket.id].roomId = room
 
+    console.log(players);
+
     // send the players object in subscribed room to the new player
+    // once players are subscribed
     io.emit('currentPlayers', players, room);
 
     // update all other players of the new player
     io.to(room).emit('newPlayer', players[socket.id])
-  })
+  });
+
+
 
   // update all other players of the new player
   // socket.broadcast.emit('newPlayer', players[socket.id]);

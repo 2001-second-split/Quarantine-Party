@@ -19,62 +19,63 @@ export default class WaitScene extends Phaser.Scene {
     // CHANGING USING "THIS" INSTEAD OF "SELF" BREAKS THE CODE
     // but feel free to try and get it to work otherwise
     const self = this;
-    this.socket = socket;
+    // this.socket = socket;
 
     this.otherPlayers = this.physics.add.group();
 
     // CHECK IF CLIENT CONNECTED
-    this.socket.on('connect', function(){
-      console.log("client - connected");
+    // this.socket.on('connect', function(){
+    //   console.log("client - connected");
 
-      self.input.keyboard.on('keydown_W', function() {
-        self.socket.emit('testKey')
-      });
+    //   self.input.keyboard.on('keydown_W', function() {
+    //     self.socket.emit('testKey')
+    //   });
 
-      // NOT SURE WHAT THIS DOES
-      // SERVER SENDS INFO TO CLIENT SOMEONE DISCONNECTED --> YOUR CLIENT REMOVE OTHER PLAYERS ???
-      this.socket.on('disconnect', function (playerId) {
-        console.log("client - disconnected")
+    //   // NOT SURE WHAT THIS DOES
+    //   // SERVER SENDS INFO TO CLIENT SOMEONE DISCONNECTED --> YOUR CLIENT REMOVE OTHER PLAYERS ???
+    //   this.socket.on('disconnect', function (playerId) {
+    //     console.log("client - disconnected")
 
-        // CODE FROM DIFFERENT EXAMPLE OF HOW TO DISCONNECT OTHER PLAYERS
-        // NOT SURE IF IT WORKS
-        self.otherPlayers.getChildren().forEach(function (otherPlayer) {
-          if (playerId === otherPlayer.playerId) {
-            otherPlayer.destroy();
-          }
-        });
-      });
+    //     // CODE FROM DIFFERENT EXAMPLE OF HOW TO DISCONNECT OTHER PLAYERS
+    //     // NOT SURE IF IT WORKS
+    //     self.otherPlayers.getChildren().forEach(function (otherPlayer) {
+    //       if (playerId === otherPlayer.playerId) {
+    //         otherPlayer.destroy();
+    //       }
+    //     });
+    //   });
 
-      // CHECK WHO OTHER PLAYERS ARE???
-      this.socket.on('currentPlayers', function (players) {
-        Object.keys(players).forEach(function (id) {
-          if (players[id].playerId === self.socket.id) {
-            self.addPlayer(self, players[id]);
-          } else {
-            self.addOtherPlayers(self, players[id]);
-          }
-        });
-      });
+    //   // CHECK WHO OTHER PLAYERS ARE???
+    //   this.socket.on('currentPlayers', function (players) {
+    //     console.log('other current players');
+    //     Object.keys(players).forEach(function (id) {
+    //       if (players[id].playerId === self.socket.id) {
+    //         self.addPlayer(self, players[id]);
+    //       } else {
+    //         self.addOtherPlayers(self, players[id]);
+    //       }
+    //     });
+    //   });
 
 
-    });
+    // });
 
     // BELOW SOCKETS NEED TO BE WORKED ON
 
 
-    this.socket.on('newPlayer', function (playerInfo) {
-      self.addOtherPlayers(self, playerInfo);
-    });
+    // this.socket.on('newPlayer', function (playerInfo) {
+    //   self.addOtherPlayers(self, playerInfo);
+    // });
 
 
-    this.socket.on('playerMoved', function (playerInfo) {
-      self.otherPlayers.getChildren().forEach(function (otherPlayer) {
-        if (playerInfo.playerId === otherPlayer.playerId) {
-          otherPlayer.setRotation(playerInfo.rotation);
-          otherPlayer.setPosition(playerInfo.x, playerInfo.y);
-        }
-      });
-    });
+    // this.socket.on('playerMoved', function (playerInfo) {
+    //   self.otherPlayers.getChildren().forEach(function (otherPlayer) {
+    //     if (playerInfo.playerId === otherPlayer.playerId) {
+    //       otherPlayer.setRotation(playerInfo.rotation);
+    //       otherPlayer.setPosition(playerInfo.x, playerInfo.y);
+    //     }
+    //   });
+    // });
 
 
 

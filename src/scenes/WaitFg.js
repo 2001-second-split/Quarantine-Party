@@ -2,6 +2,7 @@ import Player from '../entity/Player'
 import Enemy from '../entity/Enemy';
 
 import {socket} from '../index'
+import io from 'socket.io-client';
 
 export default class WaitFg extends Phaser.Scene {
   constructor() {
@@ -85,34 +86,65 @@ export default class WaitFg extends Phaser.Scene {
 
 
 
-
     //  << SOCKET THINGS!!! >>
-
+    const self = this;
     this.socket = socket;
-    console.log('SOCKET', this.socket)
+    this.otherPlayers = this.physics.add.group();
 
-    //get currentPlayers in room and add self and other players
-    this.socket.on('currentPlayers', (players, room) => {
+    // console.log('SOCKET', this.socket)
 
-      console.log('CURRENT PLAYER')
-      const playersInRoom = Object.keys(players).filter(id => {
-        players[id].roomId === room
+
+    // // ONCE A CLIENT JOINS A ROOM
+    // this.socket.on('connect', function(){
+    //   console.log("client - connected");
+
+      // self.input.keyboard.on('keydown_W', function() {
+      //   self.socket.emit('testKey')
+      // });
+
+
+
+
+      //get currentPlayers in room and add self and other players
+      self.socket.on('currentPlayers', function (players, room) {
+
+        console.log('CURRENT PLAYER')
+        console.log('players in room:', players)
+        const playersInRoom = Object.keys(players).filter(id => {
+          players[id].roomId === room
+        })
+        Object.keys(playersInRoom).forEach(id => {
+          if(players[id].playerId === this.socket.id){
+            self.addPlayer(players[id])
+          } else {
+            self.addOtherPlayers(players[id])
+          }
+        })
       })
-      Object.keys(playersInRoom).forEach(id => {
-        if(players[id].playerId === this.socket.id){
-          this.addPlayer(players[id])
-        } else {
-          this.addOtherPlayers(players[id])
-        }
+
+      //add new players as other players
+      self.socket.on('newPlayer', function (playerInfo) {
+        console.log('NEW PLAYER')
+        self.addOtherPlayers(playerInfo)
       })
-    })
 
-    //add new players as other players
-    this.socket.on('newPlayer', playerInfo => {
-      console.log('NEW PLAYER')
-      this.addOtherPlayers(playerInfo)
-    })
+      self.socket.on('disconnect', function (playerId) {
+        console.log("client - disconnected")
 
+        self.otherPlayers.getChildren().forEach(function (otherPlayer) {
+          if (playerId === otherPlayer.playerId) {
+            otherPlayer.destroy();
+          }
+        });
+      });
+
+      // this.socket.emit('subscribe', roomId.value)
+      this.socket.emit('currentPlayers');
+
+
+    // });
+
+    //end create
   }
 
   // update(time, delta) {
@@ -122,16 +154,16 @@ export default class WaitFg extends Phaser.Scene {
 
   // SOCKET RELATED FUNCTIONS
 
-  addPlayer(playerInfo){
-    this.player = new Player(this, playerInfo.x, playerInfo.y, 'josh').setScale(0.25);
-    this.player.setCollideWorldBounds(true);
+  addPlayer(self, playerInfo){
+    self.player = new Player(this, playerInfo.x, playerInfo.y, 'josh').setScale(0.25);
+    self.player.setCollideWorldBounds(true);
   }
 
-  addOtherPlayers(playerInfo){
+  addOtherPlayers(self, playerInfo){
     const otherPlayer = this.add.sprite(playerInfo.x, playerInfo.y, 'josh').setOrigin(0.5, 0.5).setScale(0.5);
     otherPlayer.playerId = playerInfo.playerId;
 
-    // this.otherPlayers.add(otherPlayer)
+    self.otherPlayers.add(otherPlayer)
   }
 
 
