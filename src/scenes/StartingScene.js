@@ -1,5 +1,5 @@
 import 'phaser'
-import io from 'socket.io-client';
+// import io from 'socket.io-client';
 import {socket} from '../index'
 
 export default class StartingScene extends Phaser.Scene {
@@ -16,8 +16,9 @@ export default class StartingScene extends Phaser.Scene {
   create () {
     this.add.image(400, 300, 'pic');
     let text = this.add.text(10, 10, 'Please join or create a game', { color: 'white', fontFamily: 'Arial', fontSize: '32px '});
-    //create socket
-    this.socket = socket
+
+    // create socket
+    // this.socket = socket
 
     let domElement = this.add.dom(400, 600).createFromCache('roomForm');
     domElement.setPerspective(800);
@@ -37,7 +38,9 @@ export default class StartingScene extends Phaser.Scene {
 
                 //Take user to the waiting scene
                 this.scene.start('WaitScene')
-                this.socket.emit('subscribe', roomId.value)
+
+                // NOTE: WE ARE SUBSCRIBING BEFORE WAITFG LISTENERS ARE CREATED
+                socket.emit('subscribe', roomId.value)
             }
             else
             {

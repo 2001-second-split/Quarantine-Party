@@ -89,15 +89,26 @@ export default class WaitFg extends Phaser.Scene {
     //  << SOCKET THINGS!!! >>
 
     this.socket = socket;
-    console.log('SOCKET', this.socket)
+
+    this.otherPlayers = this.physics.add.group();
+
+    console.log("in waitFG")
+
+    // ask the server who current players are
+    this.socket.emit('currentPlayers');
+
 
     //get currentPlayers in room and add self and other players
     this.socket.on('currentPlayers', (players, room) => {
 
-      console.log('CURRENT PLAYER')
       const playersInRoom = Object.keys(players).filter(id => {
         players[id].roomId === room
       })
+
+      console.log('CURRENT PLAYERS: ', players)
+      console.log('CURRENT PLAYERS IN ROOM: ', playersInRoom)
+      console.log('players in room empty until we subscribe')
+
       Object.keys(playersInRoom).forEach(id => {
         if(players[id].playerId === this.socket.id){
           this.addPlayer(players[id])
@@ -109,9 +120,18 @@ export default class WaitFg extends Phaser.Scene {
 
     //add new players as other players
     this.socket.on('newPlayer', playerInfo => {
-      console.log('NEW PLAYER')
+      console.log('NEW PLAYER HAS JOINED')
       this.addOtherPlayers(playerInfo)
     })
+
+    /*
+    we want to have subscribe after the listeners are
+    created (above) but now we have to figure out how to
+    pass it roomId...
+    commented out until we find out how
+    */
+
+    // this.socket.emit('subscribe', roomId.value)
 
   }
 
@@ -131,7 +151,7 @@ export default class WaitFg extends Phaser.Scene {
     const otherPlayer = this.add.sprite(playerInfo.x, playerInfo.y, 'josh').setOrigin(0.5, 0.5).setScale(0.5);
     otherPlayer.playerId = playerInfo.playerId;
 
-    // this.otherPlayers.add(otherPlayer)
+    this.otherPlayers.add(otherPlayer)
   }
 
 
