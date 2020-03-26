@@ -89,12 +89,14 @@ export default class WaitFg extends Phaser.Scene {
     //  << SOCKET THINGS!!! >>
 
     this.socket = socket;
+
     this.otherPlayers = this.physics.add.group();
 
     console.log("in waitFG")
 
     // ask the server who current players are
     this.socket.emit('currentPlayers');
+
 
     //get currentPlayers in room and add self and other players
     this.socket.on('currentPlayers', (players, room) => {
@@ -141,7 +143,7 @@ export default class WaitFg extends Phaser.Scene {
   // SOCKET RELATED FUNCTIONS
 
   addPlayer(playerInfo){
-    this.player = new Player(this, playerInfo.x, playerInfo.y, 'steph').setScale(0.25);
+    this.player = new Player(this, playerInfo.x, playerInfo.y, 'josh').setScale(0.25);
     this.player.setCollideWorldBounds(true);
   }
 
