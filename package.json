@@ -13,6 +13,7 @@
     "server": "nodemon src/server.js -e html,js,scss --ignore public --ignore client",
     "build": "webpack -p",
     "deploy": "script/deploy",
+    "heroku-prebuild": "npm install --dev",
     "heroku-token": "script/encrypt-heroku-auth-token.js"
   },
   "dependencies": {
