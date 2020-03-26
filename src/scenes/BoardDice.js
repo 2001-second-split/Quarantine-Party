@@ -53,7 +53,7 @@ export default class BoardDice extends Phaser.Scene {
     // << CREATE GAME ENTITIES HERE >>
 
     this.dice = new Dice(this, 900, 100, 'dice').setScale(1.75)
-    this.dice.setCollideWorldBounds(true);
+    // this.dice.setCollideWorldBounds(true);
 
 
     // Create the animations during the FgScene's create phase
@@ -69,8 +69,8 @@ export default class BoardDice extends Phaser.Scene {
     this.dice.setInteractive();
 
     this.dice.on('pointerup', function (pointer) {
+      console.log("clicked")
 
-      console.log('down');
 
   }, this);
     // Create sounds
