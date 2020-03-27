@@ -27,7 +27,8 @@ module.exports = {
             test: [ /\.vert$/, /\.frag$/ ],
             use: 'raw-loader'
           }
-        ]
+        ],
+        performance: { hints: false }
     },
 
     plugins: [
