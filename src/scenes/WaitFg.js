@@ -114,9 +114,6 @@ export default class WaitFg extends Phaser.Scene {
     otherPlayer.setBounce(0.2)
     // this.physics.add(this.ground, otherPlayer);
     this.otherPlayers.push(otherPlayer);
-    // const otherPlayer = this.add.sprite(playerInfo.x, playerInfo.y, ‘josh’).setOrigin(0.5, 0.5).setScale(0.5);
-    // otherPlayer.playerId = playerInfo.playerId;
-    //this.otherPlayers.add(otherPlayer)
   }
 
   update(time, delta) {
