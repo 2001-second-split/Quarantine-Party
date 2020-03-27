@@ -6,7 +6,7 @@ const path = require('path');
 module.exports = {
 
     // mode: isDev ? 'development': 'production',
-    mode: 'development',
+    // mode: 'development',
 
     entry: './src/index.js',
 
@@ -27,7 +27,8 @@ module.exports = {
             test: [ /\.vert$/, /\.frag$/ ],
             use: 'raw-loader'
           }
-        ]
+        ],
+        // performance: { hints: false }
     },
 
     plugins: [
@@ -35,6 +36,8 @@ module.exports = {
             'CANVAS_RENDERER': JSON.stringify(true),
             'WEBGL_RENDERER': JSON.stringify(true)
         })
-    ]
+    ],
+
+    performance: { hints: false }
 
 };

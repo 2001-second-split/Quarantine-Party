@@ -1,18 +1,24 @@
 {
-  "name": "q-party",
+  "name": "super-quarantine-party",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "engines": {
+    "node": "12.13.x",
+    "npm": "6.x"
+  },
   "scripts": {
     "start": "npm run client & npm run server",
     "client": "webpack-dev-server",
     "server": "nodemon src/server.js -e html,js,scss --ignore public --ignore client",
-    "build": "webpack -w",
+    "build": "webpack -p",
     "deploy": "script/deploy",
+    "heroku-prebuild": "npm install --dev",
     "heroku-token": "script/encrypt-heroku-auth-token.js"
   },
   "dependencies": {
     "express": "^4.17.1",
+    "nodemon": "^2.0.2",
     "phaser": "^3.22.0",
     "phaser3-plugin-isometric": "0.0.7",
     "socket.io": "^2.3.0",
@@ -20,6 +26,7 @@
   },
   "devDependencies": {
     "raw-loader": "^0.5.1",
-    "webpack": "^3.4.1"
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
   }
 }
