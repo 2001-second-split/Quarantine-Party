@@ -20,16 +20,15 @@ module.exports = {
         publicPath: '/public/',
         filename: 'bundle.js'
     },
-
-    devtool: "source-map",
-
+    devtool: 'source-map',
     module: {
         rules: [
           {
             test: [ /\.vert$/, /\.frag$/ ],
             use: 'raw-loader'
           }
-        ]
+        ],
+        performance: { hints: false }
     },
 
     plugins: [
