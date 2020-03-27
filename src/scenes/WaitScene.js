@@ -3,6 +3,8 @@ import "phaser";
 export default class WaitScene extends Phaser.Scene {
   constructor() {
     super("WaitScene");
+
+    this.selectedSprite = "";
   }
 
   preload() {
@@ -51,20 +53,27 @@ export default class WaitScene extends Phaser.Scene {
     spriteOptions.push(stephanieSprite);
     spriteOptions.push(ayseSprite);
 
-    let selectedSprite = "";
 
     spriteOptions.forEach(function(sprite) {
       sprite.setInteractive({ useHandCursor: true }).on("pointerdown", () => {
-        selectedSprite = sprite.name;
+        this.selectedSprite = sprite.name;
       });
     });
 
 
     this.scene.launch("WaitBg");
+    if(this.selectedSprite !== ''){
 
-    if(selectedSprite !== ''){
+      this.scene.launch("WaitFg", {data: this.selectedSprite});
+      } else {
+        console.log('UMMMMM', this.selectedSprite)
+      }
 
-    this.scene.launch("WaitFg", {selectedSprite: selectedSprite});
-    }
+
+  }
+
+
+  update(){
+
   }
 }
