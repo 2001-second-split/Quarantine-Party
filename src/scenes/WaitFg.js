@@ -82,12 +82,8 @@ export default class WaitFg extends Phaser.Scene {
     this.player = new Player(this, playerInfo.x, playerInfo.y, "stephanie").setScale(0.5);
     this.player.playerId = socketId
     this.player.setCollideWorldBounds(true);
-<<<<<<< HEAD
-    // this.physics.add(this.ground, this.player)
-=======
     this.player.setBounce(0.2);
     //this.physics.add(this.ground, this.player)
->>>>>>> master
 
   }
 

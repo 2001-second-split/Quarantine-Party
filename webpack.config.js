@@ -28,7 +28,7 @@ module.exports = {
             use: 'raw-loader'
           }
         ],
-        performance: { hints: false }
+        // performance: { hints: false }
     },
 
     plugins: [
