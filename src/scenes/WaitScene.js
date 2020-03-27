@@ -3,6 +3,7 @@ import "phaser";
 export default class WaitScene extends Phaser.Scene {
   constructor() {
     super("WaitScene");
+    this.selectedSprite = '';
   }
 
   preload() {
@@ -33,38 +34,57 @@ export default class WaitScene extends Phaser.Scene {
     });
   }
 
+  select(name) {
+    this.selectedSprite = name;
+  }
   create() {
     // << LOAD BACKGROUND AND FOREGROUND SCENES IN PARALLEL HERE >>
+    this.scene.launch("WaitBg");
+
     let spriteOptions = [];
+
     const ayseSprite = this.add.sprite(100, 400, "ayse").setScale(0.8);
-    const stephanieSprite = this.add
-      .sprite(270, 400, "stephanie")
-      .setScale(0.8);
+    const stephanieSprite = this.add.sprite(270, 400, "stephanie").setScale(0.8);
     const tiffanySprite = this.add.sprite(450, 400, "tiffany").setScale(0.8);
     const pattySprite = this.add.sprite(650, 400, "patty").setScale(0.8);
+
     ayseSprite.name = "ayse";
     stephanieSprite.name = "stephanie";
     tiffanySprite.name - "tiffany";
     pattySprite.name = "patty";
-    spriteOptions.push(pattySprite);
-    spriteOptions.push(tiffanySprite);
-    spriteOptions.push(stephanieSprite);
-    spriteOptions.push(ayseSprite);
 
-    let selectedSprite = "";
+    spriteOptions.push(pattySprite, tiffanySprite, stephanieSprite, ayseSprite);
+
+    //method 1
+    const currentScene = this;
 
     spriteOptions.forEach(function(sprite) {
       sprite.setInteractive({ useHandCursor: true }).on("pointerdown", () => {
-        selectedSprite = sprite.name;
+        console.log("selected a sprite")
+        currentScene.selectedSprite = sprite.name;
       });
     });
 
+    // method 2
+    // const select = this.select.bind(this);
 
-    this.scene.launch("WaitBg");
+    // spriteOptions.forEach(function(sprite) {
+    //   sprite.setInteractive({ useHandCursor: true }).on("pointerdown", () => {
+    //     console.log("selected a sprite")
+    //     select(sprite.name)
+    //   });
+    // });
 
-    if(selectedSprite !== ''){
 
-    this.scene.launch("WaitFg", {selectedSprite: selectedSprite});
-    }
+
+
+
   }
+
+  // update() {
+  //   console.log(this.selectedSprite)
+  //   if(this.selectedSprite !== ''){
+  //     this.scene.launch("WaitFg", {selectedSprite: this.selectedSprite});
+  //   }
+  // }
 }
