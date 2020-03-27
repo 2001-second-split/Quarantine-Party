@@ -20,7 +20,8 @@ export default class WaitFg extends Phaser.Scene {
 
   create() {
       // Create game entities
-      // << START CREATE GAME ENTITIES HERE >>
+
+
       console.log(this.selectedSprite)
 
       this.createAnimations();
@@ -48,14 +49,10 @@ export default class WaitFg extends Phaser.Scene {
             playersInRoom[id] = players[id];
           }
         });
-        // console.log(‘Players in room’, playersInRoom)
-        // console.log(‘ROOM’, room)
-        // console.log(‘CURRENT PLAYERS: ’, players)
-        // console.log(‘CURRENT PLAYERS IN ROOM: ’, playersInRoom)
-        // console.log(‘players in room empty until we subscribe’)
+
         Object.keys(playersInRoom).forEach(id => {
           if (players[id].playerId === socket.id) {
-            this.addPlayer(players[id],this.selectedSprite);
+            this.addPlayer(players[id],socket.id, this.selectedSprite);
           } else {
             this.addOtherPlayers(players[id], id);
           }
@@ -84,18 +81,18 @@ export default class WaitFg extends Phaser.Scene {
   createAnimations() {
     this.anims.create({
       key: "run",
-      frames: this.anims.generateFrameNumbers("stephanie", { start: 6, end: 8}),
+      frames: this.anims.generateFrameNumbers(this.selectedSprite, { start: 6, end: 8}),
       frameRate: 10,
       repeat: -1,
     });
     this.anims.create({
       key: "idle",
-      frames: [{key: "stephanie", frame: 0}],
+      frames: [{key: this.selectedSprite, frame: 0}],
       frameRate: 20
     })
     this.anims.create({
       key: "jump",
-      frames:[{key: "stephanie", frame: 3}],
+      frames:[{key: this.selectedSprite, frame: 3}],
       frameRate: 20
     })
   }
@@ -116,10 +113,7 @@ export default class WaitFg extends Phaser.Scene {
     otherPlayer.setCollideWorldBounds(true);
     otherPlayer.setBounce(0.2)
     // this.physics.add(this.ground, otherPlayer);
-    // this.otherPlayers.push(otherPlayer);
-    // const otherPlayer = this.add.sprite(playerInfo.x, playerInfo.y, ‘josh’).setOrigin(0.5, 0.5).setScale(0.5);
-    // otherPlayer.playerId = playerInfo.playerId;
-    //this.otherPlayers.add(otherPlayer)
+    this.otherPlayers.push(otherPlayer);
   }
 
   update(time, delta) {
