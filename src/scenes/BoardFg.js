@@ -17,7 +17,7 @@ export default class BoardFg extends Phaser.Scene {
   preload() {
     // Preload Sprites
     // << LOAD SPRITES HERE >>
-    this.load.spritesheet('josh', 'assets/spriteSheets/josh.png', {
+    this.load.spritesheet('ayse', 'assets/spriteSheets/ayse.png', {
       frameWidth: 340,
       frameHeight: 460,
     });
@@ -64,10 +64,10 @@ export default class BoardFg extends Phaser.Scene {
 
     // Creating Movements
 
-    moveUp()
-    moveDown()
-    moveLeft()
-    moveRight()
+    // moveUp()
+    // moveDown()
+    // moveLeft()
+    // moveRight()
 
     // this.groundGroup = this.physics.add.staticGroup({ classType: Ground });
     // this.createGround(160, 540);

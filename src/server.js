@@ -3,6 +3,7 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io').listen(server);
 const path = require('path');
+const PORT = process.env.PORT || 3000;
 
 let players = {};
 
@@ -23,7 +24,9 @@ io.on('connection', (socket)  => {
     rotation: 0,
     x: Math.floor(Math.random() * 700) + 50,
     y: Math.floor(Math.random() * 500) + 50,
-    playerId: socket.id
+    playerId: socket.id,
+    RANDOM: 'RANDOM'
+
   };
 
   //get current players when you first enter the room
@@ -42,10 +45,8 @@ io.on('connection', (socket)  => {
     // send the players object in subscribed room to the new player
     socket.emit('currentPlayers', players, room);
 
-    //io.emit('currentPlayers', players, room);
-
     // update all other players of the new player
-    io.to(room).emit('newPlayer', players[socket.id])
+    io.to(room).emit('newPlayer', players[socket.id], socket.id)
   })
 
   // disconnecting
@@ -58,19 +59,8 @@ io.on('connection', (socket)  => {
     io.emit('disconnect', socket.id);
   });
 
-
-  // << FUTURE SOCKET LISTENER/EVENTS >>
-
-  // // testing key press
-  // socket.on('testKey', function() {
-  //   console.log('test key pressed');
-  // })
-
-
   // when a player moves, update the player data
-  socket.on('playerMovement', function (movementData) {
-    // console.log('movement')
-
+  socket.on('playerMovement', (movementData) => {
     players[socket.id].x = movementData.x;
     players[socket.id].y = movementData.y;
 
@@ -78,12 +68,8 @@ io.on('connection', (socket)  => {
     socket.broadcast.emit('playerMoved', players[socket.id]);
   });
 
-  // update all other players of the new player
-  // socket.broadcast.emit('newPlayer', players[socket.id]);
-
-
 });
 
-server.listen(3000, () => {
+server.listen(PORT, () => {
   console.log(`SERVER Listening on ${server.address().port}`);
 });
