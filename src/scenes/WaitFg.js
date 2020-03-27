@@ -6,8 +6,8 @@ export default class WaitFg extends Phaser.Scene {
     super("WaitFg");
   }
   init(data){
-    console.log(data)
-    this.selectedSprite =data.selectedSprite
+    console.log("DATA",data)
+    this.selectedSprite = data.selectedSprite
   }
   preload() {
     this.load.image("platform", "assets/sprites/platform.png");
@@ -71,32 +71,32 @@ export default class WaitFg extends Phaser.Scene {
       // ask the server who current players are
       this.socket.emit("currentPlayers");
       //get currentPlayers in room and add self and other players
-      // this.socket.on("currentPlayers", (players, room) => {
-      //   //Find all the players in the same room
-      //   const playersInRoom = {};
-      //   Object.keys(players).forEach(id => {
-      //     if (players[id].roomId === room) {
-      //       playersInRoom[id] = players[id];
-      //     }
-      //   });
-      //   // console.log(‘Players in room’, playersInRoom)
-      //   // console.log(‘ROOM’, room)
-      //   // console.log(‘CURRENT PLAYERS: ’, players)
-      //   // console.log(‘CURRENT PLAYERS IN ROOM: ’, playersInRoom)
-      //   // console.log(‘players in room empty until we subscribe’)
-      //   Object.keys(playersInRoom).forEach(id => {
-      //     if (players[id].playerId === this.socket.id) {
-      //       this.addPlayer(players[id],selectedSprite);
-      //     } else {
-      //       this.addOtherPlayers(players[id]);
-      //     }
-      //   });
-      // });
-      // //add new players as other players
-      // this.socket.on("newPlayer", playerInfo => {
-      //   console.log("NEW PLAYER HAS JOINED");
-      //   this.addOtherPlayers(playerInfo);
-      // });
+      this.socket.on("currentPlayers", (players, room) => {
+        //Find all the players in the same room
+        const playersInRoom = {};
+        Object.keys(players).forEach(id => {
+          if (players[id].roomId === room) {
+            playersInRoom[id] = players[id];
+          }
+        });
+        // console.log(‘Players in room’, playersInRoom)
+        // console.log(‘ROOM’, room)
+        // console.log(‘CURRENT PLAYERS: ’, players)
+        // console.log(‘CURRENT PLAYERS IN ROOM: ’, playersInRoom)
+        // console.log(‘players in room empty until we subscribe’)
+        Object.keys(playersInRoom).forEach(id => {
+          if (players[id].playerId === this.socket.id) {
+            this.addPlayer(players[id],this.selectedSprite);
+          } else {
+            this.addOtherPlayers(players[id]);
+          }
+        });
+      });
+      //add new players as other players
+      this.socket.on("newPlayer", playerInfo => {
+        console.log("NEW PLAYER HAS JOINED");
+        this.addOtherPlayers(playerInfo);
+      });
       /*
     we want to have subscribe after the listeners are
     created (above) but now we have to figure out how to
@@ -119,11 +119,11 @@ export default class WaitFg extends Phaser.Scene {
       playerInfo.y,
       selectedSprite
     ).setScale(0.5);
-    // this.player.setCollideWorldBounds(true);
+    this.player.setCollideWorldBounds(true);
     // this.physics.add(this.ground, this.player);
   }
   addOtherPlayers(playerInfo) {
-    const otherPlayer = new Player(this, playerInfo.x, playerInfo.y, "ayse");
+    const otherPlayer = new Player(this, playerInfo.x, playerInfo.y, "ayse" );
     otherPlayer.setCollideWorldBounds(true);
     // this.physics.add(this.ground, otherPlayer);
     // this.otherPlayers.push(otherPlayer);
