@@ -64,10 +64,10 @@ export default class BoardFg extends Phaser.Scene {
 
     // Creating Movements
 
-    moveUp()
-    moveDown()
-    moveLeft()
-    moveRight()
+    // moveUp()
+    // moveDown()
+    // moveLeft()
+    // moveRight()
 
     // this.groundGroup = this.physics.add.staticGroup({ classType: Ground });
     // this.createGround(160, 540);

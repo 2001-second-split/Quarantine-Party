@@ -116,7 +116,7 @@ export default class WaitFg extends Phaser.Scene {
   addPlayer(playerInfo){
     this.player = new Player(this, playerInfo.x, playerInfo.y, "stephanie").setScale(0.5);
     this.player.setCollideWorldBounds(true);
-    this.physics.add(this.ground, this.player)
+    // this.physics.add(this.ground, this.player)
 
   }
   addOtherPlayers(playerInfo){
