@@ -3,12 +3,17 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "engines": {
+    "node": "12.13.x",
+    "npm": "6.x"
+  },
   "scripts": {
     "start": "npm run client & npm run server",
     "client": "webpack-dev-server",
     "server": "nodemon src/server.js -e html,js,scss --ignore public --ignore client",
-    "build": "webpack -w",
+    "build": "webpack -p",
     "deploy": "script/deploy",
+    "heroku-prebuild": "npm install --dev",
     "heroku-token": "script/encrypt-heroku-auth-token.js"
   },
   "dependencies": {
