@@ -28,7 +28,7 @@ module.exports = {
             use: 'raw-loader'
           }
         ],
-        performance: { hints: false }
+        // performance: { hints: false }
     },
 
     plugins: [
@@ -36,6 +36,8 @@ module.exports = {
             'CANVAS_RENDERER': JSON.stringify(true),
             'WEBGL_RENDERER': JSON.stringify(true)
         })
-    ]
+    ],
+
+    performance: { hints: false }
 
 };
