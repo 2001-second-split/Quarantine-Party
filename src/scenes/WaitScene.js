@@ -40,6 +40,7 @@ export default class WaitScene extends Phaser.Scene {
     // << LOAD BACKGROUND AND FOREGROUND SCENES IN PARALLEL HERE >>
     let spriteOptions = [];
     const currentScene = this;
+    this.cursors = this.input.keyboard.createCursorKeys();
 
     const ayseSprite = this.add.sprite(100, 400, "ayse").setScale(0.8);
     const stephanieSprite = this.add
