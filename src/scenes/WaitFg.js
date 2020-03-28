@@ -53,8 +53,11 @@ export default class WaitFg extends Phaser.Scene {
         Object.keys(playersInRoom).forEach(id => {
           if (players[id].playerId === socket.id) {
             this.addPlayer(players[id],socket.id, this.selectedSprite);
+
           } else {
             this.addOtherPlayers(players[id], id);
+            console.log('players in room',playersInRoom)
+            console.log('id?', players[id])
           }
         });
       });
@@ -62,6 +65,7 @@ export default class WaitFg extends Phaser.Scene {
       //add new players as other players
       socket.on("newPlayer", (playerInfo, socketId) => {
         console.log("NEW PLAYER HAS JOINED");
+        console.log(this.otherPlayers);
         this.addOtherPlayers(playerInfo, socketId);
       });
 
@@ -101,8 +105,10 @@ export default class WaitFg extends Phaser.Scene {
   // SOCKET RELATED FUNCTIONS
   addPlayer(playerInfo, socketId, selectedSprite) {
     console.log("Add player", selectedSprite);
+    console.log("THIS.OTHER PLAYERS LINE 109",this.otherPlayers)
     this.player = new Player(this, playerInfo.x, playerInfo.y, selectedSprite).setScale(0.5);
     this.player.playerId = socketId
+    this.player.name = selectedSprite
     this.player.setCollideWorldBounds(true);
     this.player.setBounce(0.2);
     // this.physics.add(this.ground, this.player);

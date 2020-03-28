@@ -60,10 +60,12 @@ export default class WaitScene extends Phaser.Scene {
     spriteOptions.forEach(function(sprite) {
       sprite.setInteractive({ useHandCursor: true }).on("pointerdown", () => {
         currentScene.selectedSprite = sprite.name;
+        //Disabling character select after selected one
+        //May change later! :D
         for(let i = 0; i < spriteOptions.length; i++){
-          if(sprite.name !== spriteOptions[i].name){
+          // if(sprite.name !== spriteOptions[i].name){
             spriteOptions[i].input.enabled=false
-          }
+          // }
         }
 
         if (currentScene.selectedSprite !== "") {
