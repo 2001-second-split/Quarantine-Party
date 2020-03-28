@@ -10,12 +10,14 @@ export default class StartingScene extends Phaser.Scene {
   preload () {
     //load html element that will prompt user for input
     this.load.html('roomForm', 'assets/text/roomForm.html');
-    this.load.image('pic', 'assets/backgrounds/startscenepic.png');
+    this.load.image('pic', 'assets/backgrounds/introscene.png');
   }
 
   create () {
-    this.add.image(400, 300, 'pic');
-    let text = this.add.text(10, 10, 'Please join or create a game', { color: 'white', fontFamily: 'Arial', fontSize: '32px '});
+    this.add.image(400, 300, 'pic').setScale(0.5);
+
+    let text = this.add.text(250, 10, 'Welcome!!!', { color: 'black', fontFamily: 'Arial', fontSize: '24px '});
+    let text2 = this.add.text(250, 50, 'Please join or create a game', { color: 'black', fontFamily: 'Arial', fontSize: '16px '});
 
     // create socket
     // this.socket = socket
@@ -45,7 +47,7 @@ export default class StartingScene extends Phaser.Scene {
             else
             {
                 //  Flash the prompt
-                this.scene.tweens.add({ targets: text, alpha: 0.1, duration: 200, ease: 'Power3', yoyo: true });
+                this.scene.tweens.add({ targets: text1, alpha: 0.1, duration: 200, ease: 'Power3', yoyo: true });
             }
         }
 
@@ -53,7 +55,7 @@ export default class StartingScene extends Phaser.Scene {
 
     this.tweens.add({
         targets: domElement,
-        y: 300,
+        y: 250,
         duration: 3000,
         ease: 'Power3'
     });
