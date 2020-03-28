@@ -5,13 +5,13 @@ let charPosition;
 export default class BoardBg extends Phaser.Scene {
   constructor() {
     super('BoardBg');
-    //define path that a user can traverse
+    //define path that a user can traverse, add an aditional paramater for coins
     this.walkablePath = [
-      [0, 0], [0, 1], [0, 2], [0, 3],
-      [0, 4], [0, 5], [1, 5], [2, 5],
+      [0, 0], [0, 1], [0, 2], [0, 3, true],
+      [0, 4], [0, 5], [1, 5], [2, 5, true],
       [2, 4], [2, 3], [2, 2], [3, 2],
-      [4, 2], [4, 1], [5, 1], [6, 1],
-      [6, 2], [6, 3], [6, 4], [6, 5],
+      [4, 2], [4, 1, true], [5, 1], [6, 1],
+      [6, 2], [6, 3, true], [6, 4], [6, 5],
       [5, 5], [4, 5], [4, 6], [4, 7]
     ]
   }
@@ -37,9 +37,18 @@ export default class BoardBg extends Phaser.Scene {
 
     //build map
     this.buildMap()
+    //listen for movement on board
     socket.on('moveSelfOnBoard', rolledNum => {
-      console.log('INSIDE SOCKET IN BOARD')
       this.moveCharacter(rolledNum)
+    })
+
+    //listen for minigames
+    socket.on('minigameStarted', () => {
+      console.log('MINIGAME SOCKET')
+      this.scene.pause('BoardBg')
+      this.scene.pause('BoardDice')
+      this.scene.pause('BoardScene')
+      this.scene.switch('minigameTPScene')
     })
     //this.resetAnimation(2)
     //this.moveCharacter(3)
@@ -96,13 +105,11 @@ export default class BoardBg extends Phaser.Scene {
     //update characters' previous location index by adding current index
     charPosition.prevIndex = prevIdx > 0 ? prevIdx + idx: idx
 
+    //after placing the character to new position, check to see if he lands on a coin
+    //trigger minigame if on coin
+    if(this.walkablePath[charPosition.prevIndex].length === 3){
+      socket.emit('startMinigame')
+    }
   }
-
-
-  // const coinPositions = [
-  //   [0, 0], [0, 1], [0, 3], [0, 5], [2, 5],
-  //   [2, 3], [3, 2], [4, 1], [6, 1], [6, 3],
-  //   [6, 5], [4, 5], [4, 7]
-  // ]
 
 }
