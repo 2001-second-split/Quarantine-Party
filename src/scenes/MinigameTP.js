@@ -3,7 +3,11 @@ export default class minigameTPScene extends Phaser.Scene {
     super('minigameTPScene');
 
     this.gameOver = false;
-    this.score = 0;
+
+    this.firstPlayerScore = 0;
+    this.secondPlayerScore = 0;
+    this.thirdPlayerScore = 0;
+    this.fourthPlayerScore = 0;
 
     this.collectTP = this.collectTP.bind(this);
     this.hitBomb = this.hitBomb.bind(this);
@@ -18,9 +22,7 @@ export default class minigameTPScene extends Phaser.Scene {
     this.load.spritesheet('dude', 'dude.png', { frameWidth: 32, frameHeight: 48 });
   }
 
-
   createAnimations() {
-
     //  Our player animations, turning, walking left and walking right.
     this.anims.create({
       key: 'left',
@@ -41,18 +43,12 @@ export default class minigameTPScene extends Phaser.Scene {
       frameRate: 10,
       repeat: -1
     });
-
-
   }
 
   create() {
-    // Create game entities
-    // << CREATE GAME ENTITIES HERE >>
-
-    //  A simple background for our game
+    console.log(this.scene.settings.data)
     this.add.image(400, 300, 'sky');
 
-    //  The platforms group contains the ground and the 2 ledges we can jump on
     this.platforms = this.physics.add.staticGroup();
 
     //  Here we create the ground.
@@ -71,7 +67,6 @@ export default class minigameTPScene extends Phaser.Scene {
     this.player.setBounce(0.2);
     this.player.setCollideWorldBounds(true);
 
-
     //  Input Events
     this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -83,23 +78,20 @@ export default class minigameTPScene extends Phaser.Scene {
     });
 
     this.toiletpaper.children.iterate(function (child) {
-
-        //  Give each star a slightly different bounce
         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-
+        child.setCollideWorldBounds(true);
     });
 
     this.bombs = this.physics.add.group();
 
     //  The score
-    this.scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+    this.p1scoreText = this.add.text(16, 16, `${this.scene.settings.data.first}: 0`, { fontSize: '16px', fill: '#000' });
+    this.p2scoreText = this.add.text(166, 16, `${this.scene.settings.data.second}: 0`, { fontSize: '16px', fill: '#000' });
+    this.p3scoreText = this.add.text(316, 16, `${this.scene.settings.data.third}: 0`, { fontSize: '16px', fill: '#000' });
+    this.p4scoreText = this.add.text(466, 16, `${this.scene.settings.data.fourth}: 0`, { fontSize: '16px', fill: '#000' });
 
-    // Create the animations during the FgScene's create phase
     this.createAnimations();
 
-
-    // Create collisions for all entities
-    //  Collide the player and the toiletpaper with the platforms
     this.physics.add.collider(this.player, this.platforms);
     this.physics.add.collider(this.toiletpaper, this.platforms);
     this.physics.add.collider(this.bombs, this.platforms);
@@ -107,7 +99,6 @@ export default class minigameTPScene extends Phaser.Scene {
     //  Checks to see if the player overlaps with any of the toiletpaper, if he does call the collectTP function
     this.physics.add.overlap(this.player, this.toiletpaper, this.collectTP, null, this);
     this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
-
 
   }
 
@@ -144,35 +135,30 @@ export default class minigameTPScene extends Phaser.Scene {
     toiletpaper.disableBody(true, true);
 
     //  Add and update the score
-    this.score += 10;
-    this.scoreText.setText('Score: ' + this.score);
+    this.firstPlayerScore += 10;
+    this.p1scoreText.setText(`${this.scene.settings.data.first}: ${this.firstPlayerScore}`);
 
     if (this.toiletpaper.countActive(true) === 0)
     {
         //  A new batch of toiletpaper to collect
-        this.toiletpaper.children.iterate(function (child) {
+      this.toiletpaper.children.iterate(function (child) {
+          child.enableBody(true, child.x, 0, true, true);
+      });
 
-            child.enableBody(true, child.x, 0, true, true);
+      let x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
-        });
-
-        let x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-
-        this.bomb = this.bombs.create(x, 16, 'bomb');
-        this.bomb.setBounce(1);
-        this.bomb.setCollideWorldBounds(true);
-        this.bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-        this.bomb.allowGravity = false;
-
+      this.bomb = this.bombs.create(x, 16, 'bomb');
+      this.bomb.setBounce(1);
+      this.bomb.setCollideWorldBounds(true);
+      this.bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+      this.bomb.allowGravity = false;
     }
   }
 
   hitBomb (player, bomb) {
-    this.physics.pause();
-    this.player.setTint(0xff0000);
-    this.player.anims.play('turn');
-    this.gameOver = true;
+    // this.physics.pause();
+    this.player.visible = false
+    // this.player.anims.play('turn');
+    // this.gameOver = true;
   }
-
-
 }
