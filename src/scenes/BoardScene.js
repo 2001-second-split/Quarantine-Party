@@ -9,5 +9,7 @@ export default class BoardScene extends Phaser.Scene {
     // << LOAD BACKGROUND AND FOREGROUND SCENES IN PARALLEL HERE >>
     this.scene.launch('BoardBg');
     this.scene.launch('BoardDice');
+
+
   }
 }
