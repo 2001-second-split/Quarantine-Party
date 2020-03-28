@@ -6,28 +6,26 @@ export default class Dice extends Phaser.Physics.Arcade.Sprite {
 
     this.scene = scene;
     this.scene.add.existing(this);
-    this.scene.physics.world.enable(this);
 
+    this.clicks = 0;
   }
 
-  rollDice(cursors){
-    if (cursors.up.isDown) {
+  rollDice() {
+    if(this.clicks < 1) {
       this.anims.play('roll')
+      this.clicks++
     }
-    else if(cursors.down.isDown) {
+     else {
       this.anims.play('random')
+      // this.clicks = 0
     }
-    // else {
-    //   this.anims.play('unrolled')
-    // }
   }
 
-  update(cursors) {
-    this.rollDice(cursors)
+  resetDice() {
+    this.anims.play('reset')
   }
+
+  // update() {
+  //   this.resetDice()
+  // }
 }
-
-// die should only appear to active player?
-// upon rendering, die should show 1 face
-// hitting spacebar once should cause animation to play
-// hitting spacebar a 2nd time / a set time should cause animation to stop on a random face
