@@ -20,7 +20,8 @@ export default class WaitFg extends Phaser.Scene {
 
   create() {
       // Create game entities
-      // << START CREATE GAME ENTITIES HERE >>
+
+
       console.log(this.selectedSprite)
 
       this.createAnimations();
@@ -32,6 +33,7 @@ export default class WaitFg extends Phaser.Scene {
       this.jumpSound = this.sound.add("jump");
 
       //  << SOCKET THINGS!!! >>
+
       this.otherPlayers = [];
 
       // ask the server who current players are
@@ -47,14 +49,10 @@ export default class WaitFg extends Phaser.Scene {
             playersInRoom[id] = players[id];
           }
         });
-        // console.log(‘Players in room’, playersInRoom)
-        // console.log(‘ROOM’, room)
-        // console.log(‘CURRENT PLAYERS: ’, players)
-        // console.log(‘CURRENT PLAYERS IN ROOM: ’, playersInRoom)
-        // console.log(‘players in room empty until we subscribe’)
+
         Object.keys(playersInRoom).forEach(id => {
           if (players[id].playerId === socket.id) {
-            this.addPlayer(players[id],this.selectedSprite);
+            this.addPlayer(players[id],socket.id, this.selectedSprite);
           } else {
             this.addOtherPlayers(players[id], id);
           }
@@ -116,9 +114,6 @@ export default class WaitFg extends Phaser.Scene {
     otherPlayer.setBounce(0.2)
     // this.physics.add(this.ground, otherPlayer);
     this.otherPlayers.push(otherPlayer);
-    // const otherPlayer = this.add.sprite(playerInfo.x, playerInfo.y, ‘josh’).setOrigin(0.5, 0.5).setScale(0.5);
-    // otherPlayer.playerId = playerInfo.playerId;
-    //this.otherPlayers.add(otherPlayer)
   }
 
   update(time, delta) {
