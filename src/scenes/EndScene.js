@@ -93,7 +93,6 @@ export default class EndScene extends Phaser.Scene {
       this.scene.stop('WaitScene')
 
       this.scene.stop('BoardBg')
-      this.scene.stop('BoardFg')
       this.scene.stop('BoardScene')
       this.scene.stop('BoardDice')
 
