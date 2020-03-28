@@ -30,6 +30,7 @@ export default class StartingScene extends Phaser.Scene {
             const username = domElement.getChildByName('username');
             const roomId = domElement.getChildByName('roomId');
 
+
             //  Have they entered anything?
             if (username.value !== '' && roomId.value !== '')
             {

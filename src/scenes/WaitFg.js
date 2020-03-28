@@ -20,7 +20,7 @@ export default class WaitFg extends Phaser.Scene {
 
   create() {
       // Create game entities
-
+    arrSprites.push(this.selectedSprite)
 
       console.log(this.selectedSprite)
 
@@ -114,7 +114,7 @@ export default class WaitFg extends Phaser.Scene {
     // this.physics.add(this.ground, this.player);
   }
   addOtherPlayers(playerInfo, socketId) {
-    const otherPlayer = new Player(this, playerInfo.x, playerInfo.y, "ayse" );
+    const otherPlayer = new Player(this, playerInfo.x, playerInfo.y,'ayse' );
     otherPlayer.playerId = socketId;
     otherPlayer.setCollideWorldBounds(true);
     otherPlayer.setBounce(0.2)
