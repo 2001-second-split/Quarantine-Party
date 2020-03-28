@@ -100,6 +100,25 @@ export default class minigameTPScene extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.toiletpaper, this.collectTP, null, this);
     this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
 
+
+    //AYSE ADDITION TO CHECK GAME STATE
+     //create a "start button" but this is actually just text for now
+     const returnButton = this.add.text(250, 250, 'Return Button', { fontSize: '32px', fill: '#FFF' });
+
+     //make it interactive! so when we click it...
+     returnButton.setInteractive();
+
+     // when we release the mouse, it'll log a message and change scenes
+     returnButton.on('pointerup', () => {
+       console.log('returnbutton pressed')
+       this.scene.stop('minigameTPScene')
+
+       this.scene.switch('BoardBg');
+       this.scene.launch('BoardDice')
+
+     })
+
+
   }
 
   update () {
