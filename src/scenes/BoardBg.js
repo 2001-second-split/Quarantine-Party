@@ -86,7 +86,30 @@ export default class BoardBg extends Phaser.Scene {
     const prevIdx = charExists? charPosition.prevIndex : 0
     //if user throws a dice larger than the spaces left on the board, the user wins
     if((prevIdx  + idx) >= (this.walkablePath.length -1)){
-      console.log('YOU WON')
+      console.log('YOU WON');
+
+      // transition to end scene
+
+      // disable board scene
+      this.scene.setVisible(false, 'BoardBg')
+      this.scene.setVisible(false, 'BoardDice')
+      this.scene.pause('BoardScene')
+
+      //data to pass to endScene
+      const data = {
+        first: 'ayse',
+        second: 'tiffany',
+        third: 'stephanie',
+        fourth: 'patty',
+      }
+
+      this.scene.transition({
+        target: 'EndScene',
+        data: data,
+        duration: 10000
+      })
+
+
       return
     }
 
