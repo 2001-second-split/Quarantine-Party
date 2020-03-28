@@ -4,8 +4,6 @@ export default class WaitScene extends Phaser.Scene {
   constructor() {
     super("WaitScene");
 
-<<<<<<< HEAD
-=======
     this.selectedSprite = "";
   }
   selectCharacter() {}
@@ -36,7 +34,6 @@ export default class WaitScene extends Phaser.Scene {
       frameHeight: 300,
       endFrame: 8
     });
->>>>>>> endScene
   }
 
   create() {
@@ -60,8 +57,6 @@ export default class WaitScene extends Phaser.Scene {
     spriteOptions.push(stephanieSprite);
     spriteOptions.push(ayseSprite);
 
-<<<<<<< HEAD
-=======
     spriteOptions.forEach(function(sprite) {
       sprite.setInteractive({ useHandCursor: true }).on("pointerdown", () => {
         currentScene.selectedSprite = sprite.name;
@@ -87,5 +82,4 @@ export default class WaitScene extends Phaser.Scene {
   }
 
   update() {}
->>>>>>> endScene
 }

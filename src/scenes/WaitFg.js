@@ -16,62 +16,14 @@ export default class WaitFg extends Phaser.Scene {
     this.load.audio("jump", "assets/audio/jump.wav");
   }
 
-<<<<<<< HEAD
-  create() {
-    // Create the animations during the FgScene’s create phase
-    this.createAnimations();
-    this.cursors = this.input.keyboard.createCursorKeys();
-    //create ground
-    this.ground = this.physics.add.staticGroup();
-    this.ground.create(400, 600, "platform").setScale(2).refreshBody();
-    // Create sounds
-    this.jumpSound = this.sound.add("jump");
-
-    //  << SOCKET THINGS!!! >>
-
-    this.otherPlayers = []
-
-    // ask the server who current players are
-    socket.emit("currentPlayers");
-
-
-    //get currentPlayers in room and add self and other players
-    socket.on("currentPlayers", (players, room) => {
-      //Find all the players in the same room
-      const playersInRoom = {}
-      Object.keys(players).forEach(id => {
-        if(players[id].roomId === room){
-          playersInRoom[id] = players[id]
-        }
-      })
-
-      Object.keys(playersInRoom).forEach(id => {
-        if(players[id].playerId === socket.id){
-          this.addPlayer(players[id], socket.id)
-        }else {
-          this.addOtherPlayers(players[id], id)
-        }
-      })
-    })
-=======
 
 
   create() {
       // Create game entities
->>>>>>> endScene
 
 
       console.log(this.selectedSprite)
 
-<<<<<<< HEAD
-  // SOCKET RELATED FUNCTIONS
-  addPlayer(playerInfo, socketId){
-    this.player = new Player(this, playerInfo.x, playerInfo.y, "stephanie").setScale(0.5);
-    this.player.playerId = socketId
-    this.player.setCollideWorldBounds(true);
-    this.player.setBounce(0.2);
-    //this.physics.add(this.ground, this.player)
-=======
       this.createAnimations();
       this.cursors = this.input.keyboard.createCursorKeys();
       //create ground
@@ -123,7 +75,6 @@ export default class WaitFg extends Phaser.Scene {
           }
         });
       });
->>>>>>> endScene
 
   }
 
@@ -146,11 +97,6 @@ export default class WaitFg extends Phaser.Scene {
     })
   }
 
-<<<<<<< HEAD
-  addOtherPlayers(playerInfo, socketId){
-    const otherPlayer = new Player(this, playerInfo.x, playerInfo.y, "tiffany")
-    otherPlayer.playerId = socketId
-=======
 
   // SOCKET RELATED FUNCTIONS
   addPlayer(playerInfo, socketId, selectedSprite) {
@@ -164,7 +110,6 @@ export default class WaitFg extends Phaser.Scene {
   addOtherPlayers(playerInfo, socketId) {
     const otherPlayer = new Player(this, playerInfo.x, playerInfo.y, "ayse" );
     otherPlayer.playerId = socketId;
->>>>>>> endScene
     otherPlayer.setCollideWorldBounds(true);
     otherPlayer.setBounce(0.2)
     // this.physics.add(this.ground, otherPlayer);
