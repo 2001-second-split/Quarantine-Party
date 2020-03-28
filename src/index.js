@@ -30,6 +30,8 @@ import BoardScene from './scenes/BoardScene'
 import BoardBg from './scenes/BoardBg'
 import BoardDice from './scenes/BoardDice'
 
+import EndScene from './scenes/EndScene';
+
 //socket related
 import io from 'socket.io-client';
 export const socket = io("http://localhost:3000") //this is what starts the socket connection
@@ -53,6 +55,8 @@ class Game extends Phaser.Game {
     this.scene.add('BoardBg', BoardBg)
     this.scene.add('BoardScene', BoardScene)
     this.scene.add('BoardDice', BoardDice)
+
+    this.scene.add('EndScene', EndScene)
 
     this.scene.add('minigameTPScene', minigameTPScene)
 
