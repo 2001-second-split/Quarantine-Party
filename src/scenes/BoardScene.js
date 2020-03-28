@@ -11,5 +11,23 @@ export default class BoardScene extends Phaser.Scene {
     this.scene.launch('BoardDice');
     this.scene.launch('BoardFg');
 
+
+
+    //testing transition to EndScene
+    this.input.on('pointerup', function (pointer) { //on click the scene will change
+      this.scene.setVisible(false, 'BoardBg')
+      this.scene.setVisible(false, 'BoardFg')
+      this.scene.setVisible(false, 'BoardDice')
+      this.scene.pause('BoardScene')
+
+      const data = {
+        first: 'ayse',
+        second: 'tiffany',
+        third: 'stephanie',
+        fourth: 'patty',
+      }
+
+      this.scene.start('EndScene', data);
+    }, this);
   }
 }

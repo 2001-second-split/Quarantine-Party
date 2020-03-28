@@ -4,11 +4,6 @@ export default class EndScene extends Phaser.Scene {
   constructor() {
     super('EndScene');
 
-    const first = '';
-    const second = '';
-    const third = '';
-    const fourth = '';
-
   }
   init(data) {
     // setting data passed from board to variables
@@ -57,10 +52,14 @@ export default class EndScene extends Phaser.Scene {
 
     // Create Background
     this.add.image(-160, 0, 'background').setOrigin(0).setScale(0.5);
-    this.header = this.add.text(250, 50, `CONGRATS ${this.first}!!!`, { fontSize: '32px', fill: '#000' });
+
+    // Static Text for now
+    const header = this.add.text(250, 50, `CONGRATS ${this.first}!!!`, { fontSize: '32px', fill: '#000' });
+    const credits = this.add.text(10, 600, 'Game Created by 2001-GH: Ayse, Patty, Tiffany, Stephanie')
+
 
     // Display players based on how well they placed
-    this.add.sprite(400,300, this.first).setScale(1)
+    this.add.sprite(400,250, this.first).setScale(1)
     this.add.sprite(200,450, this.second).setScale(0.5)
     this.add.sprite(400,450, this.third).setScale(0.5)
     this.add.sprite(600,450, this.fourth).setScale(0.5)
@@ -80,19 +79,33 @@ export default class EndScene extends Phaser.Scene {
 
 
     // Play Again Button?
-    // const playAgainButton = this.add.text(250, 250, 'Play Again?', { fontSize: '32px', fill: '#FFF' });
-    // playAgainButton.setInteractive();
+    const playAgainButton = this.add.text(50, 250, 'Play Again?', { fontSize: '32px', fill: '#FFF' });
+    playAgainButton.setInteractive();
 
+    // if Play Again is hit, restart game from beginning
+    playAgainButton.on('pointerup', () => {
+      console.log('playagain pressed')
+
+      // stopping all scenes for now
+      // refactor tasks: stop scenes as they're not necessary
+      this.scene.stop('WaitBg')
+      this.scene.stop('WaitFg')
+      this.scene.stop('WaitScene')
+
+      this.scene.stop('BoardBg')
+      this.scene.stop('BoardFg')
+      this.scene.stop('BoardScene')
+      this.scene.stop('BoardDice')
+
+      this.scene.stop('EndScene')
+
+      this.scene.start('StartingScene');
+    })
 
   }
 
   update() {
-    // if Play Again is hit, restart game from beginning
-    // playAgainButton.on('pointerup', () => {
-    //   console.log('playagain pressed')
-    //   this.scene.stop('EndScene')
-    //   this.scene.start('StartingScene');
-    // })
+
   }
 
 }
