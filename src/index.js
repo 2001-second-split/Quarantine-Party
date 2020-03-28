@@ -26,9 +26,11 @@ import WaitFg from './scenes/WaitFg'
 import WaitBg from './scenes/WaitBg'
 
 import BoardScene from './scenes/BoardScene'
-import BoardFg from './scenes/BoardFg'
+
 import BoardBg from './scenes/BoardBg'
 import BoardDice from './scenes/BoardDice'
+
+import EndScene from './scenes/EndScene';
 
 //socket related
 import io from 'socket.io-client';
@@ -51,9 +53,10 @@ class Game extends Phaser.Game {
     this.scene.add('WaitScene', WaitScene)
 
     this.scene.add('BoardBg', BoardBg)
-    this.scene.add('BoardFg', BoardFg)
     this.scene.add('BoardScene', BoardScene)
     this.scene.add('BoardDice', BoardDice)
+
+    this.scene.add('EndScene', EndScene)
 
     this.scene.add('minigameTPScene', minigameTPScene)
 

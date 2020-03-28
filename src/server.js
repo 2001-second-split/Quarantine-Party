@@ -68,6 +68,18 @@ io.on('connection', (socket)  => {
     socket.broadcast.emit('playerMoved', players[socket.id]);
   });
 
+  //when a player rolls a dice, update their position
+  socket.on('diceRoll', (rolledNum) => {
+    socket.emit('moveSelfOnBoard', rolledNum);
+    //io.to(socket.roomId).broadcast('moveOtherOnBoard', rolledNum)
+  })
+
+  socket.on('startMinigame', () => {
+    console.log('SERVER STARTMINIGAME')
+    console.log('ROOM ID', players[socket.id].roomId)
+    io.in(players[socket.id].roomId).emit('minigameStarted')
+  })
+
 });
 
 server.listen(PORT, () => {
