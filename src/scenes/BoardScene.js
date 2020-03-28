@@ -9,14 +9,12 @@ export default class BoardScene extends Phaser.Scene {
     // << LOAD BACKGROUND AND FOREGROUND SCENES IN PARALLEL HERE >>
     this.scene.launch('BoardBg');
     this.scene.launch('BoardDice');
-    this.scene.launch('BoardFg');
 
 
 
     //testing transition to EndScene
     this.input.on('pointerup', function (pointer) { //on click the scene will change
       this.scene.setVisible(false, 'BoardBg')
-      this.scene.setVisible(false, 'BoardFg')
       this.scene.setVisible(false, 'BoardDice')
       this.scene.pause('BoardScene')
 
