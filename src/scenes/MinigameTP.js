@@ -6,7 +6,6 @@ export default class minigameTPScene extends Phaser.Scene {
 
     this.gameOver = false;
 
-    this.players = {}
     this.firstPlayerScore = 0;
     this.secondPlayerScore = 0;
     this.thirdPlayerScore = 0;
@@ -17,46 +16,70 @@ export default class minigameTPScene extends Phaser.Scene {
   }
 
   preload() {
+    this.load.spritesheet("ayse", "/public/assets/spriteSheets/ayse-sheet.png", {
+      frameWidth: 300,
+      frameHeight: 300,
+      endFrame: 8
+    });
+    this.load.spritesheet("stephanie", "/public/assets/spriteSheets/stephanie-sheet.png", {
+      frameWidth: 300,
+      frameHeight: 300,
+      endFrame: 8
+      }
+    );
+    this.load.spritesheet("tiffany", "/public/assets/spriteSheets/tiffany-sheet.png", {
+      frameWidth: 300,
+      frameHeight: 300,
+      endFrame: 8
+    });
+    this.load.spritesheet("patty", "/public/assets/spriteSheets/patty-sheet.png", {
+      frameWidth: 300,
+      frameHeight: 300,
+      endFrame: 8
+    });
     this.load.path = '/public/assets/minigameTP/'
     this.load.image('sky', 'sky.png');
     this.load.image('platform', 'platform.png');
     this.load.image('tp', 'tp.png');
     this.load.image('bomb', 'bomb.png');
-    this.load.spritesheet('dude', 'dude.png', { frameWidth: 32, frameHeight: 48 });
   }
 
   createAnimations() {
     //  Our player animations, turning, walking left and walking right.
     this.anims.create({
       key: 'left',
-      frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
-      frameRate: 10,
+      frames: this.anims.generateFrameNumbers(`${this.scene.settings.data.first}`, { start: 4, end: 6 }),
+      frameRate: 5,
       repeat: -1
     });
     this.anims.create({
       key: 'turn',
-      frames: [ { key: 'dude', frame: 4 } ],
+      frames: [ { key: `${this.scene.settings.data.first}`, frame: 0 } ],
       frameRate: 20
     });
     this.anims.create({
       key: 'right',
-      frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-      frameRate: 10,
+      frames: this.anims.generateFrameNumbers(`${this.scene.settings.data.first}`, { start: 1, end: 3 }),
+      frameRate: 5,
       repeat: -1
     });
   }
 
   create() {
-    console.log(this.scene.physics)
-
     console.log(this.scene.settings.data, "data")
-    socket.emit("currentPlayers");
-    socket.on("currentPlayers", (players, room) => {
-      //Find all the players in the same room
-      console.log(players)
-      // this.players = players
-    });
-    // console.log(this.players)
+
+    // socket.emit('currentPlayers')
+
+    // socket.on('currentPlayers', (players, room) => {
+    //   console.log(players)
+    //   Object.keys(players).forEach(function (id) {
+    //     if (players[id].playerId === self.socket.id) {
+    //       addPlayer(self, players[id]);
+    //     } else {
+    //       addOtherPlayers(self, players[id]);
+    //     }
+    //   });
+    // });
 
     this.add.image(400, 300, 'sky');
 
@@ -72,7 +95,7 @@ export default class minigameTPScene extends Phaser.Scene {
     // this.platforms.create(750, 220, 'platform');
 
     // The player and its settings
-    this.player = this.physics.add.sprite(100, 450, 'dude');
+    this.player = this.physics.add.sprite(100, 450, `${this.scene.settings.data.first}`).setScale(0.25);
 
     //  Player physics properties. Give the little guy a slight bounce.
     this.player.setBounce(0.2);
@@ -192,6 +215,6 @@ export default class minigameTPScene extends Phaser.Scene {
     this.player.disableBody(true, true);
     // this.player.setActive(false)
     // this.player.anims.play('turn');
-    // this.gameOver = true;
+    this.gameOver = true;
   }
 }
