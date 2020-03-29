@@ -124,12 +124,12 @@ export default class BoardBg extends Phaser.Scene {
         third: 'stephanie',
         fourth: 'patty',
       }
-
-      this.scene.transition({
-        target: 'EndScene',
-        data: data,
-        duration: 10000
-      })
+      this.scene.start('EndScene', data);
+      // this.scene.transition({
+      //   target: 'EndScene',
+      //   data: data,
+      //   duration: 100000 //wait 3 seconds before transitioning
+      // })
 
 
       return

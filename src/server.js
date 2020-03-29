@@ -30,33 +30,31 @@ io.on('connection', (socket)  => {
   };
 
   //get current players when you first enter the room
-  socket.on('currentPlayers', function() {
-    console.log('requesting room information');
+  socket.on('currentPlayers', () => {
     const room = players[socket.id].roomId;
     socket.emit('currentPlayers', players, room);
   })
 
-  socket.on('subscribe', (room) => {
+  socket.on('subscribe', (room, spriteSkin) => {
     console.log(`A client joined room ${room}`)
     socket.join(room)
-    // update all other players of the new player
+    // add the newly subscribed player to the players object,
+    // and pass its roomId and name(spriteSkin)
     players[socket.id].roomId = room
-
-    // send the players object in subscribed room to the new player
-    socket.emit('currentPlayers', players, room);
+    players[socket.id].name = spriteSkin
 
     // update all other players of the new player
-    io.to(room).emit('newPlayer', players[socket.id], socket.id)
+    io.to(room).emit('newPlayer', players[socket.id], socket.id,spriteSkin)
   })
 
   // disconnecting
   socket.on('disconnect', () => {
     console.log(`${socket.id} disconnected`);
-
+    // emit a message to all players to remove this player
+    io.to(players[socket.id].roomId).emit('disconnect', socket.id);
     // remove this player from our players object
     delete players[socket.id];
-    // emit a message to all players to remove this player
-    io.emit('disconnect', socket.id);
+
   });
 
   // when a player moves, update the player data
