@@ -44,7 +44,21 @@ io.on('connection', (socket)  => {
     players[socket.id].name = spriteSkin
 
     // update all other players of the new player
-    io.to(room).emit('newPlayer', players[socket.id], socket.id,spriteSkin)
+    io.to(room).emit('newPlayer', players[socket.id], socket.id, spriteSkin)
+
+    //if there are four players subscribed to room, emit playersReady
+    io.in(room).clients((error, clients) => {
+      if (error) throw error
+      if(clients.length === 4){
+        io.in(room).emit('playersReady')
+      }
+    });
+  })
+
+  //listen for request to transition to board
+  socket.on('transitionToBoard', () => {
+    const room = players[socket.id].roomId;
+    io.in(room).emit('transitionedToBoard')
   })
 
   // disconnecting

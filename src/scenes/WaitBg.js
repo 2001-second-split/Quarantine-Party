@@ -20,20 +20,20 @@ export default class BgSceneWait extends Phaser.Scene {
 
     this.header = this.add.text(250, 50, 'Waiting Room!!', { fontSize: '32px', fill: '#000' });
 
-    //create a "start button" but this is actually just text for now
-    const startButton = this.add.text(250, 250, 'Start Button', { fontSize: '32px', fill: '#FFF' });
+    // //create a "start button" but this is actually just text for now
+    // const startButton = this.add.text(250, 250, 'Start Button', { fontSize: '32px', fill: '#FFF' });
 
-    //make it interactive! so when we click it...
-    startButton.setInteractive();
+    // //make it interactive! so when we click it...
+    // startButton.setInteractive();
 
-    // when we release the mouse, it'll log a message and change scenes
-    startButton.on('pointerup', () => {
-      console.log('startbutton pressed')
-      this.scene.stop('WaitBg')
-      this.scene.stop('WaitFg')
-      this.scene.stop('WaitScene')
+    // // when we release the mouse, it'll log a message and change scenes
+    // startButton.on('pointerup', () => {
+    //   console.log('startbutton pressed')
+    //   this.scene.stop('WaitBg')
+    //   this.scene.stop('WaitFg')
+    //   this.scene.stop('WaitScene')
 
-      this.scene.start('BoardScene');
-    })
+    //   this.scene.start('BoardScene');
+    // })
   }
 }

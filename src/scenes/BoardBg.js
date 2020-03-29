@@ -22,6 +22,10 @@ export default class BoardBg extends Phaser.Scene {
     this.otherCharacters = ['ayse', 'stephanie', 'tiffany']
   }
 
+  init(que){
+    this.que = que
+  }
+
   preload() {
     // Preload map & sprites
     this.load.json('map', 'assets/backgrounds/final_boardCSV.json');
@@ -29,6 +33,8 @@ export default class BoardBg extends Phaser.Scene {
   }
 
   create() {
+
+    console.log('QUE', this.que)
     //Parse the board data from the map file
     this.data = this.cache.json.get('map');
 
