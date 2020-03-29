@@ -63,7 +63,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.updateJump(cursors)
     this.updateInAir();
 
-
     const x = this.x;
     const y = this.y;
     const facingLeft = this.facingLeft;

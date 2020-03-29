@@ -2,6 +2,8 @@ import 'phaser';
 import {socket} from '../index'
 
 let charPosition;
+let otherCharsPositions = []
+
 export default class BoardBg extends Phaser.Scene {
   constructor() {
     super('BoardBg');
@@ -14,12 +16,16 @@ export default class BoardBg extends Phaser.Scene {
       [6, 2], [6, 3, true], [6, 4], [6, 5],
       [5, 5], [4, 5], [4, 6], [4, 7]
     ]
+    // associate character names with corresponding tiles in tilemap
+    this.characters = {ayse: 68, stephanie: 69, tiffany: 70, patty: 71}
+    //hardcode other characters for now - this will be replaced with data passed from WaitScene
+    this.otherCharacters = ['ayse', 'stephanie', 'tiffany']
   }
 
   preload() {
     // Preload map & sprites
     this.load.json('map', 'assets/backgrounds/final_boardCSV.json');
-    this.load.spritesheet('tiles','assets/spriteSheets/boardWChar.png', {frameWidth: 128, frameHeight: 128})
+    this.load.spritesheet('tiles','assets/spriteSheets/boardWChars.png', {frameWidth: 128, frameHeight: 128})
   }
 
   create() {
@@ -37,6 +43,8 @@ export default class BoardBg extends Phaser.Scene {
 
     //build map
     this.buildMap()
+    //place characters to tile 0
+    //this.placeCharacters()
     //listen for movement on board
     socket.on('moveSelfOnBoard', rolledNum => {
       this.moveCharacter(rolledNum)
@@ -79,6 +87,20 @@ export default class BoardBg extends Phaser.Scene {
         }
     }
   }
+
+  // placeCharacters(){
+  //   const x = this.walkablePath[0][0];
+  //   const y = this.walkablePath[0][1];
+
+  //   const tx = (x - y) * this.tileWidthHalf;
+  //   const ty = (x + y) * this.tileHeightHalf;
+  //   charPosition = this.add.image(this.centerX + tx, this.centerY + ty, 'tiles', this.characters.patty);
+  //   charPosition.prevIdx = 0;
+  //   this.otherCharacters.forEach(char => {
+  //     const otherCharacterPosition = this.add.image(this.centerX + tx, this.centerY + ty, 'tiles', this.characters[char])
+  //     otherCharsPositions.push(otherCharacterPosition)
+  //   })
+  // }
 
   moveCharacter(idx) {
     //if character was already on a tile get its index
@@ -123,10 +145,12 @@ export default class BoardBg extends Phaser.Scene {
     //if character is on the board, remove it from its previous position
     if(charExists) charPosition.destroy()
     //place character to its new location
-    charPosition = this.add.image(this.centerX + tx, this.centerY + ty, 'tiles', 68);
+    charPosition = this.add.image(this.centerX + tx, this.centerY + ty, 'tiles', 69);
     charPosition.depth = this.centerY + ty
     //update characters' previous location index by adding current index
     charPosition.prevIndex = prevIdx > 0 ? prevIdx + idx: idx
+
+    //disable your turn, add yourself to the beginning of the que.
 
     //after placing the character to new position, check to see if he lands on a coin
     //trigger minigame if on coin
