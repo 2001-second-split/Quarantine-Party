@@ -1,9 +1,12 @@
+import { socket } from "../index";
+
 export default class minigameTPScene extends Phaser.Scene {
   constructor() {
     super('minigameTPScene');
 
     this.gameOver = false;
 
+    this.players = {}
     this.firstPlayerScore = 0;
     this.secondPlayerScore = 0;
     this.thirdPlayerScore = 0;
@@ -30,13 +33,11 @@ export default class minigameTPScene extends Phaser.Scene {
       frameRate: 10,
       repeat: -1
     });
-
     this.anims.create({
       key: 'turn',
       frames: [ { key: 'dude', frame: 4 } ],
       frameRate: 20
     });
-
     this.anims.create({
       key: 'right',
       frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
@@ -46,7 +47,14 @@ export default class minigameTPScene extends Phaser.Scene {
   }
 
   create() {
-    console.log(this.scene.settings.data)
+    // console.log(this.scene.settings.data, "data")
+    socket.emit("currentPlayers");
+    socket.on("currentPlayers", (players, room) => {
+      //Find all the players in the same room
+      this.players = players
+    });
+    console.log(this.players)
+
     this.add.image(400, 300, 'sky');
 
     this.platforms = this.physics.add.staticGroup();
@@ -176,7 +184,9 @@ export default class minigameTPScene extends Phaser.Scene {
 
   hitBomb (player, bomb) {
     // this.physics.pause();
-    this.player.visible = false
+    // this.player.visible = false
+    this.bomb.destroy()
+    // this.player.setActive(false)
     // this.player.anims.play('turn');
     // this.gameOver = true;
   }
