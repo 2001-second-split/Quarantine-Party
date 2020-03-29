@@ -7,7 +7,6 @@ export default class WaitFg extends Phaser.Scene {
     super("WaitFg");
   }
   init(data){
-    console.log("DATA",data)
     this.selectedSprite = data.selectedSprite
   }
   preload() {
@@ -19,11 +18,6 @@ export default class WaitFg extends Phaser.Scene {
 
 
   create() {
-      // Create game entities
-
-
-      console.log(this.selectedSprite)
-
       this.createAnimations();
       this.cursors = this.input.keyboard.createCursorKeys();
       //create ground
@@ -38,7 +32,6 @@ export default class WaitFg extends Phaser.Scene {
 
       // ask the server who current players are
       socket.emit("currentPlayers");
-
 
       //get currentPlayers in room and add self and other players
       socket.on("currentPlayers", (players, room) => {
@@ -67,14 +60,20 @@ export default class WaitFg extends Phaser.Scene {
 
       socket.on('playerMoved', (playerInfo) => {
         this.otherPlayers.forEach(otherPlayer => {
-          console.log('OP ID', otherPlayer.playerId)
-          console.log('PLAYERINFO', playerInfo.playerId)
           if (playerInfo.playerId === otherPlayer.playerId) {
-            console.log('OTHER PLAYER INSIDE IF')
             otherPlayer.setPosition(playerInfo.x, playerInfo.y);
           }
         });
       });
+
+      // socket.on('otherPlayerMoved', (cursors) => {
+      //   this.otherPlayers.forEach(player => {
+      //     console.log('OHTERPLAYERMOVED')
+      //     console.log('CURSORS', cursors)
+      //     player.moved = true
+      //     player.cursors = cursors
+      //   })
+      // })
 
   }
 

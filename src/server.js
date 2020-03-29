@@ -75,10 +75,13 @@ io.on('connection', (socket)  => {
   })
 
   socket.on('startMinigame', () => {
-    console.log('SERVER STARTMINIGAME')
-    console.log('ROOM ID', players[socket.id].roomId)
     io.in(players[socket.id].roomId).emit('minigameStarted')
   })
+
+  // socket.on('otherPlayerMove', (cursors) => {
+  //   const roomId = players[socket.id].roomId
+  //   io.to(roomId).emit('otherPlayerMoved', cursors)
+  // })
 
 });
 
