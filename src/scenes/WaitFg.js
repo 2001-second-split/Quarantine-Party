@@ -6,10 +6,7 @@ export default class WaitFg extends Phaser.Scene {
   constructor() {
     super("WaitFg");
   }
-  init(data){
-    console.log("DATA",data)
-    this.selectedSprite = data.selectedSprite
-  }
+
   preload() {
     this.load.image("platform", "assets/sprites/platform.png");
     // << LOAD SOUNDS HERE >>
@@ -20,11 +17,7 @@ export default class WaitFg extends Phaser.Scene {
 
   create() {
       // Create game entities
-    arrSprites.push(this.selectedSprite)
-
-      console.log(this.selectedSprite)
-
-      this.createAnimations();
+      // this.createAnimations();
       this.cursors = this.input.keyboard.createCursorKeys();
       //create ground
       this.ground = this.physics.add.staticGroup();
@@ -41,7 +34,7 @@ export default class WaitFg extends Phaser.Scene {
 
 
       //get currentPlayers in room and add self and other players
-      socket.on("currentPlayers", (players, room) => {
+      socket.on("currentPlayers", (players, room, spriteSkin) => {
         //Find all the players in the same room
         const playersInRoom = {};
         Object.keys(players).forEach(id => {
@@ -52,21 +45,19 @@ export default class WaitFg extends Phaser.Scene {
 
         Object.keys(playersInRoom).forEach(id => {
           if (players[id].playerId === socket.id) {
-            this.addPlayer(players[id],socket.id, this.selectedSprite);
+            this.addPlayer(players[id],socket.id, spriteSkin);
 
           } else {
-            this.addOtherPlayers(players[id], id);
+            this.addOtherPlayers(players[id], id,spriteSkin);
             console.log('players in room',playersInRoom)
-            console.log('id?', players[id])
           }
         });
       });
 
       //add new players as other players
-      socket.on("newPlayer", (playerInfo, socketId) => {
+      socket.on("newPlayer", (playerInfo, socketId, spriteSkin) => {
         console.log("NEW PLAYER HAS JOINED");
-        console.log(this.otherPlayers);
-        this.addOtherPlayers(playerInfo, socketId);
+        this.addOtherPlayers(playerInfo, socketId,spriteSkin);
       });
 
       socket.on('playerMoved', (playerInfo) => {
@@ -82,39 +73,39 @@ export default class WaitFg extends Phaser.Scene {
 
   }
 
-  createAnimations() {
-    this.anims.create({
-      key: "run",
-      frames: this.anims.generateFrameNumbers(this.selectedSprite, { start: 6, end: 8}),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: "idle",
-      frames: [{key: this.selectedSprite, frame: 0}],
-      frameRate: 20
-    })
-    this.anims.create({
-      key: "jump",
-      frames:[{key: this.selectedSprite, frame: 3}],
-      frameRate: 20
-    })
-  }
+  // createAnimations() {
+  //   this.anims.create({
+  //     key: "run",
+  //     frames: this.anims.generateFrameNumbers(spriteSkin, { start: 6, end: 8}),
+  //     frameRate: 10,
+  //     repeat: -1,
+  //   });
+  //   this.anims.create({
+  //     key: "idle",
+  //     frames: [{key: spriteSkin, frame: 0}],
+  //     frameRate: 20
+  //   })
+  //   this.anims.create({
+  //     key: "jump",
+  //     frames:[{key: spriteSkin, frame: 3}],
+  //     frameRate: 20
+  //   })
+  // }
 
 
   // SOCKET RELATED FUNCTIONS
-  addPlayer(playerInfo, socketId, selectedSprite) {
-    console.log("Add player", selectedSprite);
+  addPlayer(playerInfo, socketId, spriteSkin) {
+    console.log("Add player", spriteSkin);
     console.log("THIS.OTHER PLAYERS LINE 109",this.otherPlayers)
-    this.player = new Player(this, playerInfo.x, playerInfo.y, selectedSprite).setScale(0.5);
+    this.player = new Player(this, playerInfo.x, playerInfo.y, spriteSkin).setScale(0.5);
     this.player.playerId = socketId
-    this.player.name = selectedSprite
+    this.player.name = spriteSkin
     this.player.setCollideWorldBounds(true);
     this.player.setBounce(0.2);
     // this.physics.add(this.ground, this.player);
   }
-  addOtherPlayers(playerInfo, socketId) {
-    const otherPlayer = new Player(this, playerInfo.x, playerInfo.y,'ayse' );
+  addOtherPlayers(playerInfo, socketId, spriteSkin) {
+    const otherPlayer = new Player(this, playerInfo.x, playerInfo.y, spriteSkin );
     otherPlayer.playerId = socketId;
     otherPlayer.setCollideWorldBounds(true);
     otherPlayer.setBounce(0.2)

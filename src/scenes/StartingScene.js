@@ -6,8 +6,32 @@ export default class StartingScene extends Phaser.Scene {
   constructor() {
     super('StartingScene');
   }
-
   preload () {
+    //load sprites
+    this.load.spritesheet("ayse", "assets/spriteSheets/ayse-sheet.png", {
+      frameWidth: 300,
+      frameHeight: 300,
+      endFrame: 8
+    });
+    this.load.spritesheet(
+      "stephanie",
+      "assets/spriteSheets/stephanie-sheet.png",{
+        frameWidth: 300,
+        frameHeight: 300,
+        endFrame: 8
+      }
+    );
+    this.load.spritesheet("tiffany", "assets/spriteSheets/tiffany-sheet.png", {
+      frameWidth: 300,
+      frameHeight: 300,
+      endFrame: 8
+    });
+    this.load.spritesheet("patty", "assets/spriteSheets/patty-sheet.png", {
+      frameWidth: 300,
+      frameHeight: 300,
+      endFrame: 8
+    });
+
     //load html element that will prompt user for input
     this.load.html('roomForm', 'assets/text/roomForm.html');
     this.load.image('pic', 'assets/backgrounds/introscene.png');
@@ -31,6 +55,7 @@ export default class StartingScene extends Phaser.Scene {
         {
             const username = domElement.getChildByName('username');
             const roomId = domElement.getChildByName('roomId');
+            const spriteSkin =  domElement.getChildByName('spriteSkin')
 
 
             //  Have they entered anything?
@@ -43,7 +68,7 @@ export default class StartingScene extends Phaser.Scene {
                 this.scene.start('WaitScene')
 
                 // NOTE: WE ARE SUBSCRIBING BEFORE WAITFG LISTENERS ARE CREATED
-                socket.emit('subscribe', roomId.value)
+                socket.emit('subscribe', roomId.value, spriteSkin.value)
             }
             else
             {

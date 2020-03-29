@@ -33,20 +33,22 @@ io.on('connection', (socket)  => {
   socket.on('currentPlayers', function() {
     console.log('requesting room information');
     const room = players[socket.id].roomId;
-    socket.emit('currentPlayers', players, room);
+    const spriteSkin = players[socket.id].name
+    socket.emit('currentPlayers', players, room,spriteSkin);
   })
 
-  socket.on('subscribe', (room) => {
+  socket.on('subscribe', (room, spriteSkin) => {
     console.log(`A client joined room ${room}`)
     socket.join(room)
     // update all other players of the new player
     players[socket.id].roomId = room
+    players[socket.id].name = spriteSkin
 
     // send the players object in subscribed room to the new player
-    socket.emit('currentPlayers', players, room);
+    socket.emit('currentPlayers', players, room, spriteSkin);
 
     // update all other players of the new player
-    io.to(room).emit('newPlayer', players[socket.id], socket.id)
+    io.to(room).emit('newPlayer', players[socket.id], socket.id,spriteSkin)
   })
 
   // disconnecting
