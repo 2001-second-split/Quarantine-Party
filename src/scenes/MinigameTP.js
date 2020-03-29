@@ -47,13 +47,16 @@ export default class minigameTPScene extends Phaser.Scene {
   }
 
   create() {
-    // console.log(this.scene.settings.data, "data")
+    console.log(this.scene.physics)
+
+    console.log(this.scene.settings.data, "data")
     socket.emit("currentPlayers");
     socket.on("currentPlayers", (players, room) => {
       //Find all the players in the same room
-      this.players = players
+      console.log(players)
+      // this.players = players
     });
-    console.log(this.players)
+    // console.log(this.players)
 
     this.add.image(400, 300, 'sky');
 
@@ -186,6 +189,7 @@ export default class minigameTPScene extends Phaser.Scene {
     // this.physics.pause();
     // this.player.visible = false
     this.bomb.destroy()
+    this.player.disableBody(true, true);
     // this.player.setActive(false)
     // this.player.anims.play('turn');
     // this.gameOver = true;
