@@ -1,4 +1,5 @@
 import 'phaser'
+import { socket } from "../index";
 
 export default class BoardScene extends Phaser.Scene {
   constructor() {
@@ -16,5 +17,18 @@ export default class BoardScene extends Phaser.Scene {
     //console.log('QUE', this.que, 'PLAYER', this.player, 'OTHER PLAYERS', this.otherPlayers)
     this.scene.launch('BoardBg', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers});
     this.scene.launch('BoardDice', {queue: this.queue, player: this.player});
+
+    // this.input.on('pointerup', function (pointer) { //on click the scene will change
+    //   this.scene.setVisible(false, 'BoardBg')
+    //   this.scene.setVisible(false, 'BoardDice')
+    //   this.scene.pause('BoardScene')
+    //   // const data = {
+    //   //   first: 'ayse',
+    //   //   second: 'tiffany',
+    //   //   third: 'stephanie',
+    //   //   fourth: 'patty',
+    //   // }
+    //   this.scene.start('minigameTPScene', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers});
+    // }, this);
   }
 }

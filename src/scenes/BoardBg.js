@@ -46,6 +46,8 @@ export default class BoardBg extends Phaser.Scene {
     //build map
     this.buildMap()
 
+    this.queuePrompt = this.add.text(700, 16, `${this.queue[0]} starts!`, { fontSize: '12px', fill: '#FFF' })
+
     //place characters to tile 0
     socket.emit('placeOnBoard', 0, this.queue[0])
 
@@ -63,7 +65,7 @@ export default class BoardBg extends Phaser.Scene {
     //listen for movement on board
     socket.on('moveCharOnBoard', (rolledNum, charName) => {
       this.moveCharacter(rolledNum, charName)
-      console.log('QUEUE BEFORE', this.queue)
+
       //Update queue once a player moves. This will first update the queue in BoardDice and then BoardBg (in next render cycle)
       socket.emit('unshiftQueue')
       //check the next in player in queue. Place the player on the board if she is not already
@@ -73,10 +75,15 @@ export default class BoardBg extends Phaser.Scene {
 
     })
 
+    socket.on('changeQueuePrompt', currentPlayer => {
+      this.queuePrompt.destroy()
+      this.queuePrompt = this.add.text(700, 16, `${currentPlayer}'s turn!`, { fontSize: '12px', fill: '#FFF' })
+    })
+
     //listen for minigames
     socket.on('minigameStarted', () => {
       //make the current scene sleep + minigame wake
-      this.scene.switch('minigameTPScene')
+      this.scene.switch('minigameTPScene', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers})
     })
   }
 

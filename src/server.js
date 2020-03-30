@@ -128,6 +128,11 @@ io.on('connection', (socket)  => {
     io.in(room).emit('placedOnBoard', rolledNum, charName)
   })
 
+  socket.on('changeQueuePrompt', currentPlayer => {
+    const room = players[socket.id].roomId
+    socket.in(room).emit('changeQueuePrompt', currentPlayer)
+  })
+
   socket.on('startMinigame', () => {
     io.in(players[socket.id].roomId).emit('minigameStarted')
   })

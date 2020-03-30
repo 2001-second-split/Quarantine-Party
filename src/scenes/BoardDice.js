@@ -1,5 +1,6 @@
 import Dice from '../entity/Dice';
 import {socket} from '../index'
+
 export default class BoardDice extends Phaser.Scene {
   constructor() {
     super('BoardDice');
@@ -80,6 +81,7 @@ export default class BoardDice extends Phaser.Scene {
     //listen for que update requests
     socket.on('unshiftQueue', () => {
       this.unshiftQueue()
+      socket.emit('changeQueuePrompt', this.queue[0])
       //enable dice only if its the user's turn
       if (this.player.name === this.queue[0]){
         this.enableDice()
