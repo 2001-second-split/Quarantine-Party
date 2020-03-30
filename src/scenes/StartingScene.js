@@ -89,16 +89,9 @@ export default class StartingScene extends Phaser.Scene {
 
         if (username.value !== '' && roomId.value !== '') {
 
-          // NOTE: WE ARE SUBSCRIBING BEFORE WAITFG LISTENERS ARE CREATED
           socket.emit('subscribe', roomId.value, spriteSkin.value, data.roomCreator)
-
           domElement.removeListener('click'); //  Turn off the click events
 
-        } else {
-          //  Flash the prompt
-          // WHAT PROMPT DOES THIS FLASH? IT'S BROKEN.
-          // TIFFANY THINKS IT SHOULD BE REMOVED.
-          // this.scene.tweens.add({ targets: text1, alpha: 0.1, duration: 200, ease: 'Power3', yoyo: true });
         }
       }
 

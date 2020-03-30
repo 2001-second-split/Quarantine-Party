@@ -34,8 +34,8 @@ import EndScene from './scenes/EndScene';
 
 //socket related
 import io from 'socket.io-client';
-// export const socket = io("http://localhost:3000") //this is what starts the socket connection
-export const socket = io(); // heroku purposes
+export const socket = io("http://localhost:3000") // development
+// export const socket = io(); // production (heroku)
 
 import config from './config/config'
 
