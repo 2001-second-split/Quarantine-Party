@@ -40,7 +40,7 @@ export default class StartingScene extends Phaser.Scene {
   create () {
     this.add.image(400, 300, 'pic').setScale(0.5);
 
-    let text = this.add.text(250, 10, 'Welcome!!!', { color: 'black', fontFamily: 'Arial', fontSize: '24px '});
+    let text1 = this.add.text(250, 10, 'Welcome!!!', { color: 'black', fontFamily: 'Arial', fontSize: '24px '});
     let text2 = this.add.text(250, 50, 'Please join or create a game', { color: 'black', fontFamily: 'Arial', fontSize: '16px '});
 
     // element that lets you create or join a room
@@ -68,24 +68,23 @@ export default class StartingScene extends Phaser.Scene {
         })
       }
 
-      socket.on('createdOrJoinedRoom', () => {
-        //  Have they entered anything?
-        if (username.value !== '' && roomId.value !== '') {
-            //  Turn off the click events
-            domElement.removeListener('click');
-
-            //Take user to the waiting scene
-            this.scene.start('WaitScene', data)
-        }
-        else {
-            //  Flash the prompt
-            this.scene.tweens.add({ targets: text1, alpha: 0.1, duration: 200, ease: 'Power3', yoyo: true });
-        }
-      })
+      //  Have they entered anything?
+      if (username.value !== '' && roomId.value !== '') {
+        //  Turn off the click events
+        domElement.removeListener('click');
+      } else {
+        //  Flash the prompt
+        this.scene.tweens.add({ targets: text1, alpha: 0.1, duration: 200, ease: 'Power3', yoyo: true });
+      }
 
       // NOTE: WE ARE SUBSCRIBING BEFORE WAITFG LISTENERS ARE CREATED
       socket.emit('subscribe', roomId.value, spriteSkin.value)
 
+      socket.on('createdOrJoinedRoom', () => {
+        //Take user to the waiting scene
+        this.scene.start('WaitScene', data)
+
+    })
 
     }, this);
 
