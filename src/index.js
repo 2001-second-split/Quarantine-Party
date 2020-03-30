@@ -64,28 +64,11 @@ class Game extends Phaser.Game {
     this.scene.start('StartingScene')
   }
 
-  create() {
-    this.cursors = this.input.keyboard.createCursorKeys();
-  }
+  init() {}
 
-  update() {
-    if (this.cursors.left.isDown) {
-      this.player.setVelocityX(-160);
-      this.player.anims.play('left', true);
-    }
-    else if (this.cursors.right.isDown) {
-      this.player.setVelocityX(160);
-      this.player.anims.play('right', true);
-    }
-    else{
-      this.player.setVelocityX(0);
-      this.player.anims.play('turn');
-    }
+  create() {}
 
-    if (this.cursors.up.isDown && this.player.body.touching.down) {
-      this.player.setVelocityY(-330);
-    }
-  }
+  update() {}
 
 }
 
