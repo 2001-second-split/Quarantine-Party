@@ -1,58 +1,88 @@
+import { socket } from "../index";
+
 export default class minigameTPScene extends Phaser.Scene {
   constructor() {
     super('minigameTPScene');
 
     this.gameOver = false;
-    this.score = 0;
+
+    this.firstPlayerScore = 0;
+    this.secondPlayerScore = 0;
+    this.thirdPlayerScore = 0;
+    this.fourthPlayerScore = 0;
 
     this.collectTP = this.collectTP.bind(this);
     this.hitBomb = this.hitBomb.bind(this);
   }
 
   preload() {
+    this.load.spritesheet("ayse", "/public/assets/spriteSheets/ayse-sheet.png", {
+      frameWidth: 300,
+      frameHeight: 300,
+      endFrame: 8
+    });
+    this.load.spritesheet("stephanie", "/public/assets/spriteSheets/stephanie-sheet.png", {
+      frameWidth: 300,
+      frameHeight: 300,
+      endFrame: 8
+      }
+    );
+    this.load.spritesheet("tiffany", "/public/assets/spriteSheets/tiffany-sheet.png", {
+      frameWidth: 300,
+      frameHeight: 300,
+      endFrame: 8
+    });
+    this.load.spritesheet("patty", "/public/assets/spriteSheets/patty-sheet.png", {
+      frameWidth: 300,
+      frameHeight: 300,
+      endFrame: 8
+    });
     this.load.path = '/public/assets/minigameTP/'
     this.load.image('sky', 'sky.png');
     this.load.image('platform', 'platform.png');
     this.load.image('tp', 'tp.png');
     this.load.image('bomb', 'bomb.png');
-    this.load.spritesheet('dude', 'dude.png', { frameWidth: 32, frameHeight: 48 });
   }
 
-
   createAnimations() {
-
     //  Our player animations, turning, walking left and walking right.
     this.anims.create({
       key: 'left',
-      frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
-      frameRate: 10,
+      frames: this.anims.generateFrameNumbers(`${this.scene.settings.data.player.name}`, { start: 4, end: 6 }),
+      frameRate: 5,
       repeat: -1
     });
-
     this.anims.create({
       key: 'turn',
-      frames: [ { key: 'dude', frame: 4 } ],
+      frames: [ { key: `${this.scene.settings.data.player.name}`, frame: 0 } ],
       frameRate: 20
     });
-
     this.anims.create({
       key: 'right',
-      frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-      frameRate: 10,
+      frames: this.anims.generateFrameNumbers(`${this.scene.settings.data.player.name}`, { start: 1, end: 3 }),
+      frameRate: 5,
       repeat: -1
     });
-
-
   }
 
   create() {
-    // Create game entities
-    // << CREATE GAME ENTITIES HERE >>
+    console.log(this.scene.settings.data, "data")
 
-    //  A simple background for our game
+    // socket.emit('currentPlayers')
+
+    // socket.on('currentPlayers', (players, room) => {
+    //   console.log(players)
+    //   Object.keys(players).forEach(function (id) {
+    //     if (players[id].playerId === self.socket.id) {
+    //       addPlayer(self, players[id]);
+    //     } else {
+    //       addOtherPlayers(self, players[id]);
+    //     }
+    //   });
+    // });
+
     this.add.image(400, 300, 'sky');
 
-    //  The platforms group contains the ground and the 2 ledges we can jump on
     this.platforms = this.physics.add.staticGroup();
 
     //  Here we create the ground.
@@ -60,17 +90,23 @@ export default class minigameTPScene extends Phaser.Scene {
     this.platforms.create(600, 1000, 'platform').setScale(3).refreshBody();
 
     //  Now let's create some ledges
-    // this.platforms.create(600, 400, 'platform');
-    // this.platforms.create(50, 250, 'platform');
-    // this.platforms.create(750, 220, 'platform');
+    this.platforms.create(600, 400, 'platform');
+    this.platforms.create(50, 250, 'platform');
+    this.platforms.create(750, 220, 'platform');
 
     // The player and its settings
-    this.player = this.physics.add.sprite(100, 450, 'dude');
+    this.player = this.physics.add.sprite(100, 450, `${this.scene.settings.data.player.name}`).setScale(0.25);
+
+    this.player2 = this.physics.add.sprite(250, 450, `${this.scene.settings.data.queue[1]}`).setScale(0.25);
+    this.player3 = this.physics.add.sprite(400, 450, `${this.scene.settings.data.queue[2]}`).setScale(0.25);
+    this.player4 = this.physics.add.sprite(550, 450, `${this.scene.settings.data.queue[3]}`).setScale(0.25);
 
     //  Player physics properties. Give the little guy a slight bounce.
     this.player.setBounce(0.2);
     this.player.setCollideWorldBounds(true);
-
+    this.player2.setCollideWorldBounds(true);
+    this.player3.setCollideWorldBounds(true);
+    this.player4.setCollideWorldBounds(true);
 
     //  Input Events
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -83,23 +119,20 @@ export default class minigameTPScene extends Phaser.Scene {
     });
 
     this.toiletpaper.children.iterate(function (child) {
-
-        //  Give each star a slightly different bounce
         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-
+        child.setCollideWorldBounds(true);
     });
 
     this.bombs = this.physics.add.group();
 
     //  The score
-    this.scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+    this.p1scoreText = this.add.text(16, 16, `${this.scene.settings.data.queue[0]}: 0`, { fontSize: '16px', fill: '#000' });
+    this.p2scoreText = this.add.text(166, 16, `${this.scene.settings.data.queue[1]}: 0`, { fontSize: '16px', fill: '#000' });
+    this.p3scoreText = this.add.text(316, 16, `${this.scene.settings.data.queue[2]}: 0`, { fontSize: '16px', fill: '#000' });
+    this.p4scoreText = this.add.text(466, 16, `${this.scene.settings.data.queue[3]}: 0`, { fontSize: '16px', fill: '#000' });
 
-    // Create the animations during the FgScene's create phase
     this.createAnimations();
 
-
-    // Create collisions for all entities
-    //  Collide the player and the toiletpaper with the platforms
     this.physics.add.collider(this.player, this.platforms);
     this.physics.add.collider(this.toiletpaper, this.platforms);
     this.physics.add.collider(this.bombs, this.platforms);
@@ -121,8 +154,9 @@ export default class minigameTPScene extends Phaser.Scene {
        console.log('returnbutton pressed')
        this.scene.stop('minigameTPScene')
 
-       this.scene.switch('BoardBg');
-       this.scene.launch('BoardDice')
+       //this.scene.wake('BoardScene')
+       this.scene.wake('BoardBg');
+       this.scene.wake('BoardDice')
 
      })
 
@@ -133,10 +167,11 @@ export default class minigameTPScene extends Phaser.Scene {
     if (this.gameOver) {
       // return;
       this.scene.stop('MinigameTPScene');
-
       // this.scene.run('BoardScene');
       // this.scene.start('BoardScene');
-      this.scene.switch('BoardScene');
+     //this.scene.wake('BoardScene');
+      this.scene.wake('BoardBg');
+      this.scene.wake('BoardDice')
       // this.gameOver = false;
   }
 
@@ -148,13 +183,13 @@ export default class minigameTPScene extends Phaser.Scene {
       this.player.setVelocityX(160);
       this.player.anims.play('right', true);
     }
+    else if (this.cursors.up.isDown) {
+      this.player.setVelocityY(-330);
+      this.player.anims.play('turn');
+    }
     else{
       this.player.setVelocityX(0);
       this.player.anims.play('turn');
-    }
-
-    if (this.cursors.up.isDown && this.player.body.touching.down) {
-      this.player.setVelocityY(-330);
     }
   }
 
@@ -162,35 +197,33 @@ export default class minigameTPScene extends Phaser.Scene {
     toiletpaper.disableBody(true, true);
 
     //  Add and update the score
-    this.score += 10;
-    this.scoreText.setText('Score: ' + this.score);
+    this.firstPlayerScore += 10;
+    this.p1scoreText.setText(`${this.scene.settings.data.queue[0]}: ${this.firstPlayerScore}`);
 
     if (this.toiletpaper.countActive(true) === 0)
     {
         //  A new batch of toiletpaper to collect
-        this.toiletpaper.children.iterate(function (child) {
+      this.toiletpaper.children.iterate(function (child) {
+          child.enableBody(true, child.x, 0, true, true);
+      });
 
-            child.enableBody(true, child.x, 0, true, true);
+      let x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
-        });
-
-        let x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-
-        this.bomb = this.bombs.create(x, 16, 'bomb');
-        this.bomb.setBounce(1);
-        this.bomb.setCollideWorldBounds(true);
-        this.bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-        this.bomb.allowGravity = false;
-
+      this.bomb = this.bombs.create(x, 16, 'bomb');
+      this.bomb.setBounce(1);
+      this.bomb.setCollideWorldBounds(true);
+      this.bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+      this.bomb.allowGravity = false;
     }
   }
 
   hitBomb (player, bomb) {
-    this.physics.pause();
-    this.player.setTint(0xff0000);
-    this.player.anims.play('turn');
-    this.gameOver = true;
+    // this.physics.pause();
+    // this.player.visible = false
+    this.bomb.destroy()
+    this.player.disableBody(true, true);
+    // this.player.setActive(false)
+    // this.player.anims.play('turn');
+    // this.gameOver = true;
   }
-
-
 }
