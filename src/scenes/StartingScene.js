@@ -13,9 +13,7 @@ export default class StartingScene extends Phaser.Scene {
       frameHeight: 300,
       endFrame: 8
     });
-    this.load.spritesheet(
-      "stephanie",
-      "assets/spriteSheets/stephanie-sheet.png",{
+    this.load.spritesheet("stephanie", "assets/spriteSheets/stephanie-sheet.png",{
         frameWidth: 300,
         frameHeight: 300,
         endFrame: 8
@@ -59,6 +57,9 @@ export default class StartingScene extends Phaser.Scene {
     socket.on('joiningNonExistingRoom', () => {
       alert("sorry, room doesn't exist")
       domElement.addListener('click');
+      // when you click create/join room, the click-listener is removed
+      // but if a user does not properly join, server will emit the issue to one of these sockets,
+      // you have to add click-listener again so it can run through the domElement.on('click') function
     })
 
     socket.on('roomAlreadyCreated', () => {
@@ -89,16 +90,9 @@ export default class StartingScene extends Phaser.Scene {
 
         if (username.value !== '' && roomId.value !== '') {
 
-          // NOTE: WE ARE SUBSCRIBING BEFORE WAITFG LISTENERS ARE CREATED
           socket.emit('subscribe', roomId.value, spriteSkin.value, data.roomCreator)
-
           domElement.removeListener('click'); //  Turn off the click events
 
-        } else {
-          //  Flash the prompt
-          // WHAT PROMPT DOES THIS FLASH? IT'S BROKEN.
-          // TIFFANY THINKS IT SHOULD BE REMOVED.
-          // this.scene.tweens.add({ targets: text1, alpha: 0.1, duration: 200, ease: 'Power3', yoyo: true });
         }
       }
 
