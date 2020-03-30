@@ -80,7 +80,6 @@ export default class BoardDice extends Phaser.Scene {
     //listen for que update requests
     socket.on('unshiftQueue', () => {
       this.unshiftQueue()
-      console.log('QUEUE AFTER', this.queue)
       //enable dice only if its the user's turn
       if (this.player.name === this.queue[0]){
         this.enableDice()

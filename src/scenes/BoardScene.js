@@ -16,7 +16,5 @@ export default class BoardScene extends Phaser.Scene {
     //console.log('QUE', this.que, 'PLAYER', this.player, 'OTHER PLAYERS', this.otherPlayers)
     this.scene.launch('BoardBg', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers});
     this.scene.launch('BoardDice', {queue: this.queue, player: this.player});
-
-
   }
 }

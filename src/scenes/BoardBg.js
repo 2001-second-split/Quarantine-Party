@@ -1,8 +1,6 @@
 import 'phaser';
 import {socket} from '../index'
 
-let charPosition = {}
-
 export default class BoardBg extends Phaser.Scene {
   constructor() {
     super('BoardBg');
@@ -17,8 +15,9 @@ export default class BoardBg extends Phaser.Scene {
     ]
     // associate character names with corresponding tiles in tilemap
     this.characterIndexes = {ayse: 68, stephanie: 69, tiffany: 70, patty: 71}
-
+    this.charPosition = {}
   }
+
   init(data){
     this.queue = data.queue
     this.player = data.player
@@ -46,15 +45,32 @@ export default class BoardBg extends Phaser.Scene {
 
     //build map
     this.buildMap()
+
     //place characters to tile 0
-    //this.placeCharacters()
-    //listen for movement on board
-    socket.on('moveSelfOnBoard', rolledNum => {
-      this.moveCharacter(rolledNum, this.player.name)
+    socket.emit('placeOnBoard', 0, this.queue[0])
+
+    socket.on('placedOnBoard', (rolledNum, charName) => {
+      this.moveCharacter(rolledNum, charName)
     })
 
-    socket.on('moveOtherOnBoard', (rolledNum, charName) => {
+    //listen for movement on board
+    // socket.on('moveSelfOnBoard', rolledNum => {
+    //   this.moveCharacter(rolledNum, this.player.name)
+    //   //update the queue
+    //   this.queue.push(this.queue.shift())
+    // })
+
+    //listen for movement on board
+    socket.on('moveCharOnBoard', (rolledNum, charName) => {
       this.moveCharacter(rolledNum, charName)
+      console.log('QUEUE BEFORE', this.queue)
+      //Update queue once a player moves. This will first update the queue in BoardDice and then BoardBg (in next render cycle)
+      socket.emit('unshiftQueue')
+      //check the next in player in queue. Place the player on the board if she is not already
+      if(typeof this.charPosition[this.queue[1]] === 'undefined'){
+        socket.emit('placeOnBoard', 0, this.queue[1])
+      }
+
     })
 
     //listen for minigames
@@ -101,11 +117,10 @@ export default class BoardBg extends Phaser.Scene {
 
   moveCharacter(idx, charName) {
     //if character was already on a tile get its index
-    const charExists = typeof charPosition[charName] !== 'undefined'
-    if (charExists) console.log(charPosition[charName])
-    //const charExists = typeof charPosition !== 'undefined'
-    const prevIdx = charExists? charPosition[charName].prevIndex : 0
-    console.log('PREV INDEX', prevIdx, 'CHAREXISTS', charExists)
+    const charExists = typeof this.charPosition[charName] !== 'undefined'
+
+    const prevIdx = charExists? this.charPosition[charName].prevIndex : 0
+    console.log('CHAR', charName, 'PREV INDEX', prevIdx)
     //if user throws a dice larger than the spaces left on the board, the user wins
     if((prevIdx  + idx) >= (this.walkablePath.length -1)){
       console.log('YOU WON');
@@ -146,24 +161,24 @@ export default class BoardBg extends Phaser.Scene {
     const ty = (x + y) * this.tileHeightHalf;
     //if character is on the board, remove it from its previous position
     if(charExists){
-      charPosition[charName].destroy()
-      delete charPosition[charName]
-      console.log('AFTER DESTOY', charPosition[charName])
+      this.charPosition[charName].destroy()
+      delete this.charPosition[charName]
     }
     //place character to its new location
 
     const movedChar = this.add.image(this.centerX + tx, this.centerY + ty, 'tiles', this.characterIndexes[charName]);
 
     movedChar.depth = this.centerY + ty
-    movedChar.prevIndex = prevIdx > 0 ? prevIdx + idx: idx
+    movedChar.prevIndex = prevIdx + idx
+    console.log('PREVIDX +IDX', movedChar.prevIndex)
 
-    charPosition[charName] = movedChar
+    this.charPosition[charName] = movedChar
     //update characters' previous location index by adding current index
     //charPosition[charName].prevIndex = prevIdx > 0 ? prevIdx + idx: idx
 
     //after placing the character to new position, check to see if he lands on a coin
     //trigger minigame if on a coin
-    if(charExists &&  this.walkablePath[charPosition[charName].prevIndex].length === 3){
+    if(charExists &&  this.walkablePath[this.charPosition[charName].prevIndex].length === 3){
       socket.emit('startMinigame')
     }
   }

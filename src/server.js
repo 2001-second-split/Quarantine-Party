@@ -113,16 +113,27 @@ io.on('connection', (socket)  => {
     socket.broadcast.emit('playerMoved', players[socket.id]);
   });
 
-  //when a player rolls a dice, update their position
+  //when a player rolls a dice, update their position on self/others' board
+  //and shift the queue
   socket.on('diceRoll', (rolledNum, charName) => {
     const room = players[socket.id].roomId
-    socket.emit('moveSelfOnBoard', rolledNum);
-    io.to(room).emit('moveOtherOnBoard', rolledNum, charName)
+    //socket.emit('moveSelfOnBoard', rolledNum);
+    io.in(room).emit('moveCharOnBoard', rolledNum, charName)
     io.in(room).emit('unshiftQueue')
+  })
+
+  //when BoardBg first initiates, place the first player in line to tile 0 on all players' boards
+  socket.on('placeOnBoard', (rolledNum, charName) => {
+    const room = players[socket.id].roomId
+    io.in(room).emit('placedOnBoard', rolledNum, charName)
   })
 
   socket.on('startMinigame', () => {
     io.in(players[socket.id].roomId).emit('minigameStarted')
+  })
+
+  socket.on('placeFirstPlayer', firstPlayer => {
+    io.in(players[socket.id].roomId).emit('placedFirstPlayer', firstPlayer)
   })
 
   // socket.on('otherPlayerMove', (cursors) => {
