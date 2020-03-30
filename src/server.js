@@ -6,6 +6,7 @@ const path = require('path');
 const PORT = process.env.PORT || 3000;
 
 let players = {};
+let rooms = {};
 
 app.use(express.static(path.join(__dirname + '/public')));
 
@@ -36,15 +37,31 @@ io.on('connection', (socket)  => {
   })
 
   socket.on('subscribe', (room, spriteSkin) => {
-    console.log(`A client joined room ${room}`)
-    socket.join(room)
-    // add the newly subscribed player to the players object,
-    // and pass its roomId and name(spriteSkin)
-    players[socket.id].roomId = room
-    players[socket.id].name = spriteSkin
 
-    // update all other players of the new player
-    io.to(room).emit('newPlayer', players[socket.id], socket.id,spriteSkin)
+    if (rooms[room] === undefined) {
+      rooms[room] = 0;
+
+      console.log(`new room created. there are ${rooms[room]} people in room ${room}`)
+
+    } else if (rooms[room] === 4) {
+      socket.emit('roomFull');
+      return;
+
+    }
+      rooms[room] += 1;
+      socket.emit('createdOrJoinedRoom')
+      console.log(`there are ${rooms[room]} people in room ${room}`)
+
+      console.log(`A client joined room ${room}`)
+      socket.join(room)
+      // add the newly subscribed player to the players object,
+      // and pass its roomId and name(spriteSkin)
+      players[socket.id].roomId = room
+      players[socket.id].name = spriteSkin
+
+      // update all other players of the new player
+      io.to(room).emit('newPlayer', players[socket.id], socket.id,spriteSkin)
+
   })
 
   // disconnecting

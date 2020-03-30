@@ -13,7 +13,9 @@ export default class BgSceneWait extends Phaser.Scene {
     // this.load.image('waitingRoomBanner', 'assets/backgrounds/waitingRoomBanner.png')
   }
 
-  create() {
+  create(data) {
+
+    console.log('data in waitbg', data)
     // Create Sprites
     this.add.image(-160, 0, 'sky').setOrigin(0).setScale(.5);
     // this.add.image(380,80,'waitingRoomBanner').setScale(5)
