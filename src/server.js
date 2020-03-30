@@ -36,6 +36,13 @@ io.on('connection', (socket)  => {
     socket.emit('currentPlayers', players, room);
   })
 
+  socket.on('currentPlayersMG', () => {
+    console.log("in server/currentPlayerMG")
+    console.log("players", players)
+    const room = players[socket.id].roomId;
+    socket.emit('currentPlayersMG', players, room);
+  })
+
   socket.on('subscribe', (room, spriteSkin, roomCreator) => {
 
     if (rooms[room] === undefined && roomCreator) {
@@ -52,7 +59,7 @@ io.on('connection', (socket)  => {
       socket.emit('roomAlreadyCreated') //deny them
       return;
 
-    } else if (rooms[room] === 4) {
+    } else if (rooms[room] === 2) {
       socket.emit('roomFull');
       return;
 
@@ -74,7 +81,7 @@ io.on('connection', (socket)  => {
     //if there are four players subscribed to room, emit playersReady
     io.in(room).clients((error, clients) => {
       if (error) throw error
-      if(clients.length === 4){
+      if(clients.length === 2){
         io.in(room).emit('playersReady')
       }
     });
