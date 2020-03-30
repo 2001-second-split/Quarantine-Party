@@ -3,7 +3,7 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io').listen(server);
 const path = require('path');
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 let players = {};
 let rooms = {};
@@ -112,7 +112,7 @@ io.on('connection', (socket)  => {
 
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`NODE APP Listening on ${server.address().port}`);
 });
 
