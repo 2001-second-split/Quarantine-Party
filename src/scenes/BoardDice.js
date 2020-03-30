@@ -1,5 +1,6 @@
 import Dice from '../entity/Dice';
 import {socket} from '../index'
+
 export default class BoardDice extends Phaser.Scene {
   constructor() {
     super('BoardDice');
