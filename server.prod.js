@@ -113,7 +113,7 @@ io.on('connection', (socket)  => {
 
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`NODE APP Listening on ${server.address().port}`);
 });
 
