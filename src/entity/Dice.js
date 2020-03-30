@@ -10,7 +10,7 @@ export default class Dice extends Phaser.Physics.Arcade.Sprite {
     this.rolledNum = 0;
   }
 
-  rollDice() {
+  roll() {
     //if(this.clicks < 1) {}
     this.rolledNum = Math.ceil(Math.random() * 6)
     // console.log(this.rolledNum)

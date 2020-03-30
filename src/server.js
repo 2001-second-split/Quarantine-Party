@@ -81,9 +81,11 @@ io.on('connection', (socket)  => {
   });
 
   //when a player rolls a dice, update their position
-  socket.on('diceRoll', (rolledNum) => {
+  socket.on('diceRoll', (rolledNum, charName) => {
+    const room = players[socket.id].roomId
     socket.emit('moveSelfOnBoard', rolledNum);
-    //io.to(socket.roomId).broadcast('moveOtherOnBoard', rolledNum)
+    io.to(room).emit('moveOtherOnBoard', rolledNum, charName)
+    io.in(room).emit('unshiftQueue')
   })
 
   socket.on('startMinigame', () => {

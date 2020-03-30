@@ -121,8 +121,9 @@ export default class minigameTPScene extends Phaser.Scene {
        console.log('returnbutton pressed')
        this.scene.stop('minigameTPScene')
 
-       this.scene.switch('BoardBg');
-       this.scene.launch('BoardDice')
+       //this.scene.wake('BoardScene')
+       this.scene.wake('BoardBg');
+       this.scene.wake('BoardDice')
 
      })
 
@@ -136,7 +137,9 @@ export default class minigameTPScene extends Phaser.Scene {
 
       // this.scene.run('BoardScene');
       // this.scene.start('BoardScene');
-      this.scene.switch('BoardScene');
+     //this.scene.wake('BoardScene');
+      this.scene.wake('BoardBg');
+      this.scene.wake('BoardDice')
       // this.gameOver = false;
   }
 

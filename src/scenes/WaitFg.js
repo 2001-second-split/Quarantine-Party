@@ -6,7 +6,7 @@ export default class WaitFg extends Phaser.Scene {
   constructor() {
     super("WaitFg");
     //keep track of players and the order of join
-    this.que = []
+    this.queue = []
   }
   preload() {
     this.load.image("platform", "assets/sprites/platform.png");
@@ -71,8 +71,7 @@ export default class WaitFg extends Phaser.Scene {
       //wait for all four players to join
       socket.on('playersReady', () => {
         //if the current player is the first in que show them start button
-        console.log('STARTBUTTON')
-        if (this.player.name === this.que[0]){
+        if (this.player.name === this.queue[0]){
           const startButton = this.add.text(250, 250, 'Start Button', { fontSize: '32px', fill: '#FFF' });
           //make the button interactive
           startButton.setInteractive();
@@ -88,7 +87,7 @@ export default class WaitFg extends Phaser.Scene {
         this.scene.stop('WaitFg')
         this.scene.stop('WaitBg')
         this.scene.stop('WaitScene')
-        this.scene.start('BoardScene', {que: this.que})
+        this.scene.start('BoardScene', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers})
       })
 
 
@@ -129,7 +128,7 @@ export default class WaitFg extends Phaser.Scene {
     this.player.playerId = socketId
     this.player.name = spriteSkin
     //add the newly created player to que (to keep track of player turns)
-    this.que.push(this.player.name)
+    this.queue.push(this.player.name)
     this.player.setCollideWorldBounds(true);
     this.player.setBounce(0.2);
     this.createAnimations(this.player.name);
@@ -140,7 +139,7 @@ export default class WaitFg extends Phaser.Scene {
     otherPlayer.playerId = socketId;
     otherPlayer.name = spriteSkin
      //add the newly created player to que (to keep track of player turns)
-    this.que.push(otherPlayer.name)
+    this.queue.push(otherPlayer.name)
     otherPlayer.setCollideWorldBounds(true);
     otherPlayer.setBounce(0.2)
     // this.physics.add(this.ground, otherPlayer);
