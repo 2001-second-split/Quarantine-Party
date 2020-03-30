@@ -57,22 +57,19 @@ io.on('connection', (socket)  => {
       return;
 
     }
-      rooms[room] += 1;
-      socket.emit('createdOrJoinedRoom')
+    rooms[room] += 1;
+    socket.emit('createdOrJoinedRoom')
 
-      console.log(`A client joined room ${room}`)
-      socket.join(room)
-      console.log(`there are ${rooms[room]} people in room ${room}`)
-      // add the newly subscribed player to the players object,
-      // and pass its roomId and name(spriteSkin)
-      players[socket.id].roomId = room
-      players[socket.id].name = spriteSkin
-
-      // update all other players of the new player
-      io.to(room).emit('newPlayer', players[socket.id], socket.id,spriteSkin)
+    console.log(`A client joined room ${room}`)
+    socket.join(room)
+    console.log(`there are ${rooms[room]} people in room ${room}`)
+    // add the newly subscribed player to the players object,
+    // and pass its roomId and name(spriteSkin)
+    players[socket.id].roomId = room
+    players[socket.id].name = spriteSkin
 
     // update all other players of the new player
-    io.to(room).emit('newPlayer', players[socket.id], socket.id, spriteSkin)
+    io.to(room).emit('newPlayer', players[socket.id], socket.id,spriteSkin)
 
     //if there are four players subscribed to room, emit playersReady
     io.in(room).clients((error, clients) => {
