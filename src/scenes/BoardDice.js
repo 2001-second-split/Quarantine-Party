@@ -6,6 +6,11 @@ export default class BoardDice extends Phaser.Scene {
     super('BoardDice');
   }
 
+  init(data){
+    this.queue = data.queue
+    this.player = data.player
+  }
+
   preload() {
     this.load.spritesheet('dice', 'assets/spriteSheets/dice.png', {
       frameWidth: 32,
@@ -13,6 +18,7 @@ export default class BoardDice extends Phaser.Scene {
     });
     // Preload Sounds
   }
+
 
   diceRollAnimations() {
     this.anims.create({
@@ -64,19 +70,55 @@ export default class BoardDice extends Phaser.Scene {
   }
 
   create() {
+    console.log('QUEUE', this.queue)
+
+    //create dice but hide it from players if its not their turn
     this.dice = new Dice(this, 900, 100, 'dice').setScale(1.75)
+    this.disableDice()
+    //enable dice only if its the user's turn
+    if (this.player.name === this.queue[0]) this.enableDice()
+
+    //listen for que update requests
+    socket.on('unshiftQueue', () => {
+      this.unshiftQueue()
+      console.log('QUEUE AFTER', this.queue)
+      //enable dice only if its the user's turn
+      if (this.player.name === this.queue[0]){
+        this.enableDice()
+      } else {
+        this.disableDice()
+      }
+    })
 
     this.diceRollAnimations();
-    this.dice.setInteractive();
+
+    //listen for mouse up event to trigger dice roll
+    this.dice.on('pointerup', () => {
+      this.rollDice()
+    });
+
+    //this.dice.setInteractive();
     // Create sounds
     // placeholder for dice roll sound
     // this.diceSound = this.sound.add('dice');
-    this.dice.on('pointerup', function () {
-      // console.log('dice clicked');
-      this.dice.rollDice()
-      socket.emit('diceRoll', this.dice.rolledNum)
-      //console.log(this.dice.rolledNum)
-    }, this);
+
+  }
+  enableDice(){
+    this.dice.setActive(true).setVisible(true)
+    this.dice.setInteractive()
+  }
+  disableDice(){
+    this.dice.setActive(false).setVisible(false);
+  }
+
+  unshiftQueue(){
+    this.queue.push(this.queue.shift())
+  }
+
+  rollDice(){
+    this.dice.roll()
+    socket.emit('diceRoll', this.dice.rolledNum, this.player.name)
+    this.disableDice()
   }
 
 
@@ -85,6 +127,5 @@ export default class BoardDice extends Phaser.Scene {
   update(time, delta) {
     // this.dice.update(this.cursors, this.diceSound); // Add a parameter for the diceSound
     // this.dice.update()
-
   }
 }

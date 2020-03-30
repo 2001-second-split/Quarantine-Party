@@ -6,10 +6,17 @@ export default class BoardScene extends Phaser.Scene {
     super('BoardScene');
   }
 
+  init(data){
+    this.queue = data.queue
+    this.player = data.player
+    this.otherPlayers = data.otherPlayers
+  }
+
   create() {
     // << LOAD BACKGROUND AND FOREGROUND SCENES IN PARALLEL HERE >>
-    this.scene.launch('BoardBg');
-    this.scene.launch('BoardDice');
+    //console.log('QUE', this.que, 'PLAYER', this.player, 'OTHER PLAYERS', this.otherPlayers)
+    this.scene.launch('BoardBg', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers});
+    this.scene.launch('BoardDice', {queue: this.queue, player: this.player});
 
     // socket.emit("currentPlayers");
     // socket.on("currentPlayers", (players, room) => {
