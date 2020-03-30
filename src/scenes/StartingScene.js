@@ -13,9 +13,7 @@ export default class StartingScene extends Phaser.Scene {
       frameHeight: 300,
       endFrame: 8
     });
-    this.load.spritesheet(
-      "stephanie",
-      "assets/spriteSheets/stephanie-sheet.png",{
+    this.load.spritesheet("stephanie", "assets/spriteSheets/stephanie-sheet.png",{
         frameWidth: 300,
         frameHeight: 300,
         endFrame: 8
@@ -59,6 +57,9 @@ export default class StartingScene extends Phaser.Scene {
     socket.on('joiningNonExistingRoom', () => {
       alert("sorry, room doesn't exist")
       domElement.addListener('click');
+      // when you click create/join room, the click-listener is removed
+      // but if a user does not properly join, server will emit the issue to one of these sockets,
+      // you have to add click-listener again so it can run through the domElement.on('click') function
     })
 
     socket.on('roomAlreadyCreated', () => {
