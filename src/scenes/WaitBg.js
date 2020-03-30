@@ -13,27 +13,39 @@ export default class BgSceneWait extends Phaser.Scene {
     // this.load.image('waitingRoomBanner', 'assets/backgrounds/waitingRoomBanner.png')
   }
 
-  create() {
+  create(data) {
+
+    //data received from StartingScene --> WaitScene --> WaitBg
+    const roomCreator = data.roomCreator;
+
     // Create Sprites
     this.add.image(-160, 0, 'sky').setOrigin(0).setScale(.5);
     // this.add.image(380,80,'waitingRoomBanner').setScale(5)
 
+
     this.header = this.add.text(250, 50, 'Waiting Room!!', { fontSize: '32px', fill: '#000' });
 
-    //create a "start button" but this is actually just text for now
-    const startButton = this.add.text(250, 250, 'Start Button', { fontSize: '32px', fill: '#FFF' });
 
-    //make it interactive! so when we click it...
-    startButton.setInteractive();
+    if (roomCreator) {
+      //create a "start button" for room creator
+      let startButton = this.add.text(250, 250, 'Start Button', { fontSize: '32px', fill: '#FFF' });
 
-    // when we release the mouse, it'll log a message and change scenes
-    startButton.on('pointerup', () => {
-      console.log('startbutton pressed')
-      this.scene.stop('WaitBg')
-      this.scene.stop('WaitFg')
-      this.scene.stop('WaitScene')
+      //make it interactive! so when we click it...
+      startButton.setInteractive();
 
-      this.scene.start('BoardScene');
-    })
+      // when we release the mouse, it'll log a message and change scenes
+      startButton.on('pointerup', () => {
+        console.log('startbutton pressed')
+        this.scene.stop('WaitBg')
+        this.scene.stop('WaitFg')
+        this.scene.stop('WaitScene')
+
+        this.scene.start('BoardScene');
+      })
+    } else {
+      //other players see this message
+      this.add.text(100, 250, 'Waiting for Room Creator to start game...', { fontSize: '24px', fill: '#FFF' });
+    }
+
   }
 }
