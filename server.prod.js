@@ -1,10 +1,10 @@
 const express = require('express');
 const app = express();
-// const server = require('http').Server(app);
-const server = app.listen(PORT)
+const server = require('http').Server(app);
+const PORT = process.env.PORT || 3000;
+// const server = app.listen(PORT)
 const io = require('socket.io').listen(server);
 const path = require('path');
-const PORT = process.env.PORT || 3000;
 
 let players = {};
 let rooms = {};
