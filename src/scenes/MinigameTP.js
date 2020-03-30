@@ -48,25 +48,20 @@ export default class minigameTPScene extends Phaser.Scene {
     //  Our player animations, turning, walking left and walking right.
     this.anims.create({
       key: 'left',
-      frames: this.anims.generateFrameNumbers(`${this.scene.settings.data.first}`, { start: 4, end: 6 }),
+      frames: this.anims.generateFrameNumbers(`${this.scene.settings.data.player.name}`, { start: 4, end: 6 }),
       frameRate: 5,
       repeat: -1
     });
     this.anims.create({
       key: 'turn',
-      frames: [ { key: `${this.scene.settings.data.first}`, frame: 0 } ],
+      frames: [ { key: `${this.scene.settings.data.player.name}`, frame: 0 } ],
       frameRate: 20
     });
     this.anims.create({
       key: 'right',
-      frames: this.anims.generateFrameNumbers(`${this.scene.settings.data.first}`, { start: 1, end: 3 }),
+      frames: this.anims.generateFrameNumbers(`${this.scene.settings.data.player.name}`, { start: 1, end: 3 }),
       frameRate: 5,
       repeat: -1
-    });
-    this.anims.create({
-      key: '2standing',
-      frames: [ { key: `${this.scene.settings.data.second}`, frame: 0 } ],
-      frameRate: 20
     });
   }
 
@@ -95,20 +90,23 @@ export default class minigameTPScene extends Phaser.Scene {
     this.platforms.create(600, 1000, 'platform').setScale(3).refreshBody();
 
     //  Now let's create some ledges
-    // this.platforms.create(600, 400, 'platform');
-    // this.platforms.create(50, 250, 'platform');
-    // this.platforms.create(750, 220, 'platform');
+    this.platforms.create(600, 400, 'platform');
+    this.platforms.create(50, 250, 'platform');
+    this.platforms.create(750, 220, 'platform');
 
     // The player and its settings
-    this.player = this.physics.add.sprite(100, 450, `${this.scene.settings.data.first}`).setScale(0.25);
+    this.player = this.physics.add.sprite(100, 450, `${this.scene.settings.data.player.name}`).setScale(0.25);
 
-    this.otherPlayer = this.physics.add.sprite(100, 600, `${this.scene.settings.data.second}`).setScale(0.25);
-    // this.physics.add.sprite(100, 750, `${this.scene.settings.data.third}`).setScale(0.25);
-    // this.physics.add.sprite(100, 900, `${this.scene.settings.data.fourth}`).setScale(0.25);
+    this.player2 = this.physics.add.sprite(250, 450, `${this.scene.settings.data.queue[1]}`).setScale(0.25);
+    this.player3 = this.physics.add.sprite(400, 450, `${this.scene.settings.data.queue[2]}`).setScale(0.25);
+    this.player4 = this.physics.add.sprite(550, 450, `${this.scene.settings.data.queue[3]}`).setScale(0.25);
 
     //  Player physics properties. Give the little guy a slight bounce.
     this.player.setBounce(0.2);
     this.player.setCollideWorldBounds(true);
+    this.player2.setCollideWorldBounds(true);
+    this.player3.setCollideWorldBounds(true);
+    this.player4.setCollideWorldBounds(true);
 
     //  Input Events
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -128,10 +126,10 @@ export default class minigameTPScene extends Phaser.Scene {
     this.bombs = this.physics.add.group();
 
     //  The score
-    this.p1scoreText = this.add.text(16, 16, `${this.scene.settings.data.first}: 0`, { fontSize: '16px', fill: '#000' });
-    this.p2scoreText = this.add.text(166, 16, `${this.scene.settings.data.second}: 0`, { fontSize: '16px', fill: '#000' });
-    this.p3scoreText = this.add.text(316, 16, `${this.scene.settings.data.third}: 0`, { fontSize: '16px', fill: '#000' });
-    this.p4scoreText = this.add.text(466, 16, `${this.scene.settings.data.fourth}: 0`, { fontSize: '16px', fill: '#000' });
+    this.p1scoreText = this.add.text(16, 16, `${this.scene.settings.data.queue[0]}: 0`, { fontSize: '16px', fill: '#000' });
+    this.p2scoreText = this.add.text(166, 16, `${this.scene.settings.data.queue[1]}: 0`, { fontSize: '16px', fill: '#000' });
+    this.p3scoreText = this.add.text(316, 16, `${this.scene.settings.data.queue[2]}: 0`, { fontSize: '16px', fill: '#000' });
+    this.p4scoreText = this.add.text(466, 16, `${this.scene.settings.data.queue[3]}: 0`, { fontSize: '16px', fill: '#000' });
 
     this.createAnimations();
 
@@ -156,8 +154,9 @@ export default class minigameTPScene extends Phaser.Scene {
        console.log('returnbutton pressed')
        this.scene.stop('minigameTPScene')
 
-       this.scene.switch('BoardBg');
-       this.scene.launch('BoardDice')
+       //this.scene.wake('BoardScene')
+       this.scene.wake('BoardBg');
+       this.scene.wake('BoardDice')
 
      })
 
@@ -168,10 +167,11 @@ export default class minigameTPScene extends Phaser.Scene {
     if (this.gameOver) {
       // return;
       this.scene.stop('MinigameTPScene');
-
       // this.scene.run('BoardScene');
       // this.scene.start('BoardScene');
-      this.scene.switch('BoardScene');
+     //this.scene.wake('BoardScene');
+      this.scene.wake('BoardBg');
+      this.scene.wake('BoardDice')
       // this.gameOver = false;
   }
 
@@ -183,13 +183,13 @@ export default class minigameTPScene extends Phaser.Scene {
       this.player.setVelocityX(160);
       this.player.anims.play('right', true);
     }
+    else if (this.cursors.up.isDown) {
+      this.player.setVelocityY(-330);
+      this.player.anims.play('turn');
+    }
     else{
       this.player.setVelocityX(0);
       this.player.anims.play('turn');
-    }
-
-    if (this.cursors.up.isDown && this.player.body.touching.down) {
-      this.player.setVelocityY(-330);
     }
   }
 
@@ -198,7 +198,7 @@ export default class minigameTPScene extends Phaser.Scene {
 
     //  Add and update the score
     this.firstPlayerScore += 10;
-    this.p1scoreText.setText(`${this.scene.settings.data.first}: ${this.firstPlayerScore}`);
+    this.p1scoreText.setText(`${this.scene.settings.data.queue[0]}: ${this.firstPlayerScore}`);
 
     if (this.toiletpaper.countActive(true) === 0)
     {
