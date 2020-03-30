@@ -18,12 +18,6 @@ export default class BoardScene extends Phaser.Scene {
     this.scene.launch('BoardBg', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers});
     this.scene.launch('BoardDice', {queue: this.queue, player: this.player});
 
-    // socket.emit("currentPlayers");
-    // socket.on("currentPlayers", (players, room) => {
-    //   //Find all the players in the same room
-    //   console.log(players, "bssocket")
-    // });
-
     this.input.on('pointerup', function (pointer) { //on click the scene will change
       this.scene.setVisible(false, 'BoardBg')
       this.scene.setVisible(false, 'BoardDice')
