@@ -98,11 +98,11 @@ export default class StartingScene extends Phaser.Scene {
 
     }, this);
 
-    // this.tweens.add({
-    //     targets: domElement,
-    //     y: 250,
-    //     duration: 3000,
-    //     ease: 'Power3'
-    // });
+    this.tweens.add({
+        targets: domElement,
+        y: 250,
+        duration: 3000,
+        ease: 'Power3'
+    });
   }
 }

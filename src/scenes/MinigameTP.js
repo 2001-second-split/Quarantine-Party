@@ -47,25 +47,24 @@ export default class minigameTPScene extends Phaser.Scene {
     this.load.image('bomb', 'bomb.png');
   }
 
-  createAnimations() {
+  createAnimations(name) {
     //  Our player animations, turning, walking left and walking right.
     this.anims.create({
-      key: 'left',
-      frames: this.anims.generateFrameNumbers(`${this.scene.settings.data.player.name}`, { start: 4, end: 6 }),
-      frameRate: 5,
-      repeat: -1
+      key: "run",
+      frames: this.anims.generateFrameNumbers(name, { start: 6, end: 8}),
+      frameRate: 10,
+      repeat: -1,
     });
     this.anims.create({
-      key: 'turn',
-      frames: [ { key: `${this.scene.settings.data.player.name}`, frame: 0 } ],
+      key: "idle",
+      frames: [{key: name, frame: 0}],
       frameRate: 20
-    });
+    })
     this.anims.create({
-      key: 'right',
-      frames: this.anims.generateFrameNumbers(`${this.scene.settings.data.player.name}`, { start: 1, end: 3 }),
-      frameRate: 5,
-      repeat: -1
-    });
+      key: "jump",
+      frames:[{key: name, frame: 3}],
+      frameRate: 20
+    })
   }
 
   create() {
@@ -75,7 +74,9 @@ export default class minigameTPScene extends Phaser.Scene {
 
     // << SOCKET THINGS >>
     this.otherPlayersArr = [];
-    let player1;
+    // let player1;
+    const self = this;
+
     socket.emit('currentPlayersMG')
 
     socket.on('currentPlayersMG', (players, room) => {
@@ -91,8 +92,8 @@ export default class minigameTPScene extends Phaser.Scene {
       Object.keys(playersInRoom).forEach(id => {
         console.log("playersinRoom for each", playersInRoom)
         if (players[id].playerId === socket.id) {
-          player1 = this.addPlayer(players[id],socket.id, players[id].name);
-          console.log("player1", player1)
+          this.addPlayer(players[id],socket.id, players[id].name);
+          // console.log("player1", player1)
           // this.physics.add.collider(player1, this.platforms);
         } else {
           this.addOtherPlayers(players[id], id,players[id].name);
@@ -123,7 +124,6 @@ export default class minigameTPScene extends Phaser.Scene {
       })
     })
 
-    console.log("player1", player1)
     // << END SOCKETS >>
 
 
@@ -133,29 +133,12 @@ export default class minigameTPScene extends Phaser.Scene {
     this.add.image(400, 300, 'sky');
 
     this.platforms = this.physics.add.staticGroup();
-
-    //  Here we create the ground.
-    //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
     this.platforms.create(600, 1000, 'platform').setScale(3).refreshBody();
 
     //  Now let's create some ledges
     this.platforms.create(600, 400, 'platform');
     this.platforms.create(50, 250, 'platform');
     this.platforms.create(750, 220, 'platform');
-
-    // The player and its settings
-    // this.player = this.physics.add.sprite(100, 450, `${this.scene.settings.data.player.name}`).setScale(0.25);
-
-    // this.player2 = this.physics.add.sprite(250, 450, `${this.scene.settings.data.queue[1]}`).setScale(0.25);
-    // this.player3 = this.physics.add.sprite(400, 450, `${this.scene.settings.data.queue[2]}`).setScale(0.25);
-    // this.player4 = this.physics.add.sprite(550, 450, `${this.scene.settings.data.queue[3]}`).setScale(0.25);
-
-    //  Player physics properties. Give the little guy a slight bounce.
-    // this.player.setBounce(0.2);
-    // this.player.setCollideWorldBounds(true);
-    // this.player2.setCollideWorldBounds(true);
-    // this.player3.setCollideWorldBounds(true);
-    // this.player4.setCollideWorldBounds(true);
 
     //  Input Events
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -180,15 +163,14 @@ export default class minigameTPScene extends Phaser.Scene {
     this.p3scoreText = this.add.text(316, 16, `${data.queue[2]}: 0`, { fontSize: '16px', fill: '#000' });
     this.p4scoreText = this.add.text(466, 16, `${data.queue[3]}: 0`, { fontSize: '16px', fill: '#000' });
 
-    // this.createAnimations();
-
+    // physics things
     // this.physics.add.collider(this.player1, this.platforms);
     this.physics.add.collider(this.toiletpaper, this.platforms);
     this.physics.add.collider(this.bombs, this.platforms);
 
     //  Checks to see if the player overlaps with any of the toiletpaper, if he does call the collectTP function
-    // this.physics.add.overlap(this.player, this.toiletpaper, this.collectTP, null, this);
-    // this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
+    this.physics.add.overlap(this.player, this.toiletpaper, this.collectTP, null, this);
+    this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
 
 
     //AYSE ADDITION TO CHECK GAME STATE
@@ -221,11 +203,17 @@ export default class minigameTPScene extends Phaser.Scene {
     this.player.name = spriteSkin
     //add the newly created player to que (to keep track of player turns)
     // this.queue.push(this.player.name)
+
+    this.createAnimations(spriteSkin);
+
+    //character physics
     this.player.setCollideWorldBounds(true);
     this.player.setBounce(0.2);
-    this.createAnimations(this.player.name);
-    // this.physics.add(this.ground, this.player);
+    this.physics.add.collider(this.player, this.platforms);
+
+    return this.player;
   }
+
   addOtherPlayers(playerInfo, socketId, spriteSkin) {
     const otherPlayer = new Player(this, playerInfo.x, playerInfo.y, spriteSkin ).setScale(0.5);
     otherPlayer.playerId = socketId;
@@ -236,6 +224,7 @@ export default class minigameTPScene extends Phaser.Scene {
     otherPlayer.setBounce(0.2)
     // this.physics.add(this.ground, otherPlayer);
     this.otherPlayersArr.push(otherPlayer);
+    return otherPlayer;
   }
 
   update () {
@@ -250,24 +239,10 @@ export default class minigameTPScene extends Phaser.Scene {
       // this.gameOver = false;
   }
 
-    // if (this.cursors.left.isDown) {
-    //   this.player1.setVelocityX(-160);
-    //   this.player1.anims.play('left', true);
-    // }
-    // else if (this.cursors.right.isDown) {
-    //   this.player1.setVelocityX(160);
-    //   this.player1.anims.play('right', true);
-    // }
-    // else if (this.cursors.up.isDown) {
-    //   this.player1.setVelocityY(-330);
-    //   this.player1.anims.play('turn');
-    // }
-    // else{
-    //   this.player1.setVelocityX(0);
-    //   this.player1.anims.play('turn');
-    // }
-
+    // console.log("i'm in update")
     if (typeof this.player !== 'undefined'){
+      console.log("this.player is not undefined")
+
       this.player.update(this.cursors)
     }
   }
