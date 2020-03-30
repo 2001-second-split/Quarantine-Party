@@ -69,18 +69,18 @@ export default class WaitFg extends Phaser.Scene {
       })
 
       //wait for all four players to join
-      socket.on('playersReady', () => {
-        //if the current player is the first in que show them start button
-        if (this.player.name === this.queue[0]){
-          const startButton = this.add.text(250, 250, 'Start Button', { fontSize: '32px', fill: '#FFF' });
-          //make the button interactive
-          startButton.setInteractive();
-          //when mouse is released, emit transitionToBoard
-          startButton.on('pointerup', () => {
-            socket.emit('transitionToBoard')
-          })
-        }
-      })
+      // socket.on('playersReady', () => {
+      //   //if the current player is the first in que show them start button
+      //   if (this.player.name === this.queue[0]){
+      //     const startButton = this.add.text(250, 250, 'Start Button', { fontSize: '32px', fill: '#FFF' });
+      //     //make the button interactive
+      //     startButton.setInteractive();
+      //     //when mouse is released, emit transitionToBoard
+      //     startButton.on('pointerup', () => {
+      //       socket.emit('transitionToBoard')
+      //     })
+      //   }
+      // })
 
       //on transition to board request switch to board scene and pass the player que to it
       socket.on('transitionedToBoard', () => {

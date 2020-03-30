@@ -6,6 +6,7 @@ const path = require('path');
 const PORT = process.env.PORT || 3000;
 
 let players = {};
+let rooms = {};
 
 app.use(express.static(path.join(__dirname + '/public')));
 
@@ -35,16 +36,40 @@ io.on('connection', (socket)  => {
     socket.emit('currentPlayers', players, room);
   })
 
-  socket.on('subscribe', (room, spriteSkin) => {
+  socket.on('subscribe', (room, spriteSkin, roomCreator) => {
+
+    if (rooms[room] === undefined && roomCreator) {
+      rooms[room] = 0;
+
+      console.log(`new room created. there are ${rooms[room]} people in room ${room}`)
+
+    } else if (rooms[room] === undefined && !roomCreator) {
+      console.log('heyy');
+      socket.emit('joiningNonExistingRoom');
+      return;
+
+    } else if (rooms[room] && roomCreator) { //if room exists, and this person is trying to create
+      socket.emit('roomAlreadyCreated') //deny them
+      return;
+
+    } else if (rooms[room] === 4) {
+      socket.emit('roomFull');
+      return;
+
+    }
+    rooms[room] += 1;
+    socket.emit('createdOrJoinedRoom')
+
     console.log(`A client joined room ${room}`)
     socket.join(room)
+    console.log(`there are ${rooms[room]} people in room ${room}`)
     // add the newly subscribed player to the players object,
     // and pass its roomId and name(spriteSkin)
     players[socket.id].roomId = room
     players[socket.id].name = spriteSkin
 
     // update all other players of the new player
-    io.to(room).emit('newPlayer', players[socket.id], socket.id, spriteSkin)
+    io.to(room).emit('newPlayer', players[socket.id], socket.id,spriteSkin)
 
     //if there are four players subscribed to room, emit playersReady
     io.in(room).clients((error, clients) => {
@@ -64,6 +89,14 @@ io.on('connection', (socket)  => {
   // disconnecting
   socket.on('disconnect', () => {
     console.log(`${socket.id} disconnected`);
+
+    //make sure to reset room count
+    const room = players[socket.id].roomId;
+    rooms[room] -= 1;
+    if (rooms[room] === 0) {
+      delete rooms[room]
+    }
+
     // emit a message to all players to remove this player
     io.to(players[socket.id].roomId).emit('disconnect', socket.id);
     // remove this player from our players object

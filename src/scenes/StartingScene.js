@@ -40,42 +40,67 @@ export default class StartingScene extends Phaser.Scene {
   create () {
     this.add.image(400, 300, 'pic').setScale(0.5);
 
-    let text = this.add.text(250, 10, 'Welcome!!!', { color: 'black', fontFamily: 'Arial', fontSize: '24px '});
+    let text1 = this.add.text(250, 10, 'Welcome!!!', { color: 'black', fontFamily: 'Arial', fontSize: '24px '});
     let text2 = this.add.text(250, 50, 'Please join or create a game', { color: 'black', fontFamily: 'Arial', fontSize: '16px '});
 
-    // create socket
-    // this.socket = socket
+    //data to be passed to WaitBG for button purposes
+    let data = {}
 
+    //sockets to receive from server
+    socket.on('createdOrJoinedRoom', () => {
+      //Take user to the waiting scene
+      this.scene.start('WaitScene', data)
+    })
+
+    socket.on('roomFull', () => {
+      alert("sorry, room is full")
+    })
+
+    socket.on('joiningNonExistingRoom', () => {
+      alert("sorry, room doesn't exist")
+      domElement.addListener('click');
+    })
+
+    socket.on('roomAlreadyCreated', () => {
+      alert("sorry, room name taken")
+      domElement.addListener('click');
+    })
+
+    // element that lets you create or join a room
     let domElement = this.add.dom(400, 600).createFromCache('roomForm');
     domElement.setPerspective(800);
     domElement.addListener('click');
 
     domElement.on('click', function (event) {
-        if (event.target.name === 'createButton' || event.target.name === 'joinButton')
-        {
-            const username = domElement.getChildByName('username');
-            const roomId = domElement.getChildByName('roomId');
-            const spriteSkin =  domElement.getChildByName('spriteSkin')
 
+      const username = domElement.getChildByName('username');
+      const roomId = domElement.getChildByName('roomId');
+      const spriteSkin =  domElement.getChildByName('spriteSkin')
 
-            //  Have they entered anything?
-            if (username.value !== '' && roomId.value !== '')
-            {
-                //  Turn off the click events
-                domElement.removeListener('click');
+      if (event.target.name === 'createButton') {
+        data.roomCreator = true;
+      }
+      if (event.target.name === 'joinButton') {
+        data.roomCreator = false;
+      }
 
-                //Take user to the waiting scene
-                this.scene.start('WaitScene')
+      //  Have they entered anything?
+      if (event.target.name === 'createButton' || event.target.name === 'joinButton') {
 
-                // NOTE: WE ARE SUBSCRIBING BEFORE WAITFG LISTENERS ARE CREATED
-                socket.emit('subscribe', roomId.value, spriteSkin.value)
-            }
-            else
-            {
-                //  Flash the prompt
-                this.scene.tweens.add({ targets: text1, alpha: 0.1, duration: 200, ease: 'Power3', yoyo: true });
-            }
+        if (username.value !== '' && roomId.value !== '') {
+
+          // NOTE: WE ARE SUBSCRIBING BEFORE WAITFG LISTENERS ARE CREATED
+          socket.emit('subscribe', roomId.value, spriteSkin.value, data.roomCreator)
+
+          domElement.removeListener('click'); //  Turn off the click events
+
+        } else {
+          //  Flash the prompt
+          // WHAT PROMPT DOES THIS FLASH? IT'S BROKEN.
+          // TIFFANY THINKS IT SHOULD BE REMOVED.
+          // this.scene.tweens.add({ targets: text1, alpha: 0.1, duration: 200, ease: 'Power3', yoyo: true });
         }
+      }
 
     }, this);
 

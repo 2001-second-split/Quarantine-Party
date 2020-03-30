@@ -10,7 +10,12 @@ export default class WaitScene extends Phaser.Scene {
   preload() {
   }
 
-  create() {
+  create(data) {
+
+    this.scene.launch("WaitBg", data); //passing it roomCreator data
+    this.scene.launch("WaitFg");
+
+
     // << LOAD BACKGROUND AND FOREGROUND SCENES IN PARALLEL HERE >>
     // let spriteOptions = [];
     // const currentScene = this;
@@ -54,8 +59,7 @@ export default class WaitScene extends Phaser.Scene {
     //   });
     // });
 
-    this.scene.launch("WaitBg");
-    this.scene.launch("WaitFg");
+
   }
 
   update() {}
