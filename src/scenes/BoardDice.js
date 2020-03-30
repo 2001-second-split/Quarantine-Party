@@ -81,6 +81,7 @@ export default class BoardDice extends Phaser.Scene {
     //listen for que update requests
     socket.on('unshiftQueue', () => {
       this.unshiftQueue()
+      //emit queue change to boardbg scene so we can update the queue prompt
       socket.emit('changeQueuePrompt', this.queue[0])
       //enable dice only if its the user's turn
       if (this.player.name === this.queue[0]){
@@ -104,11 +105,12 @@ export default class BoardDice extends Phaser.Scene {
 
   }
   enableDice(){
-    this.dice.setActive(true).setVisible(true)
+    //this.dice.setActive(true).setVisible(true)
     this.dice.setInteractive()
   }
   disableDice(){
-    this.dice.setActive(false).setVisible(false);
+    //this.dice.setActive(false).setVisible(false);
+    this.dice.disableInteractive()
   }
 
   unshiftQueue(){
