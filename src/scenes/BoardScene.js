@@ -28,13 +28,13 @@ export default class BoardScene extends Phaser.Scene {
       this.scene.setVisible(false, 'BoardBg')
       this.scene.setVisible(false, 'BoardDice')
       this.scene.pause('BoardScene')
-      const data = {
-        first: 'ayse',
-        second: 'tiffany',
-        third: 'stephanie',
-        fourth: 'patty',
-      }
-      this.scene.start('minigameTPScene', data);
+      // const data = {
+      //   first: 'ayse',
+      //   second: 'tiffany',
+      //   third: 'stephanie',
+      //   fourth: 'patty',
+      // }
+      this.scene.start('minigameTPScene', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers});
     }, this);
   }
 }

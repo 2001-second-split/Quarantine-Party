@@ -48,30 +48,30 @@ export default class minigameTPScene extends Phaser.Scene {
     //  Our player animations, turning, walking left and walking right.
     this.anims.create({
       key: 'left',
-      frames: this.anims.generateFrameNumbers(`${this.scene.settings.data.first}`, { start: 4, end: 6 }),
+      frames: this.anims.generateFrameNumbers(`${this.scene.settings.data.player.name}`, { start: 4, end: 6 }),
       frameRate: 5,
       repeat: -1
     });
     this.anims.create({
       key: 'turn',
-      frames: [ { key: `${this.scene.settings.data.first}`, frame: 0 } ],
+      frames: [ { key: `${this.scene.settings.data.player.name}`, frame: 0 } ],
       frameRate: 20
     });
     this.anims.create({
       key: 'right',
-      frames: this.anims.generateFrameNumbers(`${this.scene.settings.data.first}`, { start: 1, end: 3 }),
+      frames: this.anims.generateFrameNumbers(`${this.scene.settings.data.player.name}`, { start: 1, end: 3 }),
       frameRate: 5,
       repeat: -1
     });
-    this.anims.create({
-      key: '2standing',
-      frames: [ { key: `${this.scene.settings.data.second}`, frame: 0 } ],
-      frameRate: 20
-    });
+    // this.anims.create({
+    //   key: '2standing',
+    //   frames: [ { key: `${this.scene.settings.data.second}`, frame: 0 } ],
+    //   frameRate: 20
+    // });
   }
 
   create() {
-    console.log(this.scene.settings.data, "data")
+    console.log(this.scene.settings.data.player.name, "data")
 
     // socket.emit('currentPlayers')
 
@@ -100,15 +100,16 @@ export default class minigameTPScene extends Phaser.Scene {
     // this.platforms.create(750, 220, 'platform');
 
     // The player and its settings
-    this.player = this.physics.add.sprite(100, 450, `${this.scene.settings.data.first}`).setScale(0.25);
+    this.player = this.physics.add.sprite(100, 450, `${this.scene.settings.data.player.name}`).setScale(0.25);
 
-    this.otherPlayer = this.physics.add.sprite(100, 600, `${this.scene.settings.data.second}`).setScale(0.25);
-    // this.physics.add.sprite(100, 750, `${this.scene.settings.data.third}`).setScale(0.25);
-    // this.physics.add.sprite(100, 900, `${this.scene.settings.data.fourth}`).setScale(0.25);
+    // this.otherPlayer = this.physics.add.sprite(250, 450, `${this.scene.settings.data.second}`).setScale(0.25);
+    // this.physics.add.sprite(400, 450, `${this.scene.settings.data.third}`).setScale(0.25);
+    // this.physics.add.sprite(550, 450, `${this.scene.settings.data.fourth}`).setScale(0.25);
 
     //  Player physics properties. Give the little guy a slight bounce.
     this.player.setBounce(0.2);
     this.player.setCollideWorldBounds(true);
+    // this.otherPlayer.setCollideWorldBounds(true);
 
     //  Input Events
     this.cursors = this.input.keyboard.createCursorKeys();
