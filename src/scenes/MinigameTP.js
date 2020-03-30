@@ -63,6 +63,11 @@ export default class minigameTPScene extends Phaser.Scene {
       frameRate: 5,
       repeat: -1
     });
+    this.anims.create({
+      key: '2standing',
+      frames: [ { key: `${this.scene.settings.data.second}`, frame: 0 } ],
+      frameRate: 20
+    });
   }
 
   create() {
@@ -96,6 +101,10 @@ export default class minigameTPScene extends Phaser.Scene {
 
     // The player and its settings
     this.player = this.physics.add.sprite(100, 450, `${this.scene.settings.data.first}`).setScale(0.25);
+
+    this.otherPlayer = this.physics.add.sprite(100, 600, `${this.scene.settings.data.second}`).setScale(0.25);
+    // this.physics.add.sprite(100, 750, `${this.scene.settings.data.third}`).setScale(0.25);
+    // this.physics.add.sprite(100, 900, `${this.scene.settings.data.fourth}`).setScale(0.25);
 
     //  Player physics properties. Give the little guy a slight bounce.
     this.player.setBounce(0.2);
@@ -215,6 +224,6 @@ export default class minigameTPScene extends Phaser.Scene {
     this.player.disableBody(true, true);
     // this.player.setActive(false)
     // this.player.anims.play('turn');
-    this.gameOver = true;
+    // this.gameOver = true;
   }
 }
