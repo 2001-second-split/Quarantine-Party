@@ -79,6 +79,8 @@ io.on('connection', (socket)  => {
 
     // update all other players of the new player
     io.to(room).emit('newPlayer', players[socket.id], socket.id,spriteSkin)
+
+    //add players to queue in the order they join room
     queue.push(players[socket.id].name)
 
     //if there are four players subscribed to room, emit playersReady

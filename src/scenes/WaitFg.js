@@ -31,9 +31,6 @@ export default class WaitFg extends Phaser.Scene {
       //get currentPlayers in room and add self and other players
       socket.on("currentPlayers", (players, room, queue) => {
         //Find all the players in the same room
-        console.log("waitFG", queue)
-        this.queue = queue;
-
         const playersInRoom = {};
         Object.keys(players).forEach(id => {
           if (players[id].roomId === room) {
@@ -48,6 +45,9 @@ export default class WaitFg extends Phaser.Scene {
             this.addOtherPlayers(players[id], id,players[id].name);
           }
         });
+
+        this.queue = queue;
+        console.log("waitFG queue", this.queue)
       });
 
       //add new players as other players
