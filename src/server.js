@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 let players = {};
 let rooms = {};
 let charactersInRoom = {};
-let queue = [];
+let queue = {};
 
 app.use(express.static(path.join(__dirname + '/public')));
 
@@ -35,7 +35,7 @@ io.on('connection', (socket)  => {
   //get current players when you first enter the room
   socket.on('currentPlayers', () => {
     const room = players[socket.id].roomId;
-    socket.emit('currentPlayers', players, room, queue);
+    socket.emit('currentPlayers', players, room, queue[room]);
   })
 
   socket.on('currentPlayersMG', () => {
@@ -49,7 +49,7 @@ io.on('connection', (socket)  => {
 
     if (rooms[room] === undefined && roomCreator) {
       rooms[room] = 0;
-
+      queue[room] = [];
       console.log(`new room created. there are ${rooms[room]} people in room ${room}`)
 
     } else if (rooms[room] === undefined && !roomCreator) {
@@ -81,7 +81,8 @@ io.on('connection', (socket)  => {
     io.to(room).emit('newPlayer', players[socket.id], socket.id,spriteSkin)
 
     //add players to queue in the order they join room
-    queue.push(players[socket.id].name)
+    queue[room].push(players[socket.id].name)
+    console.log(queue)
 
     //if there are four players subscribed to room, emit playersReady
     io.in(room).clients((error, clients) => {
