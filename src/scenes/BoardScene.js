@@ -18,6 +18,10 @@ export default class BoardScene extends Phaser.Scene {
     this.scene.launch('BoardBg', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers});
     this.scene.launch('BoardDice', {queue: this.queue, player: this.player});
 
+
+    // code below is for testing mini game directly
+    // leave commented out for now
+
     // this.input.on('pointerup', function (pointer) { //on click the scene will change
     //   socket.emit('startMinigame');
     //   // socket.on('minigameStarted')
