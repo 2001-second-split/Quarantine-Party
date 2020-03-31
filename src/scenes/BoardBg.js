@@ -1,6 +1,7 @@
 import 'phaser';
 import {socket} from '../index'
 import Align from '../entity/Align';
+import minigameTPScene from './MinigameTP';
 
 
 export default class BoardBg extends Phaser.Scene {
@@ -87,6 +88,7 @@ export default class BoardBg extends Phaser.Scene {
     //listen for minigames
     socket.on('minigameStarted', () => {
       //make the current scene sleep + starts minigame
+      this.scene.add('minigameTPScene')
       this.scene.switch('minigameTPScene', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers})
     })
   }

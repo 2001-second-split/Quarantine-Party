@@ -1,5 +1,6 @@
 import 'phaser'
 import { socket } from "../index";
+import minigameTPScene from './MinigameTP';
 
 export default class BoardScene extends Phaser.Scene {
   constructor() {
@@ -34,6 +35,7 @@ export default class BoardScene extends Phaser.Scene {
         // otherPlayers: this.otherPlayers
       }
       console.log('socketon miniGameStarted', data)
+      this.scene.add('minigameTPScene', minigameTPScene)
       this.scene.switch('minigameTPScene', data)
     })
   }
