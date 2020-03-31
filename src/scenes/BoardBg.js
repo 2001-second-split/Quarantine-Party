@@ -1,5 +1,7 @@
 import 'phaser';
 import {socket} from '../index'
+import Align from '../entity/Align';
+
 
 export default class BoardBg extends Phaser.Scene {
   constructor() {
@@ -26,14 +28,20 @@ export default class BoardBg extends Phaser.Scene {
 
   preload() {
     // Preload map & sprites
+    this.load.image('sky', 'assets/backgrounds/sky.png')
+
     this.load.json('map', 'assets/backgrounds/final_boardCSV.json');
     this.load.spritesheet('tiles','assets/spriteSheets/boardWChars.png', {frameWidth: 128, frameHeight: 128})
   }
 
   create() {
+    let sky = this.add.image(0,0,'sky')
+    Align.scaleToGame(sky,1)
+    Align.center(sky)
+
     //Parse the board data from the map file
     this.data = this.cache.json.get('map');
-
+    console.log('this in boardbg', this)
     this.tileWidthHalf = this.data.tilewidth / 2;
     this.tileHeightHalf = this.data.tileheight / 2;
 
