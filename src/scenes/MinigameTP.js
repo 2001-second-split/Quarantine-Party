@@ -1,4 +1,5 @@
 import { socket } from "../index";
+import Align from "../entity/Align";
 
 export default class minigameTPScene extends Phaser.Scene {
   constructor() {
@@ -81,7 +82,9 @@ export default class minigameTPScene extends Phaser.Scene {
     //   });
     // });
 
-    this.add.image(400, 300, 'sky');
+    let skyBg = this.add.image(0, 0, 'sky');
+    Align.scaleToGame(skyBg,1)
+    Align.center(skyBg)
 
     this.platforms = this.physics.add.staticGroup();
 

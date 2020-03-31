@@ -9,7 +9,6 @@ export default class WaitFg extends Phaser.Scene {
     this.queue = []
   }
   preload() {
-    this.load.image("platform", "assets/sprites/platform.png");
     this.load.audio("jump", "assets/audio/jump.wav");
   }
 
@@ -17,9 +16,6 @@ export default class WaitFg extends Phaser.Scene {
   create() {
       // Create game entities
       this.cursors = this.input.keyboard.createCursorKeys();
-      //create ground
-      this.ground = this.physics.add.staticGroup();
-      this.ground.create(400, 600, "platform").setScale(2).refreshBody();
       // Create sounds
       this.jumpSound = this.sound.add("jump");
 

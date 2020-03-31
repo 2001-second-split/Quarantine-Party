@@ -1,5 +1,6 @@
 import 'phaser';
 import { socket } from '..';
+import Align from '../entity/Align'
 
 export default class WaitBg extends Phaser.Scene {
   constructor() {
@@ -8,10 +9,9 @@ export default class WaitBg extends Phaser.Scene {
 
   preload() {
     // Preload Sprites
-    this.load.image('sky', 'assets/backgrounds/sky.png');
-
     // placeholder text
     // this.load.image('waitingRoomBanner', 'assets/backgrounds/waitingRoomBanner.png')
+
   }
 
   create(data) {
@@ -20,9 +20,10 @@ export default class WaitBg extends Phaser.Scene {
     const roomCreator = data.roomCreator;
 
     // Create Sprites
-    this.add.image(-160, 0, 'sky').setOrigin(0).setScale(.5);
+    let waitingBg = this.add.image(0, 0, 'pic');
     // this.add.image(380,80,'waitingRoomBanner').setScale(5)
-
+    Align.scaleToGame(waitingBg, 1)
+    Align.center(waitingBg)
 
     this.header = this.add.text(250, 50, 'Waiting Room!!', { fontSize: '32px', fill: '#000' });
     //display different loading messages for game creator vs joiners
