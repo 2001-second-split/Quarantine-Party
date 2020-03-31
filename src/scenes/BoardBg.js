@@ -143,11 +143,13 @@ export default class BoardBg extends Phaser.Scene {
       // this.scene.pause('BoardScene')
 
       //data to pass to endScene
+      const notWinners = this.queue.filter(name => name !== charName)
+
       const data = {
-        first: 'ayse',
-        second: 'tiffany',
-        third: 'stephanie',
-        fourth: 'patty',
+        first: charName,
+        second: notWinners[0],
+        third: notWinners[1],
+        fourth: notWinners[2],
       }
       // transition to end scene
       this.scene.stop('BoardScene')
