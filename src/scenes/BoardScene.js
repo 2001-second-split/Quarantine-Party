@@ -22,30 +22,20 @@ export default class BoardScene extends Phaser.Scene {
     // code below is for testing mini game directly
     // leave commented out for now
 
-    // this.input.on('pointerup', function (pointer) { //on click the scene will change
-    //   socket.emit('startMinigame');
-    //   // socket.on('minigameStarted')
-    //   // this.scene.setVisible(false, 'BoardBg')
-    //   // this.scene.setVisible(false, 'BoardDice')
-    //   // this.scene.pause('BoardScene')
-    //   // const data = {
-    //   //   first: 'ayse',
-    //   //   second: 'tiffany',
-    //   //   third: 'stephanie',
-    //   //   fourth: 'patty',
-    //   // }
-    //   // this.scene.start('minigameTPScene', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers});
-    // }, this);
+    this.input.on('pointerup', function (pointer) { //on click the scene will change
+      socket.emit('startMinigame');
 
-    // socket.on('minigameStarted', () => {
-    //   //make the current scene sleep + minigame wake
-    //   console.log('boardbg mini game started', this.queue)
-    //   const data = {
-    //     queue: this.queue,
-    //     player: this.player,
-    //     otherPlayers: this.otherPlayers
-    //   }
-    //   this.scene.start('minigameTPScene', data)
-    // })
+    }, this);
+
+    socket.on('minigameStarted', () => {
+      //make the current scene sleep + minigame wake
+      const data = {
+        queue: this.queue,
+        // player: this.player,
+        // otherPlayers: this.otherPlayers
+      }
+      console.log('socketon miniGameStarted', data)
+      this.scene.switch('minigameTPScene', data)
+    })
   }
 }

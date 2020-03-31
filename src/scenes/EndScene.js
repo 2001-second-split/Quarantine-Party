@@ -76,6 +76,8 @@ export default class EndScene extends Phaser.Scene {
     playAgainButton.on('pointerup', () => {
       console.log('playagain pressed')
 
+      // socket.emit('disconnect')
+
       // stopping all scenes for now
       // refactor tasks: stop scenes as they're not necessary
       this.scene.stop('WaitBg')

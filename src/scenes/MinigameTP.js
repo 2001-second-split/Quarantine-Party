@@ -12,11 +12,16 @@ export default class minigameTPScene extends Phaser.Scene {
     this.thirdPlayerScore = 0;
     this.fourthPlayerScore = 0;
 
-    this.bodyCount = 0;
-
     this.collectTP = this.collectTP.bind(this);
     this.hitBomb = this.hitBomb.bind(this);
   }
+
+  // init(data) {
+  //   console.log("data in init", data)
+  //   const queue = data.queue;
+  //   console.log(queue)
+  //   this.bodyCount = 0;
+  // }
 
   preload() {
     this.load.spritesheet("ayse", "/public/assets/spriteSheets/ayse-sheet.png", {
@@ -69,10 +74,10 @@ export default class minigameTPScene extends Phaser.Scene {
 
   create(data) {
     // const data = this.scene.settings.data;
-    console.log("data in miniGameTP", data)
+    // console.log("data in create", data)
 
 
-    // << SOCKET THINGS >>
+    // << LIST ALL THE SOCKETS FIRST >>
     socket.on('currentPlayersMG', (players, room) => {
       const playersInRoom = {};
 
@@ -102,17 +107,41 @@ export default class minigameTPScene extends Phaser.Scene {
       });
     });
 
-    socket.emit('currentPlayersMG')
+    socket.on('updatedPlayersHit', (count) => {
+      console.log("received updatedBodyCount", count);
+
+      if (count === 2) {
+        console.log('bodyCount is 2')
+        this.physics.pause();
+
+        // game over text
+        this.add.text(250, 150, 'Game Over!', { fontSize: '32px', fill: '#FFF' })
+
+        socket.emit("gameOver")
+        return;
+      }
+    });
+
+     socket.on('gameOver', () => {
+       console.log("in gameOver socket.on")
+
+      //  this.scene.stop('MinigameTPScene');
+
+       this.scene.wake('BoardBg');
+       this.scene.wake('BoardDice')
+     })
 
     // << END SOCKETS >>
 
+    // EMIT NECESSARY REQUESTS TO SERVER
+    socket.emit('currentPlayersMG')
 
     // << GAME ENTITIES >>
 
     this.add.image(400, 300, 'sky');
 
     this.platforms = this.physics.add.staticGroup();
-    this.platforms.create(400, 800, 'platform').setScale(2).refreshBody();
+    // this.platforms.create(400, 800, 'platform').setScale(2).refreshBody();
 
     //  Now let's create some ledges
     // this.platforms.create(600, 400, 'platform');
@@ -137,9 +166,10 @@ export default class minigameTPScene extends Phaser.Scene {
     this.bombs = this.physics.add.group();
 
     //  The score
-    // this.p1scoreText = this.add.text(16, 16, `${data.queue[0]}: 0`, { fontSize: '16px', fill: '#000' });
-    // this.p2scoreText = this.add.text(166, 16, `${data.queue[1]}: 0`, { fontSize: '16px', fill: '#000' });
-    // this.p3scoreText = this.add.text(316, 16, `${data.queue[2]}: 0`, { fontSize: '16px', fill: '#000' });
+    this.p1scoreText = this.add.text(16, 16, `Player 1: 0`, { fontSize: '16px', fill: '#000' });
+    this.p2scoreText = this.add.text(166, 16, `Player 2: 0`, { fontSize: '16px', fill: '#000' });
+    this.p3scoreText = this.add.text(316, 16, `Player 3: 0`, { fontSize: '16px', fill: '#000' });
+    this.p4scoreText = this.add.text(466, 16, `Player 4: 0`, { fontSize: '16px', fill: '#000' });
     // this.p4scoreText = this.add.text(466, 16, `${data.queue[3]}: 0`, { fontSize: '16px', fill: '#000' });
 
     // physics things
@@ -165,13 +195,7 @@ export default class minigameTPScene extends Phaser.Scene {
 
      })
 
-     //catch
-     socket.on('gameover', () => {
-       this.scene.stop('MinigameTPScene');
 
-       this.scene.wake('BoardBg');
-       this.scene.wake('BoardDice')
-     })
 
   } // end create
 
@@ -211,13 +235,6 @@ export default class minigameTPScene extends Phaser.Scene {
   }
 
   update () {
-    if (this.bodyCount === 3) {
-      this.physics.pause();
-
-      // game over text
-      // socket.emit("gameOver") to move everyone back to the board
-
-    }
 
     // if player exists, update the player whenever they move
     if (typeof this.player !== 'undefined'){
@@ -230,7 +247,7 @@ export default class minigameTPScene extends Phaser.Scene {
 
     //  Add and update the score
     this.firstPlayerScore += 10;
-    // this.p1scoreText.setText(`${data.queue[0]}: ${this.firstPlayerScore}`);
+    this.p1scoreText.setText(`Player: ${this.firstPlayerScore}`);
 
     if (this.toiletpaper.countActive(true) === 0) {
       //  A new batch of toiletpaper to collect
@@ -251,6 +268,8 @@ export default class minigameTPScene extends Phaser.Scene {
   hitBomb (player, bomb) {
     this.bomb.destroy()
     this.player.disableBody(true, true);
-    this.bodyCount += 1;
+    socket.emit('playerHit')
+    // this.p1scoreText.setText(`Player: BOMBED`);
+    this.add.text(250, 300, 'You ran into the bomb!!', { fontSize: '24px', fill: '#FFF' })
   }
 }

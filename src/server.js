@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 3000;
 let players = {};
 let rooms = {};
 let charactersInRoom = {}
+let playerHitByBombsCount = 0;
 
 app.use(express.static(path.join(__dirname + '/public')));
 
@@ -31,17 +32,11 @@ io.on('connection', (socket)  => {
 
   };
 
-  //get current players when you first enter the room
+  // STARTING SCENE SOCKETS
+  // get current players when you first enter the room
   socket.on('currentPlayers', () => {
     const room = players[socket.id].roomId;
     socket.emit('currentPlayers', players, room);
-  })
-
-  socket.on('currentPlayersMG', () => {
-    console.log("in server/currentPlayerMG")
-    console.log("players", players)
-    const room = players[socket.id].roomId;
-    socket.emit('currentPlayersMG', players, room);
   })
 
   socket.on('subscribe', (room, spriteSkin, roomCreator) => {
@@ -163,6 +158,27 @@ io.on('connection', (socket)  => {
       const selectedChars = charactersInRoom[room]
       socket.emit('disableSelectedChars', selectedChars)
     }
+  })
+
+  // MINI GAME SOCKETS
+  socket.on('currentPlayersMG', () => {
+    // console.log("in server/currentPlayerMG")
+    // console.log("players", players)
+    const room = players[socket.id].roomId;
+    socket.emit('currentPlayersMG', players, room);
+  })
+
+  socket.on('playerHit', () => {
+    console.log('playerHit', playerHitByBombsCount)
+    ++playerHitByBombsCount;
+    console.log('bodyCount incremented', playerHitByBombsCount)
+    const room = players[socket.id].roomId
+    io.in(room).emit('updatedPlayersHit', playerHitByBombsCount);
+  })
+
+  socket.on('gameOver', () => {
+    //tell everyone's client to return to main game
+    socket.emit('gameOver');
   })
 
 });
