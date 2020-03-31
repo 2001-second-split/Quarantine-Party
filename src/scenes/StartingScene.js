@@ -71,12 +71,9 @@ export default class StartingScene extends Phaser.Scene {
 
     //disable already selected characters in a room
     socket.on('disableSelectedChars', (selectedChars, room) => {
-      console.log('DISABLE CHAR ')
       selectedChars.forEach(char => {
-        //console.log('DOM ELEMENT', domElement)
         if (this.room === room){
           const opt = domElement.getChildByID(char)
-          //console.log('OPT',opt)
           opt.disabled = true;
         }
       })
@@ -89,19 +86,6 @@ export default class StartingScene extends Phaser.Scene {
 
     const roomId = domElement.getChildByName('roomId')
     const spriteSkin = domElement.getChildByName('spriteSkin')
-
-    //listen for user room input and get the room name from input tag
-    this.disableSelectedChars(roomId, this.disableCharsCB, 1000)
-
-    // roomId.addEventListener('keyup', event => {
-    //   this.room = event.target.value
-
-    // })
-
-    // if(this.room.length){
-    //   console.log('THISROOM', this.room)
-    //   socket.emit('disableSelectedChars', this.room)
-    // }
 
     domElement.on('click', function (event) {
       if (event.target.name === 'createButton') {
@@ -153,6 +137,12 @@ export default class StartingScene extends Phaser.Scene {
       }, delay)
     };
     domElt = null;
+  }
+
+  update(){
+    //listen for user input on roomIand get the room name from input tag
+    this.disableSelectedChars(roomId, this.disableCharsCB, 1000)
+
   }
 }
 
