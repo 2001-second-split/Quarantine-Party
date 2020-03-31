@@ -82,7 +82,7 @@ export default class BoardBg extends Phaser.Scene {
     //listen for changes in queue, update background queue prompt accordingly
     socket.on('changeQueuePrompt', currentPlayer => {
       this.queuePrompt.destroy()
-      this.queuePrompt = this.add.text(700, 16, `${currentPlayer}'s turn!`, { fontSize: '12px', fill: '#FFF' })
+      this.queuePrompt = this.add.text(700, 16, `${currentPlayer}'s turn! Click the Dice`, { fontSize: '12px', fill: '#FFF' })
     })
 
     //listen for minigames
