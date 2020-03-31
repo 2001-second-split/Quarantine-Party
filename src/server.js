@@ -103,10 +103,11 @@ io.on('connection', (socket)  => {
     rooms[room] -= 1;
     if (rooms[room] === 0) {
       delete rooms[room]
+      delete charactersInRoom[room]
     }
 
     // emit a message to all players to remove this player
-    io.to(players[socket.id].roomId).emit('disconnect', socket.id);
+    io.to(room).emit('disconnect', socket.id);
     // remove this player from our players object
     delete players[socket.id];
 
@@ -161,7 +162,7 @@ io.on('connection', (socket)  => {
   socket.on('disableSelectedChars', room => {
     if (charactersInRoom.hasOwnProperty(room)){
       const selectedChars = charactersInRoom[room]
-      socket.emit('disableSelectedChars', selectedChars)
+      socket.emit('disableSelectedChars', selectedChars, room)
     }
   })
 

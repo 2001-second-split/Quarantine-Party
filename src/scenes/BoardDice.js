@@ -70,8 +70,6 @@ export default class BoardDice extends Phaser.Scene {
   }
 
   create() {
-    console.log('QUEUE', this.queue)
-
     //create dice but hide it from players if its not their turn
     this.dice = new Dice(this, 900, 100, 'dice').setScale(1.75)
     this.disableDice()
@@ -81,6 +79,7 @@ export default class BoardDice extends Phaser.Scene {
     //listen for que update requests
     socket.on('unshiftQueue', () => {
       this.unshiftQueue()
+      console.log('QUEUE SHIFTED')
       //emit queue change to boardbg scene so we can update the queue prompt
       socket.emit('changeQueuePrompt', this.queue[0])
 
@@ -101,7 +100,6 @@ export default class BoardDice extends Phaser.Scene {
     });
 
     socket.on('updateDice', (rolledNum) => {
-      console.log('INSIDE UPDATE DICE')
       this.dice.anims.play(rolledNum)
     })
 
