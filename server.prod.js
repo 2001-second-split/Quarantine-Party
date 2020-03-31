@@ -1,19 +1,21 @@
 const express = require('express');
 const app = express();
 const server = require('http').Server(app);
-const PORT = process.env.PORT || 3000;
 const io = require('socket.io').listen(server);
 const path = require('path');
+const PORT = process.env.PORT || 3000;
 
 let players = {};
 let rooms = {};
-let charactersInRoom = {}
+let charactersInRoom = {};
+let queue = {};
 
 app.use(express.static(path.join(__dirname + '/public')));
 
 // sends index.html
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '/public/index.html'))
+  // console.log('INSIDE GET', path.join(__dirname, '../public/index.html'))
+  res.sendFile(path.join(__dirname, '../public/index.html'))
 })
 
 io.on('connection', (socket)  => {
@@ -33,7 +35,7 @@ io.on('connection', (socket)  => {
   //get current players when you first enter the room
   socket.on('currentPlayers', () => {
     const room = players[socket.id].roomId;
-    socket.emit('currentPlayers', players, room);
+    socket.emit('currentPlayers', players, room, queue[room]);
   })
 
   socket.on('currentPlayersMG', () => {
@@ -43,12 +45,11 @@ io.on('connection', (socket)  => {
     socket.emit('currentPlayersMG', players, room);
   })
 
-
   socket.on('subscribe', (room, spriteSkin, roomCreator) => {
 
     if (rooms[room] === undefined && roomCreator) {
       rooms[room] = 0;
-
+      queue[room] = [];
       console.log(`new room created. there are ${rooms[room]} people in room ${room}`)
 
     } else if (rooms[room] === undefined && !roomCreator) {
@@ -65,21 +66,25 @@ io.on('connection', (socket)  => {
       return;
 
     }
-      rooms[room] += 1;
-      socket.emit('createdOrJoinedRoom')
+    rooms[room] += 1;
+    socket.emit('createdOrJoinedRoom')
 
-      console.log(`A client joined room ${room}`)
-      socket.join(room)
-      console.log(`there are ${rooms[room]} people in room ${room}`)
-      // add the newly subscribed player to the players object,
-      // and pass its roomId and name(spriteSkin)
-      players[socket.id].roomId = room
-      players[socket.id].name = spriteSkin
+    console.log(`A client joined room ${room}`)
+    socket.join(room)
+    console.log(`there are ${rooms[room]} people in room ${room}`)
+    // add the newly subscribed player to the players object,
+    // and pass its roomId and name(spriteSkin)
+    players[socket.id].roomId = room
+    players[socket.id].name = spriteSkin
 
-      // update all other players of the new player
-      io.to(room).emit('newPlayer', players[socket.id], socket.id,spriteSkin)
+    // update all other players of the new player
+    io.to(room).emit('newPlayer', players[socket.id], socket.id,spriteSkin)
 
-       //if there are four players subscribed to room, emit playersReady
+    //add players to queue in the order they join room
+    queue[room].push(players[socket.id].name)
+    console.log(queue)
+
+    //if there are four players subscribed to room, emit playersReady
     io.in(room).clients((error, clients) => {
       if (error) throw error
       if(clients.length === 4){
@@ -103,10 +108,12 @@ io.on('connection', (socket)  => {
     rooms[room] -= 1;
     if (rooms[room] === 0) {
       delete rooms[room]
+      delete charactersInRoom[room]
+      delete queue[room]
     }
 
     // emit a message to all players to remove this player
-    io.to(players[socket.id].roomId).emit('disconnect', socket.id);
+    io.to(room).emit('disconnect', socket.id);
     // remove this player from our players object
     delete players[socket.id];
 
@@ -161,13 +168,12 @@ io.on('connection', (socket)  => {
   socket.on('disableSelectedChars', room => {
     if (charactersInRoom.hasOwnProperty(room)){
       const selectedChars = charactersInRoom[room]
-      socket.emit('disableSelectedChars', selectedChars)
+      socket.emit('disableSelectedChars', selectedChars, room)
     }
   })
-
 
 });
 
 server.listen(PORT, () => {
-  console.log(`NODE APP Listening on ${server.address().port}`);
+  console.log(`SERVER Listening on ${server.address().port}`);
 });
