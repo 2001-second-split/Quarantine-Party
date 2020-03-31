@@ -48,25 +48,20 @@ export default class BoardBg extends Phaser.Scene {
 
     this.queuePrompt = this.add.text(700, 16, `${this.queue[0]} starts!`, { fontSize: '12px', fill: '#FFF' })
 
-    //place characters to tile 0
+    //place first player in line to tile 0
     socket.emit('placeOnBoard', 0, this.queue[0])
 
     socket.on('placedOnBoard', (rolledNum, charName) => {
       this.moveCharacter(rolledNum, charName)
     })
 
-    //listen for movement on board
-    // socket.on('moveSelfOnBoard', rolledNum => {
-    //   this.moveCharacter(rolledNum, this.player.name)
-    //   //update the queue
-    //   this.queue.push(this.queue.shift())
-    // })
 
     //listen for movement on board
     socket.on('moveCharOnBoard', (rolledNum, charName) => {
       this.moveCharacter(rolledNum, charName)
 
       //Update queue once a player moves. This will first update the queue in BoardDice and then BoardBg (in next render cycle)
+
       socket.emit('unshiftQueue')
       //check the next in player in queue. Place the player on the board if she is not already
       if(typeof this.charPosition[this.queue[1]] === 'undefined'){

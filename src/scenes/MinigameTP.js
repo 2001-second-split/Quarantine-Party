@@ -95,7 +95,7 @@ export default class minigameTPScene extends Phaser.Scene {
     });
 
     socket.on('playerMoved', (playerInfo) => {
-      this.otherPlayers.forEach(otherPlayer => {
+      this.otherPlayersArr.forEach(otherPlayer => {
         if (playerInfo.playerId === otherPlayer.playerId) {
           otherPlayer.setPosition(playerInfo.x, playerInfo.y);
         }
@@ -161,7 +161,7 @@ export default class minigameTPScene extends Phaser.Scene {
        console.log('returnbutton pressed')
        this.scene.stop('minigameTPScene')
 
-       //this.scene.wake('BoardScene')
+       this.scene.wake('BoardScene')
        this.scene.wake('BoardBg');
        this.scene.wake('BoardDice')
 
