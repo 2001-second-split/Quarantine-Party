@@ -9,6 +9,7 @@ let players = {};
 let rooms = {};
 let charactersInRoom = {};
 let queue = {};
+let playerHitByBombsCount = 0;
 
 app.use(express.static(path.join(__dirname + '/public')));
 
@@ -104,6 +105,7 @@ io.on('connection', (socket)  => {
       delete rooms[room]
       delete charactersInRoom[room]
       delete queue[room]
+      playerHitByBombsCount = 0;
     }
 
     // emit a message to all players to remove this player
@@ -168,10 +170,8 @@ io.on('connection', (socket)  => {
 
   // MINI GAME SOCKETS
   socket.on('currentPlayersMG', () => {
-    // console.log("in server/currentPlayerMG")
-    // console.log("players", players)
     const room = players[socket.id].roomId;
-    socket.emit('currentPlayersMG', players, room);
+    socket.emit('currentPlayersMG', players, room, queue[room]);
   })
 
   socket.on('playerHit', () => {
@@ -184,7 +184,8 @@ io.on('connection', (socket)  => {
 
   socket.on('gameOver', () => {
     //tell everyone's client to return to main game
-    socket.emit('gameOver');
+    const room = players[socket.id].roomId
+    io.in(room).emit('gameOver');
   })
 
 });

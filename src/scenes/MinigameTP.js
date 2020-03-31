@@ -15,42 +15,37 @@ export default class minigameTPScene extends Phaser.Scene {
 
     this.collectTP = this.collectTP.bind(this);
     this.hitBomb = this.hitBomb.bind(this);
+
+    this.queue = [];
   }
 
-  // init(data) {
-  //   console.log("data in init", data)
-  //   const queue = data.queue;
-  //   console.log(queue)
-  //   this.bodyCount = 0;
-  // }
-
   preload() {
-    this.load.spritesheet("ayse", "/public/assets/spriteSheets/ayse-sheet.png", {
+    this.load.spritesheet("ayse", "assets/spriteSheets/ayse-sheet.png", {
       frameWidth: 300,
       frameHeight: 300,
       endFrame: 8
     });
-    this.load.spritesheet("stephanie", "/public/assets/spriteSheets/stephanie-sheet.png", {
+    this.load.spritesheet("stephanie", "assets/spriteSheets/stephanie-sheet.png", {
       frameWidth: 300,
       frameHeight: 300,
       endFrame: 8
       }
     );
-    this.load.spritesheet("tiffany", "/public/assets/spriteSheets/tiffany-sheet.png", {
+    this.load.spritesheet("tiffany", "assets/spriteSheets/tiffany-sheet.png", {
       frameWidth: 300,
       frameHeight: 300,
       endFrame: 8
     });
-    this.load.spritesheet("patty", "/public/assets/spriteSheets/patty-sheet.png", {
+    this.load.spritesheet("patty", "assets/spriteSheets/patty-sheet.png", {
       frameWidth: 300,
       frameHeight: 300,
       endFrame: 8
     });
-    this.load.path = '/public/assets/minigameTP/'
-    this.load.image('sky', 'sky.png');
-    this.load.image('platform', 'platform.png');
-    this.load.image('tp', 'tp.png');
-    this.load.image('bomb', 'bomb.png');
+    // this.load.path = 'assets/minigameTP/'
+    this.load.image('sky', 'assets/minigameTP/sky.png');
+    this.load.image('platform', 'assets/minigameTP/platform.png');
+    this.load.image('tp', 'assets/minigameTP/tp.png');
+    this.load.image('bomb', 'assets/minigameTP/bomb.png');
   }
 
   createAnimations(name) {
@@ -79,7 +74,8 @@ export default class minigameTPScene extends Phaser.Scene {
 
 
     // << LIST ALL THE SOCKETS FIRST >>
-    socket.on('currentPlayersMG', (players, room) => {
+    socket.on('currentPlayersMG', (players, room, queue) => {
+      this.queue = queue;
       const playersInRoom = {};
 
       Object.keys(players).forEach(id => {
@@ -111,8 +107,8 @@ export default class minigameTPScene extends Phaser.Scene {
     socket.on('updatedPlayersHit', (count) => {
       console.log("received updatedBodyCount", count);
 
-      if (count === 2) {
-        console.log('bodyCount is 2')
+      if (count === 3) {
+        console.log('bodyCount is 3')
         this.physics.pause();
 
         // game over text
@@ -126,16 +122,18 @@ export default class minigameTPScene extends Phaser.Scene {
      socket.on('gameOver', () => {
        console.log("in gameOver socket.on")
 
-      //  this.scene.stop('MinigameTPScene');
-
        this.scene.wake('BoardBg');
        this.scene.wake('BoardDice')
+       this.scene.wake('BoardScene')
+       this.scene.stop('MinigameTPScene');
      })
 
     // << END SOCKETS >>
 
+
     // EMIT NECESSARY REQUESTS TO SERVER
     socket.emit('currentPlayersMG')
+
 
     // << GAME ENTITIES >>
 
@@ -151,6 +149,7 @@ export default class minigameTPScene extends Phaser.Scene {
 
     //  Input Events
     this.cursors = this.input.keyboard.createCursorKeys();
+    this.jumpSound = this.sound.add("jump");
 
     //  Some toiletpaper to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
     this.toiletpaper = this.physics.add.group({
@@ -167,15 +166,14 @@ export default class minigameTPScene extends Phaser.Scene {
     this.bombs = this.physics.add.group();
 
     //  The score
-    this.p1scoreText = this.add.text(16, 16, `Player 1: 0`, { fontSize: '16px', fill: '#000' });
-    this.p2scoreText = this.add.text(166, 16, `Player 2: 0`, { fontSize: '16px', fill: '#000' });
-    this.p3scoreText = this.add.text(316, 16, `Player 3: 0`, { fontSize: '16px', fill: '#000' });
-    this.p4scoreText = this.add.text(466, 16, `Player 4: 0`, { fontSize: '16px', fill: '#000' });
+    // this.p1scoreText = this.add.text(16, 16, `${data.queue[0]}: 0`, { fontSize: '16px', fill: '#000' });
+    // this.p2scoreText = this.add.text(166, 16, `${data.queue[1]}: 0`, { fontSize: '16px', fill: '#000' });
+    // this.p3scoreText = this.add.text(316, 16, `${data.queue[2]}: 0`, { fontSize: '16px', fill: '#000' });
     // this.p4scoreText = this.add.text(466, 16, `${data.queue[3]}: 0`, { fontSize: '16px', fill: '#000' });
 
     // physics things
-    this.physics.add.collider(this.toiletpaper, this.platforms);
-    this.physics.add.collider(this.bombs, this.platforms);
+    // this.physics.add.collider(this.toiletpaper, this.platforms);
+    // this.physics.add.collider(this.bombs, this.platforms);
 
     //  Checks to see if the player overlaps with any of the toiletpaper, if he does call the collectTP function
     // this.physics.add.overlap(this.player, this.toiletpaper, this.collectTP, null, this);
@@ -183,16 +181,21 @@ export default class minigameTPScene extends Phaser.Scene {
 
 
      // Return To Game Button
-     const returnButton = this.add.text(250, 250, 'Return Button', { fontSize: '32px', fill: '#FFF' });
+     this.add.text(250, 200, 'Mini Game Under Construction', { fontSize: '32px', fill: '#FFF' });
+     const returnButton = this.add.text(250, 250, 'Return To Board', { fontSize: '32px', fill: '#FFF' });
+
      returnButton.setInteractive();
 
      returnButton.on('pointerup', () => {
        console.log('returnButton pressed')
-       this.scene.stop('minigameTPScene')
 
-       //this.scene.wake('BoardScene')
-       this.scene.wake('BoardBg');
-       this.scene.wake('BoardDice')
+       socket.emit("gameOver")
+
+      //  this.scene.stop('minigameTPScene')
+
+      //  this.scene.wake('BoardScene')
+      //  this.scene.wake('BoardBg');
+      //  this.scene.wake('BoardDice')
 
      })
 
@@ -248,7 +251,7 @@ export default class minigameTPScene extends Phaser.Scene {
 
     //  Add and update the score
     this.firstPlayerScore += 10;
-    this.p1scoreText.setText(`Player: ${this.firstPlayerScore}`);
+    // this.p1scoreText.setText(`${data.queue[0]}: ${this.firstPlayerScore}`);
 
     if (this.toiletpaper.countActive(true) === 0) {
       //  A new batch of toiletpaper to collect

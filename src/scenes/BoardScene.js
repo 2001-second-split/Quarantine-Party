@@ -18,7 +18,6 @@ export default class BoardScene extends Phaser.Scene {
     this.scene.launch('BoardBg', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers});
     this.scene.launch('BoardDice', {queue: this.queue, player: this.player});
 
-å
     // code below is for testing mini game directly
     // leave commented out for now
 
