@@ -182,7 +182,7 @@ export default class minigameTPScene extends Phaser.Scene {
 
      // Return To Game Button
      this.add.text(250, 200, 'Mini Game Under Construction', { fontSize: '32px', fill: '#FFF' });
-     const returnButton = this.add.text(250, 250, 'Return To Board', { fontSize: '32px', fill: '#FFF' });
+     const returnButton = this.add.text(250, 250, '<Click Here to Return To Board>', { fontSize: '32px', fill: '#FFF' });
 
      returnButton.setInteractive();
 
