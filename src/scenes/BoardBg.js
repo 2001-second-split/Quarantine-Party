@@ -67,6 +67,7 @@ export default class BoardBg extends Phaser.Scene {
       this.moveCharacter(rolledNum, charName)
 
       //Update queue once a player moves. This will first update the queue in BoardDice and then BoardBg (in next render cycle)
+
       socket.emit('unshiftQueue')
       //check the next in player in queue. Place the player on the board if she is not already
       if(typeof this.charPosition[this.queue[1]] === 'undefined'){

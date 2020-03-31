@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 3000;
 
 let players = {};
 let rooms = {};
+let charactersInRoom = {}
 
 app.use(express.static(path.join(__dirname + '/public')));
 
@@ -113,6 +114,8 @@ io.on('connection', (socket)  => {
     socket.broadcast.emit('playerMoved', players[socket.id]);
   });
 
+
+
   //when a player rolls a dice, update their position on self/others' board
   //and shift the queue
   socket.on('diceRoll', (rolledNum, charName) => {
@@ -120,6 +123,7 @@ io.on('connection', (socket)  => {
     //socket.emit('moveSelfOnBoard', rolledNum);
     io.in(room).emit('moveCharOnBoard', rolledNum, charName)
     io.in(room).emit('unshiftQueue')
+    io.to(room).emit('updateDice', rolledNum)
   })
 
   //when BoardBg first initiates, place the first player in line to tile 0 on all players' boards
@@ -145,6 +149,24 @@ io.on('connection', (socket)  => {
   //   const roomId = players[socket.id].roomId
   //   io.to(roomId).emit('otherPlayerMoved', cursors)
   // })
+
+  socket.on('characterSelected', (char, room) => {
+    if (charactersInRoom.hasOwnProperty(room)){
+      charactersInRoom[room].push(char)
+    } else {
+      charactersInRoom[room] = [char]
+    }
+    console.log('charactersInROOM', charactersInRoom[room] )
+    //io.to(room).emit('disableCharForRoom', char)
+  })
+
+  socket.on('disableSelectedChars', room => {
+    console.log('ROOM', room)
+    if (charactersInRoom.hasOwnProperty(room)){
+      const selectedChars = charactersInRoom[room]
+      socket.emit('disableSelectedChars', selectedChars)
+    }
+  })
 
 });
 
