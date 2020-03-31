@@ -15,10 +15,6 @@ export default class minigameTPScene extends Phaser.Scene {
     this.collectTP = this.collectTP.bind(this);
     this.hitBomb = this.hitBomb.bind(this);
 
-    this.addPlayer = this.addPlayer.bind(this);
-    this.addOtherPlayers = this.addOtherPlayers.bind(this);
-
-    // this.player = this.player.bind(this);
   }
 
   preload() {
@@ -70,8 +66,8 @@ export default class minigameTPScene extends Phaser.Scene {
     })
   }
 
-  create() {
-    const data = this.scene.settings.data;
+  create(data) {
+    // const data = this.scene.settings.data;
     console.log("data in miniGameTP", data)
 
 
@@ -80,7 +76,6 @@ export default class minigameTPScene extends Phaser.Scene {
     socket.emit('currentPlayersMG')
 
     socket.on('currentPlayersMG', (players, room) => {
-      console.log("minigametp/currentPlayersMG", players)
 
       const playersInRoom = {};
       Object.keys(players).forEach(id => {
@@ -90,7 +85,6 @@ export default class minigameTPScene extends Phaser.Scene {
       });
 
       Object.keys(playersInRoom).forEach(id => {
-        console.log("playersinRoom for each", playersInRoom)
         if (players[id].playerId === socket.id) {
           this.addPlayer(players[id],socket.id, players[id].name);
         } else {
@@ -118,9 +112,9 @@ export default class minigameTPScene extends Phaser.Scene {
     this.platforms.create(400, 800, 'platform').setScale(2).refreshBody();
 
     //  Now let's create some ledges
-    this.platforms.create(600, 400, 'platform');
-    this.platforms.create(50, 250, 'platform');
-    this.platforms.create(750, 220, 'platform');
+    // this.platforms.create(600, 400, 'platform');
+    // this.platforms.create(50, 250, 'platform');
+    // this.platforms.create(750, 220, 'platform');
 
     //  Input Events
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -187,7 +181,10 @@ export default class minigameTPScene extends Phaser.Scene {
     //character physics
     this.player.setCollideWorldBounds(true);
     this.player.setBounce(0.2);
-    // this.physics.add.collider(this.player, this.platforms);
+
+    this.physics.add.collider(this.player, this.platforms);
+    this.physics.add.overlap(this.player, this.toiletpaper, this.collectTP.bind(this), null, this);
+    this.physics.add.collider(this.player, this.bombs, this.hitBomb.bind(this), null, this);
 
     return this.player;
   }
@@ -211,15 +208,12 @@ export default class minigameTPScene extends Phaser.Scene {
     if (this.gameOver) {
       // return;
       this.scene.stop('MinigameTPScene');
-      // this.scene.run('BoardScene');
-      // this.scene.start('BoardScene');
-      //this.scene.wake('BoardScene');
+
       this.scene.wake('BoardBg');
       this.scene.wake('BoardDice')
       // this.gameOver = false;
   }
 
-    // console.log("i'm in update")
     if (typeof this.player !== 'undefined'){
       this.player.update(this.cursors)
     }
