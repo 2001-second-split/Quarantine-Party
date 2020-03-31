@@ -71,9 +71,11 @@ export default class StartingScene extends Phaser.Scene {
       console.log('INSIDE DISABLE CHAR FOR ROOM')
       console.log('SELECTED CHARS', selectedChars)
       selectedChars.forEach(char => {
-        const opt = domElement.getChildByName(char)
+        const opt = domElement.getChildByID(char)
         console.log(opt)
         //opt.disableInteractive()
+        opt.disabled = true;
+        console.log(opt)
         //opt.classList.add('disabled')
       })
     })
@@ -88,7 +90,6 @@ export default class StartingScene extends Phaser.Scene {
 
     roomId.addEventListener('keyup', event => {
       this.room = event.target.value
-      console.log(this.room)
       socket.emit('disableSelectedChars', this.room)
     })
 

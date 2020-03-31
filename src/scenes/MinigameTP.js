@@ -95,7 +95,7 @@ export default class minigameTPScene extends Phaser.Scene {
     });
 
     socket.on('playerMoved', (playerInfo) => {
-      this.otherPlayers.forEach(otherPlayer => {
+      this.otherPlayersArr.forEach(otherPlayer => {
         if (playerInfo.playerId === otherPlayer.playerId) {
           otherPlayer.setPosition(playerInfo.x, playerInfo.y);
         }
