@@ -134,10 +134,10 @@ export default class minigameTPScene extends Phaser.Scene {
     this.bombs = this.physics.add.group();
 
     //  The score
-    this.p1scoreText = this.add.text(16, 16, `${data.queue[0]}: 0`, { fontSize: '16px', fill: '#000' });
-    this.p2scoreText = this.add.text(166, 16, `${data.queue[1]}: 0`, { fontSize: '16px', fill: '#000' });
-    this.p3scoreText = this.add.text(316, 16, `${data.queue[2]}: 0`, { fontSize: '16px', fill: '#000' });
-    this.p4scoreText = this.add.text(466, 16, `${data.queue[3]}: 0`, { fontSize: '16px', fill: '#000' });
+    // this.p1scoreText = this.add.text(16, 16, `${data.queue[0]}: 0`, { fontSize: '16px', fill: '#000' });
+    // this.p2scoreText = this.add.text(166, 16, `${data.queue[1]}: 0`, { fontSize: '16px', fill: '#000' });
+    // this.p3scoreText = this.add.text(316, 16, `${data.queue[2]}: 0`, { fontSize: '16px', fill: '#000' });
+    // this.p4scoreText = this.add.text(466, 16, `${data.queue[3]}: 0`, { fontSize: '16px', fill: '#000' });
 
     // physics things
     // this.physics.add.collider(this.player, this.platforms);
@@ -158,10 +158,10 @@ export default class minigameTPScene extends Phaser.Scene {
 
      // when we release the mouse, it'll log a message and change scenes
      returnButton.on('pointerup', () => {
-       console.log('returnbutton pressed')
+       console.log('returnButton pressed')
        this.scene.stop('minigameTPScene')
 
-       this.scene.wake('BoardScene')
+       this.scene.switch('BoardScene')
        this.scene.wake('BoardBg');
        this.scene.wake('BoardDice')
 
@@ -224,7 +224,7 @@ export default class minigameTPScene extends Phaser.Scene {
 
     //  Add and update the score
     this.firstPlayerScore += 10;
-    this.p1scoreText.setText(`${this.scene.settings.data.queue[0]}: ${this.firstPlayerScore}`);
+    // this.p1scoreText.setText(`${data.queue[0]}: ${this.firstPlayerScore}`);
 
     if (this.toiletpaper.countActive(true) === 0)
     {
