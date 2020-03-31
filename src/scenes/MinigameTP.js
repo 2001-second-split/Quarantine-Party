@@ -161,7 +161,7 @@ export default class minigameTPScene extends Phaser.Scene {
        console.log('returnbutton pressed')
        this.scene.stop('minigameTPScene')
 
-       //this.scene.wake('BoardScene')
+       this.scene.wake('BoardScene')
        this.scene.wake('BoardBg');
        this.scene.wake('BoardDice')
 

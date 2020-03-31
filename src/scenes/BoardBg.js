@@ -48,19 +48,13 @@ export default class BoardBg extends Phaser.Scene {
 
     this.queuePrompt = this.add.text(700, 16, `${this.queue[0]} starts!`, { fontSize: '12px', fill: '#FFF' })
 
-    //place characters to tile 0
+    //place first player in line to tile 0
     socket.emit('placeOnBoard', 0, this.queue[0])
 
     socket.on('placedOnBoard', (rolledNum, charName) => {
       this.moveCharacter(rolledNum, charName)
     })
 
-    //listen for movement on board
-    // socket.on('moveSelfOnBoard', rolledNum => {
-    //   this.moveCharacter(rolledNum, this.player.name)
-    //   //update the queue
-    //   this.queue.push(this.queue.shift())
-    // })
 
     //listen for movement on board
     socket.on('moveCharOnBoard', (rolledNum, charName) => {
@@ -85,7 +79,7 @@ export default class BoardBg extends Phaser.Scene {
     //listen for minigames
     socket.on('minigameStarted', () => {
       //make the current scene sleep + minigame wake
-      this.scene.start('minigameTPScene', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers})
+      this.scene.switch('minigameTPScene', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers})
     })
   }
 

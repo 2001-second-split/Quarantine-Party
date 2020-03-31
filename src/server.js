@@ -123,8 +123,7 @@ io.on('connection', (socket)  => {
 
 
 
-  //when a player rolls a dice, update their position on self/others' board
-  //and shift the queue
+  //when a player rolls a dice, update their position on self/others' board, shift the queue & update dice for other players
   socket.on('diceRoll', (rolledNum, charName) => {
     const room = players[socket.id].roomId
     //socket.emit('moveSelfOnBoard', rolledNum);
@@ -139,6 +138,7 @@ io.on('connection', (socket)  => {
     io.in(room).emit('placedOnBoard', rolledNum, charName)
   })
 
+  //update the queue in boardbg scene
   socket.on('changeQueuePrompt', currentPlayer => {
     const room = players[socket.id].roomId
     socket.in(room).emit('changeQueuePrompt', currentPlayer)
@@ -148,27 +148,17 @@ io.on('connection', (socket)  => {
     io.in(players[socket.id].roomId).emit('minigameStarted')
   })
 
-  socket.on('placeFirstPlayer', firstPlayer => {
-    io.in(players[socket.id].roomId).emit('placedFirstPlayer', firstPlayer)
-  })
-
-  // socket.on('otherPlayerMove', (cursors) => {
-  //   const roomId = players[socket.id].roomId
-  //   io.to(roomId).emit('otherPlayerMoved', cursors)
-  // })
-
+  //update characters in room when a new character is selected
   socket.on('characterSelected', (char, room) => {
     if (charactersInRoom.hasOwnProperty(room)){
       charactersInRoom[room].push(char)
     } else {
       charactersInRoom[room] = [char]
     }
-    console.log('charactersInROOM', charactersInRoom[room] )
-    //io.to(room).emit('disableCharForRoom', char)
   })
 
+  //if there are already chosen characters in room, disable them from new players' options
   socket.on('disableSelectedChars', room => {
-    console.log('ROOM', room)
     if (charactersInRoom.hasOwnProperty(room)){
       const selectedChars = charactersInRoom[room]
       socket.emit('disableSelectedChars', selectedChars)
