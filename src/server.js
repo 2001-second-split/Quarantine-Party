@@ -36,6 +36,13 @@ io.on('connection', (socket)  => {
     socket.emit('currentPlayers', players, room);
   })
 
+  socket.on('currentPlayersMG', () => {
+    console.log("in server/currentPlayerMG")
+    console.log("players", players)
+    const room = players[socket.id].roomId;
+    socket.emit('currentPlayersMG', players, room);
+  })
+
   socket.on('subscribe', (room, spriteSkin, roomCreator) => {
 
     if (rooms[room] === undefined && roomCreator) {
