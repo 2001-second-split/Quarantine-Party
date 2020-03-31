@@ -65,18 +65,8 @@ export default class EndScene extends Phaser.Scene {
     this.add.sprite(600,450, this.fourth).setScale(0.5)
 
     // Create podium
-    // this.podium = this.physics.add.staticGroup();
-    // this.ground.create(400, 600, "podium").setScale(1);
-
-    // Create collisions for all entities
-    // this.physics.add.collider(this.firstPlace, this.podium)
-    // this.physics.add.collider(this.otherPlayers, this.podium)
-    // this.firstPlace.setCollideWorldBounds(true);
-    // this.otherPlayers.setCollideWorldBounds(true);
 
     // Create celebration music
-    // this.celebrateSound = this.sound.add('celebrate');
-
 
     // Play Again Button?
     const playAgainButton = this.add.text(50, 250, 'Play Again?', { fontSize: '32px', fill: '#FFF' });
