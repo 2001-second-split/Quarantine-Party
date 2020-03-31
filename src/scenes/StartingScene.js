@@ -5,7 +5,9 @@ import {socket} from '../index'
 export default class StartingScene extends Phaser.Scene {
   constructor() {
     super('StartingScene');
+    this.disableCharsCB = this.disableCharsCB.bind(this)
   }
+
   preload () {
     //load sprites
     this.load.spritesheet("ayse", "assets/spriteSheets/ayse-sheet.png", {
@@ -68,10 +70,15 @@ export default class StartingScene extends Phaser.Scene {
     })
 
     //disable already selected characters in a room
-    socket.on('disableSelectedChars', selectedChars => {
+    socket.on('disableSelectedChars', (selectedChars, room) => {
+      console.log('DISABLE CHAR ')
       selectedChars.forEach(char => {
-        const opt = domElement.getChildByID(char)
-        opt.disabled = true;
+        //console.log('DOM ELEMENT', domElement)
+        if (this.room === room){
+          const opt = domElement.getChildByID(char)
+          //console.log('OPT',opt)
+          opt.disabled = true;
+        }
       })
     })
 
@@ -84,11 +91,17 @@ export default class StartingScene extends Phaser.Scene {
     const spriteSkin = domElement.getChildByName('spriteSkin')
 
     //listen for user room input and get the room name from input tag
-    roomId.addEventListener('keyup', event => {
-      this.room = event.target.value
-      socket.emit('disableSelectedChars', this.room)
-    })
+    this.disableSelectedChars(roomId, this.disableCharsCB, 1000)
 
+    // roomId.addEventListener('keyup', event => {
+    //   this.room = event.target.value
+
+    // })
+
+    // if(this.room.length){
+    //   console.log('THISROOM', this.room)
+    //   socket.emit('disableSelectedChars', this.room)
+    // }
 
     domElement.on('click', function (event) {
       if (event.target.name === 'createButton') {
@@ -121,4 +134,25 @@ export default class StartingScene extends Phaser.Scene {
         ease: 'Power3'
     });
   }
+
+
+  disableCharsCB(evt){
+    this.room = evt.target.value
+    socket.emit('disableSelectedChars', this.room)
+  }
+
+  disableSelectedChars(domElt, callback, delay){
+    let timer = null;
+    domElt.onkeypress = (evt) => {
+      if(timer) {
+        window.clearTimeout(timer)
+      }
+      timer = window.setTimeout(function () {
+        timer = null;
+        callback(evt);
+      }, delay)
+    };
+    domElt = null;
+  }
 }
+
