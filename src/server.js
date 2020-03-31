@@ -109,6 +109,7 @@ io.on('connection', (socket)  => {
     if (rooms[room] === 0) {
       delete rooms[room]
       delete charactersInRoom[room]
+      delete queue[room]
     }
 
     // emit a message to all players to remove this player
