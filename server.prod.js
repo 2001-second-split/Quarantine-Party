@@ -7,6 +7,7 @@ const path = require('path');
 
 let players = {};
 let rooms = {};
+let charactersInRoom = {}
 
 app.use(express.static(path.join(__dirname + '/public')));
 
@@ -34,6 +35,14 @@ io.on('connection', (socket)  => {
     const room = players[socket.id].roomId;
     socket.emit('currentPlayers', players, room);
   })
+
+  socket.on('currentPlayersMG', () => {
+    console.log("in server/currentPlayerMG")
+    console.log("players", players)
+    const room = players[socket.id].roomId;
+    socket.emit('currentPlayersMG', players, room);
+  })
+
 
   socket.on('subscribe', (room, spriteSkin, roomCreator) => {
 
@@ -70,6 +79,19 @@ io.on('connection', (socket)  => {
       // update all other players of the new player
       io.to(room).emit('newPlayer', players[socket.id], socket.id,spriteSkin)
 
+       //if there are four players subscribed to room, emit playersReady
+    io.in(room).clients((error, clients) => {
+      if (error) throw error
+      if(clients.length === 4){
+        io.in(room).emit('playersReady')
+      }
+    });
+  })
+
+  //listen for request to transition to board
+  socket.on('transitionToBoard', () => {
+    const room = players[socket.id].roomId;
+    io.in(room).emit('transitionedToBoard')
   })
 
   // disconnecting
@@ -99,14 +121,48 @@ io.on('connection', (socket)  => {
     socket.broadcast.emit('playerMoved', players[socket.id]);
   });
 
-  //when a player rolls a dice, update their position
-  socket.on('diceRoll', (rolledNum) => {
-    socket.emit('moveSelfOnBoard', rolledNum);
-    //io.to(socket.roomId).broadcast('moveOtherOnBoard', rolledNum)
+
+
+  //when a player rolls a dice, update their position on self/others' board, shift the queue & update dice for other players
+  socket.on('diceRoll', (rolledNum, charName) => {
+    const room = players[socket.id].roomId
+    //socket.emit('moveSelfOnBoard', rolledNum);
+    io.in(room).emit('moveCharOnBoard', rolledNum, charName)
+    io.in(room).emit('unshiftQueue')
+    io.to(room).emit('updateDice', rolledNum)
+  })
+
+  //when BoardBg first initiates, place the first player in line to tile 0 on all players' boards
+  socket.on('placeOnBoard', (rolledNum, charName) => {
+    const room = players[socket.id].roomId
+    io.in(room).emit('placedOnBoard', rolledNum, charName)
+  })
+
+  //update the queue in boardbg scene
+  socket.on('changeQueuePrompt', currentPlayer => {
+    const room = players[socket.id].roomId
+    socket.in(room).emit('changeQueuePrompt', currentPlayer)
   })
 
   socket.on('startMinigame', () => {
     io.in(players[socket.id].roomId).emit('minigameStarted')
+  })
+
+  //update characters in room when a new character is selected
+  socket.on('characterSelected', (char, room) => {
+    if (charactersInRoom.hasOwnProperty(room)){
+      charactersInRoom[room].push(char)
+    } else {
+      charactersInRoom[room] = [char]
+    }
+  })
+
+  //if there are already chosen characters in room, disable them from new players' options
+  socket.on('disableSelectedChars', room => {
+    if (charactersInRoom.hasOwnProperty(room)){
+      const selectedChars = charactersInRoom[room]
+      socket.emit('disableSelectedChars', selectedChars)
+    }
   })
 
 
