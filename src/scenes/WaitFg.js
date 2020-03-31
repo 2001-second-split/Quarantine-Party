@@ -9,7 +9,6 @@ export default class WaitFg extends Phaser.Scene {
     this.queue = []
   }
   preload() {
-    this.load.image("platform", "assets/sprites/platform.png");
     this.load.audio("jump", "assets/audio/jump.wav");
   }
 
@@ -17,9 +16,6 @@ export default class WaitFg extends Phaser.Scene {
   create() {
       // Create game entities
       this.cursors = this.input.keyboard.createCursorKeys();
-      //create ground
-      this.ground = this.physics.add.staticGroup();
-      this.ground.create(400, 600, "platform").setScale(2).refreshBody();
       // Create sounds
       this.jumpSound = this.sound.add("jump");
 
@@ -29,7 +25,7 @@ export default class WaitFg extends Phaser.Scene {
       socket.emit("currentPlayers");
 
       //get currentPlayers in room and add self and other players
-      socket.on("currentPlayers", (players, room) => {
+      socket.on("currentPlayers", (players, room, queue) => {
         //Find all the players in the same room
         const playersInRoom = {};
         Object.keys(players).forEach(id => {
@@ -45,6 +41,9 @@ export default class WaitFg extends Phaser.Scene {
             this.addOtherPlayers(players[id], id,players[id].name);
           }
         });
+
+        this.queue = queue;
+        console.log("waitFG queue", this.queue)
       });
 
       //add new players as other players

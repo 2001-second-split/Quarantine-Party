@@ -1,4 +1,5 @@
 import { socket } from "../index";
+import Align from "../entity/Align";
 import Player from '../entity/Player'
 
 export default class minigameTPScene extends Phaser.Scene {
