@@ -5,10 +5,11 @@ import { socket } from "../index";
 export default class WaitFg extends Phaser.Scene {
   constructor() {
     super("WaitFg");
+    //keep track of players and the order of join
+    this.queue = []
   }
   preload() {
     this.load.image("platform", "assets/sprites/platform.png");
-    // << LOAD SOUNDS HERE >>
     this.load.audio("jump", "assets/audio/jump.wav");
   }
 
@@ -23,11 +24,9 @@ export default class WaitFg extends Phaser.Scene {
       this.jumpSound = this.sound.add("jump");
 
       //  << SOCKET THINGS!!! >>
-
       this.otherPlayers = [];
-
       // ask the server who current players are
-    socket.emit("currentPlayers");
+      socket.emit("currentPlayers");
 
       //get currentPlayers in room and add self and other players
       socket.on("currentPlayers", (players, room) => {
@@ -42,7 +41,6 @@ export default class WaitFg extends Phaser.Scene {
         Object.keys(playersInRoom).forEach(id => {
           if (players[id].playerId === socket.id) {
             this.addPlayer(players[id],socket.id, players[id].name);
-
           } else {
             this.addOtherPlayers(players[id], id,players[id].name);
           }
@@ -69,6 +67,29 @@ export default class WaitFg extends Phaser.Scene {
           }
         })
       })
+
+      //wait for all four players to join
+      // socket.on('playersReady', () => {
+      //   //if the current player is the first in que show them start button
+      //   if (this.player.name === this.queue[0]){
+      //     const startButton = this.add.text(250, 250, 'Start Button', { fontSize: '32px', fill: '#FFF' });
+      //     //make the button interactive
+      //     startButton.setInteractive();
+      //     //when mouse is released, emit transitionToBoard
+      //     startButton.on('pointerup', () => {
+      //       socket.emit('transitionToBoard')
+      //     })
+      //   }
+      // })
+
+      //on transition to board request switch to board scene and pass the player que to it
+      socket.on('transitionedToBoard', () => {
+        this.scene.stop('WaitFg')
+        this.scene.stop('WaitBg')
+        this.scene.stop('WaitScene')
+        this.scene.start('BoardScene', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers})
+      })
+
 
       // socket.on('otherPlayerMoved', (cursors) => {
       //   this.otherPlayers.forEach(player => {
@@ -106,6 +127,8 @@ export default class WaitFg extends Phaser.Scene {
     this.player = new Player(this, playerInfo.x, playerInfo.y, spriteSkin).setScale(0.5);
     this.player.playerId = socketId
     this.player.name = spriteSkin
+    //add the newly created player to que (to keep track of player turns)
+    this.queue.push(this.player.name)
     this.player.setCollideWorldBounds(true);
     this.player.setBounce(0.2);
     this.createAnimations(this.player.name);
@@ -115,6 +138,8 @@ export default class WaitFg extends Phaser.Scene {
     const otherPlayer = new Player(this, playerInfo.x, playerInfo.y, spriteSkin ).setScale(0.5);
     otherPlayer.playerId = socketId;
     otherPlayer.name = spriteSkin
+     //add the newly created player to que (to keep track of player turns)
+    this.queue.push(otherPlayer.name)
     otherPlayer.setCollideWorldBounds(true);
     otherPlayer.setBounce(0.2)
     // this.physics.add(this.ground, otherPlayer);
