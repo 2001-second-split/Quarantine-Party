@@ -15,7 +15,10 @@ export default class minigameTPScene extends Phaser.Scene {
     this.collectTP = this.collectTP.bind(this);
     this.hitBomb = this.hitBomb.bind(this);
 
+    this.addPlayer = this.addPlayer.bind(this);
+    this.addOtherPlayers = this.addOtherPlayers.bind(this);
 
+    // this.player = this.player.bind(this);
   }
 
   preload() {
@@ -74,9 +77,6 @@ export default class minigameTPScene extends Phaser.Scene {
 
     // << SOCKET THINGS >>
     this.otherPlayersArr = [];
-    // let player1;
-    const self = this;
-
     socket.emit('currentPlayersMG')
 
     socket.on('currentPlayersMG', (players, room) => {
@@ -93,19 +93,11 @@ export default class minigameTPScene extends Phaser.Scene {
         console.log("playersinRoom for each", playersInRoom)
         if (players[id].playerId === socket.id) {
           this.addPlayer(players[id],socket.id, players[id].name);
-          // console.log("player1", player1)
-          // this.physics.add.collider(player1, this.platforms);
         } else {
           this.addOtherPlayers(players[id], id,players[id].name);
         }
       });
 
-    });
-
-
-    //add new players as other players
-    socket.on("newPlayer", (playerInfo, socketId, spriteSkin) => {
-      this.addOtherPlayers(playerInfo, socketId,spriteSkin);
     });
 
     socket.on('playerMoved', (playerInfo) => {
@@ -115,25 +107,15 @@ export default class minigameTPScene extends Phaser.Scene {
         }
       });
     });
-
-    socket.on('disconnect', clientId => {
-      this.otherPlayers.forEach(otherPlayer => {
-        if(otherPlayer.playerId === clientId){
-          otherPlayer.destroy()
-        }
-      })
-    })
-
     // << END SOCKETS >>
 
 
     // << GAME ENTITIES >>
-    {
 
     this.add.image(400, 300, 'sky');
 
     this.platforms = this.physics.add.staticGroup();
-    this.platforms.create(600, 1000, 'platform').setScale(3).refreshBody();
+    this.platforms.create(400, 800, 'platform').setScale(2).refreshBody();
 
     //  Now let's create some ledges
     this.platforms.create(600, 400, 'platform');
@@ -164,13 +146,13 @@ export default class minigameTPScene extends Phaser.Scene {
     this.p4scoreText = this.add.text(466, 16, `${data.queue[3]}: 0`, { fontSize: '16px', fill: '#000' });
 
     // physics things
-    // this.physics.add.collider(this.player1, this.platforms);
+    // this.physics.add.collider(this.player, this.platforms);
     this.physics.add.collider(this.toiletpaper, this.platforms);
     this.physics.add.collider(this.bombs, this.platforms);
 
     //  Checks to see if the player overlaps with any of the toiletpaper, if he does call the collectTP function
-    this.physics.add.overlap(this.player, this.toiletpaper, this.collectTP, null, this);
-    this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
+    // this.physics.add.overlap(this.player, this.toiletpaper, this.collectTP, null, this);
+    // this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
 
 
     //AYSE ADDITION TO CHECK GAME STATE
@@ -191,39 +173,37 @@ export default class minigameTPScene extends Phaser.Scene {
 
      })
 
-    }
-
 
   }
 
   // SOCKET RELATED FUNCTIONS
   addPlayer(playerInfo, socketId, spriteSkin) {
+    //create player entity to show in minigame scene
     this.player = new Player(this, playerInfo.x, playerInfo.y, spriteSkin).setScale(0.5);
     this.player.playerId = socketId
     this.player.name = spriteSkin
-    //add the newly created player to que (to keep track of player turns)
-    // this.queue.push(this.player.name)
-
     this.createAnimations(spriteSkin);
 
     //character physics
     this.player.setCollideWorldBounds(true);
     this.player.setBounce(0.2);
-    this.physics.add.collider(this.player, this.platforms);
+    // this.physics.add.collider(this.player, this.platforms);
 
     return this.player;
   }
 
   addOtherPlayers(playerInfo, socketId, spriteSkin) {
+    //create other player entities
     const otherPlayer = new Player(this, playerInfo.x, playerInfo.y, spriteSkin ).setScale(0.5);
     otherPlayer.playerId = socketId;
-    otherPlayer.name = spriteSkin
-     //add the newly created player to que (to keep track of player turns)
-    // this.scene.settings.data.queue.push(otherPlayer.name)
+    otherPlayer.name = spriteSkin;
+
+    this.otherPlayersArr.push(otherPlayer);
+
     otherPlayer.setCollideWorldBounds(true);
     otherPlayer.setBounce(0.2)
-    // this.physics.add(this.ground, otherPlayer);
-    this.otherPlayersArr.push(otherPlayer);
+    // this.physics.add.collider(otherPlayer, this.platforms);
+
     return otherPlayer;
   }
 
@@ -233,7 +213,7 @@ export default class minigameTPScene extends Phaser.Scene {
       this.scene.stop('MinigameTPScene');
       // this.scene.run('BoardScene');
       // this.scene.start('BoardScene');
-     //this.scene.wake('BoardScene');
+      //this.scene.wake('BoardScene');
       this.scene.wake('BoardBg');
       this.scene.wake('BoardDice')
       // this.gameOver = false;
@@ -241,8 +221,6 @@ export default class minigameTPScene extends Phaser.Scene {
 
     // console.log("i'm in update")
     if (typeof this.player !== 'undefined'){
-      console.log("this.player is not undefined")
-
       this.player.update(this.cursors)
     }
   }

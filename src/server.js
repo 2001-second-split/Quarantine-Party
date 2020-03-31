@@ -59,7 +59,7 @@ io.on('connection', (socket)  => {
       socket.emit('roomAlreadyCreated') //deny them
       return;
 
-    } else if (rooms[room] === 2) {
+    } else if (rooms[room] === 4) {
       socket.emit('roomFull');
       return;
 
@@ -81,7 +81,7 @@ io.on('connection', (socket)  => {
     //if there are four players subscribed to room, emit playersReady
     io.in(room).clients((error, clients) => {
       if (error) throw error
-      if(clients.length === 2){
+      if(clients.length === 4){
         io.in(room).emit('playersReady')
       }
     });
