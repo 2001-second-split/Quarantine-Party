@@ -88,7 +88,7 @@ export default class BoardBg extends Phaser.Scene {
     //listen for minigames
     socket.on('minigameStarted', () => {
       //make the current scene sleep + starts minigame
-      this.scene.add('minigameTPScene')
+      this.scene.add('minigameTPScene', minigameTPScene)
       this.scene.switch('minigameTPScene', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers})
     })
   }
