@@ -1,5 +1,7 @@
 import 'phaser';
 import {socket} from '../index'
+import Align from '../entity/Align';
+
 
 export default class BoardBg extends Phaser.Scene {
   constructor() {
@@ -26,14 +28,20 @@ export default class BoardBg extends Phaser.Scene {
 
   preload() {
     // Preload map & sprites
+    this.load.image('sky', 'assets/backgrounds/sky.png')
+
     this.load.json('map', 'assets/backgrounds/final_boardCSV.json');
     this.load.spritesheet('tiles','assets/spriteSheets/boardWChars.png', {frameWidth: 128, frameHeight: 128})
   }
 
   create() {
+    let sky = this.add.image(0,0,'sky')
+    Align.scaleToGame(sky,1)
+    Align.center(sky)
+
     //Parse the board data from the map file
     this.data = this.cache.json.get('map');
-
+    console.log('this in boardbg', this)
     this.tileWidthHalf = this.data.tilewidth / 2;
     this.tileHeightHalf = this.data.tileheight / 2;
 
@@ -48,25 +56,20 @@ export default class BoardBg extends Phaser.Scene {
 
     this.queuePrompt = this.add.text(700, 16, `${this.queue[0]} starts!`, { fontSize: '12px', fill: '#FFF' })
 
-    //place characters to tile 0
+    //place first player in line to tile 0
     socket.emit('placeOnBoard', 0, this.queue[0])
 
     socket.on('placedOnBoard', (rolledNum, charName) => {
       this.moveCharacter(rolledNum, charName)
     })
 
-    //listen for movement on board
-    // socket.on('moveSelfOnBoard', rolledNum => {
-    //   this.moveCharacter(rolledNum, this.player.name)
-    //   //update the queue
-    //   this.queue.push(this.queue.shift())
-    // })
 
     //listen for movement on board
     socket.on('moveCharOnBoard', (rolledNum, charName) => {
       this.moveCharacter(rolledNum, charName)
 
       //Update queue once a player moves. This will first update the queue in BoardDice and then BoardBg (in next render cycle)
+
       socket.emit('unshiftQueue')
       //check the next in player in queue. Place the player on the board if she is not already
       if(typeof this.charPosition[this.queue[1]] === 'undefined'){

@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 3000;
 
 let players = {};
 let rooms = {};
+let charactersInRoom = {}
 
 app.use(express.static(path.join(__dirname + '/public')));
 
@@ -34,6 +35,13 @@ io.on('connection', (socket)  => {
   socket.on('currentPlayers', () => {
     const room = players[socket.id].roomId;
     socket.emit('currentPlayers', players, room);
+  })
+
+  socket.on('currentPlayersMG', () => {
+    console.log("in server/currentPlayerMG")
+    console.log("players", players)
+    const room = players[socket.id].roomId;
+    socket.emit('currentPlayersMG', players, room);
   })
 
   socket.on('subscribe', (room, spriteSkin, roomCreator) => {
@@ -113,13 +121,15 @@ io.on('connection', (socket)  => {
     socket.broadcast.emit('playerMoved', players[socket.id]);
   });
 
-  //when a player rolls a dice, update their position on self/others' board
-  //and shift the queue
+
+
+  //when a player rolls a dice, update their position on self/others' board, shift the queue & update dice for other players
   socket.on('diceRoll', (rolledNum, charName) => {
     const room = players[socket.id].roomId
     //socket.emit('moveSelfOnBoard', rolledNum);
     io.in(room).emit('moveCharOnBoard', rolledNum, charName)
     io.in(room).emit('unshiftQueue')
+    io.to(room).emit('updateDice', rolledNum)
   })
 
   //when BoardBg first initiates, place the first player in line to tile 0 on all players' boards
@@ -128,6 +138,7 @@ io.on('connection', (socket)  => {
     io.in(room).emit('placedOnBoard', rolledNum, charName)
   })
 
+  //update the queue in boardbg scene
   socket.on('changeQueuePrompt', currentPlayer => {
     const room = players[socket.id].roomId
     socket.in(room).emit('changeQueuePrompt', currentPlayer)
@@ -137,14 +148,22 @@ io.on('connection', (socket)  => {
     io.in(players[socket.id].roomId).emit('minigameStarted')
   })
 
-  socket.on('placeFirstPlayer', firstPlayer => {
-    io.in(players[socket.id].roomId).emit('placedFirstPlayer', firstPlayer)
+  //update characters in room when a new character is selected
+  socket.on('characterSelected', (char, room) => {
+    if (charactersInRoom.hasOwnProperty(room)){
+      charactersInRoom[room].push(char)
+    } else {
+      charactersInRoom[room] = [char]
+    }
   })
 
-  // socket.on('otherPlayerMove', (cursors) => {
-  //   const roomId = players[socket.id].roomId
-  //   io.to(roomId).emit('otherPlayerMoved', cursors)
-  // })
+  //if there are already chosen characters in room, disable them from new players' options
+  socket.on('disableSelectedChars', room => {
+    if (charactersInRoom.hasOwnProperty(room)){
+      const selectedChars = charactersInRoom[room]
+      socket.emit('disableSelectedChars', selectedChars)
+    }
+  })
 
 });
 

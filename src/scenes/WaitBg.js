@@ -33,9 +33,10 @@ export default class WaitBg extends Phaser.Scene {
     //wait for all four players to join
     socket.on('playersReady', () => {
       //if the current player is the room creator enable start button
-      this.loading.setActive(false).setVisible(false);
+
       if (roomCreator) {
         //create a "start button" for room creator
+        this.loading.setActive(false).setVisible(false);
         let startButton = this.add.text(250, 250, 'Start Button', { fontSize: '32px', fill: '#FFF' });
 
         //make it interactive! so when we click it...
