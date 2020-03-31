@@ -16,35 +16,36 @@ export default class minigameTPScene extends Phaser.Scene {
     this.collectTP = this.collectTP.bind(this);
     this.hitBomb = this.hitBomb.bind(this);
 
+    this.queue = [];
   }
 
   preload() {
-    this.load.spritesheet("ayse", "/public/assets/spriteSheets/ayse-sheet.png", {
+    this.load.spritesheet("ayse", "assets/spriteSheets/ayse-sheet.png", {
       frameWidth: 300,
       frameHeight: 300,
       endFrame: 8
     });
-    this.load.spritesheet("stephanie", "/public/assets/spriteSheets/stephanie-sheet.png", {
+    this.load.spritesheet("stephanie", "assets/spriteSheets/stephanie-sheet.png", {
       frameWidth: 300,
       frameHeight: 300,
       endFrame: 8
       }
     );
-    this.load.spritesheet("tiffany", "/public/assets/spriteSheets/tiffany-sheet.png", {
+    this.load.spritesheet("tiffany", "assets/spriteSheets/tiffany-sheet.png", {
       frameWidth: 300,
       frameHeight: 300,
       endFrame: 8
     });
-    this.load.spritesheet("patty", "/public/assets/spriteSheets/patty-sheet.png", {
+    this.load.spritesheet("patty", "assets/spriteSheets/patty-sheet.png", {
       frameWidth: 300,
       frameHeight: 300,
       endFrame: 8
     });
-    this.load.path = '/public/assets/minigameTP/'
-    this.load.image('sky', 'sky.png');
-    this.load.image('platform', 'platform.png');
-    this.load.image('tp', 'tp.png');
-    this.load.image('bomb', 'bomb.png');
+    // this.load.path = 'assets/minigameTP/'
+    this.load.image('sky', 'assets/minigameTP/sky.png');
+    this.load.image('platform', 'assets/minigameTP/platform.png');
+    this.load.image('tp', 'assets/minigameTP/tp.png');
+    this.load.image('bomb', 'assets/minigameTP/bomb.png');
   }
 
   createAnimations(name) {
@@ -69,19 +70,14 @@ export default class minigameTPScene extends Phaser.Scene {
 
   create(data) {
     // const data = this.scene.settings.data;
-    console.log("data in miniGameTP", data)
+    // console.log("data in create", data)
 
 
-    // << SOCKET THINGS >>
-    this.otherPlayersArr = [];
-    socket.emit('currentPlayersMG')
-
-    let skyBg = this.add.image(0, 0, 'sky');
-    Align.scaleToGame(skyBg,1)
-    Align.center(skyBg)
-    socket.on('currentPlayersMG', (players, room) => {
-
+    // << LIST ALL THE SOCKETS FIRST >>
+    socket.on('currentPlayersMG', (players, room, queue) => {
+      this.queue = queue;
       const playersInRoom = {};
+
       Object.keys(players).forEach(id => {
         if (players[id].roomId === room) {
           playersInRoom[id] = players[id];
@@ -98,6 +94,8 @@ export default class minigameTPScene extends Phaser.Scene {
 
     });
 
+    this.otherPlayersArr = [];
+
     socket.on('playerMoved', (playerInfo) => {
       this.otherPlayersArr.forEach(otherPlayer => {
         if (playerInfo.playerId === otherPlayer.playerId) {
@@ -105,7 +103,36 @@ export default class minigameTPScene extends Phaser.Scene {
         }
       });
     });
+
+    socket.on('updatedPlayersHit', (count) => {
+      console.log("received updatedBodyCount", count);
+
+      if (count === 3) {
+        console.log('bodyCount is 3')
+        this.physics.pause();
+
+        // game over text
+        this.add.text(250, 150, 'Game Over!', { fontSize: '32px', fill: '#FFF' })
+
+        socket.emit("gameOver")
+        return;
+      }
+    });
+
+     socket.on('gameOver', () => {
+       console.log("in gameOver socket.on")
+
+       this.scene.wake('BoardBg');
+       this.scene.wake('BoardDice')
+       this.scene.wake('BoardScene')
+       this.scene.stop('MinigameTPScene');
+     })
+
     // << END SOCKETS >>
+
+
+    // EMIT NECESSARY REQUESTS TO SERVER
+    socket.emit('currentPlayersMG')
 
 
     // << GAME ENTITIES >>
@@ -113,7 +140,7 @@ export default class minigameTPScene extends Phaser.Scene {
     this.add.image(400, 300, 'sky');
 
     this.platforms = this.physics.add.staticGroup();
-    this.platforms.create(400, 800, 'platform').setScale(2).refreshBody();
+    // this.platforms.create(400, 800, 'platform').setScale(2).refreshBody();
 
     //  Now let's create some ledges
     // this.platforms.create(600, 400, 'platform');
@@ -122,6 +149,7 @@ export default class minigameTPScene extends Phaser.Scene {
 
     //  Input Events
     this.cursors = this.input.keyboard.createCursorKeys();
+    this.jumpSound = this.sound.add("jump");
 
     //  Some toiletpaper to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
     this.toiletpaper = this.physics.add.group({
@@ -144,35 +172,37 @@ export default class minigameTPScene extends Phaser.Scene {
     // this.p4scoreText = this.add.text(466, 16, `${data.queue[3]}: 0`, { fontSize: '16px', fill: '#000' });
 
     // physics things
-    // this.physics.add.collider(this.player, this.platforms);
-    this.physics.add.collider(this.toiletpaper, this.platforms);
-    this.physics.add.collider(this.bombs, this.platforms);
+    // this.physics.add.collider(this.toiletpaper, this.platforms);
+    // this.physics.add.collider(this.bombs, this.platforms);
 
     //  Checks to see if the player overlaps with any of the toiletpaper, if he does call the collectTP function
     // this.physics.add.overlap(this.player, this.toiletpaper, this.collectTP, null, this);
     // this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
 
 
-    //AYSE ADDITION TO CHECK GAME STATE
-     //create a "start button" but this is actually just text for now
-     const returnButton = this.add.text(250, 250, 'Return Button', { fontSize: '32px', fill: '#FFF' });
+     // Return To Game Button
+     this.add.text(250, 200, 'Mini Game Under Construction', { fontSize: '32px', fill: '#FFF' });
+     const returnButton = this.add.text(250, 250, 'Return To Board', { fontSize: '32px', fill: '#FFF' });
 
-     //make it interactive! so when we click it...
      returnButton.setInteractive();
 
-     // when we release the mouse, it'll log a message and change scenes
      returnButton.on('pointerup', () => {
        console.log('returnButton pressed')
-       this.scene.stop('minigameTPScene')
 
-       //this.scene.wake('BoardScene')
-       this.scene.wake('BoardBg');
-       this.scene.wake('BoardDice')
+      //  socket.emit("gameOver")
+      this.scene.remove('minigameTPScene');
+
+      this.scene.wake('BoardScene')
+      this.scene.wake('BoardBg');
+      this.scene.wake('BoardDice')
+
+
 
      })
 
 
-  }
+
+  } // end create
 
   // SOCKET RELATED FUNCTIONS
   addPlayer(playerInfo, socketId, spriteSkin) {
@@ -206,18 +236,12 @@ export default class minigameTPScene extends Phaser.Scene {
     // this.physics.add.collider(otherPlayer, this.platforms);
 
     return otherPlayer;
+
   }
 
   update () {
-    if (this.gameOver) {
-      // return;
-      this.scene.stop('MinigameTPScene');
 
-      this.scene.wake('BoardBg');
-      this.scene.wake('BoardDice')
-      // this.gameOver = false;
-  }
-
+    // if player exists, update the player whenever they move
     if (typeof this.player !== 'undefined'){
       this.player.update(this.cursors)
     }
@@ -230,9 +254,8 @@ export default class minigameTPScene extends Phaser.Scene {
     this.firstPlayerScore += 10;
     // this.p1scoreText.setText(`${data.queue[0]}: ${this.firstPlayerScore}`);
 
-    if (this.toiletpaper.countActive(true) === 0)
-    {
-        //  A new batch of toiletpaper to collect
+    if (this.toiletpaper.countActive(true) === 0) {
+      //  A new batch of toiletpaper to collect
       this.toiletpaper.children.iterate(function (child) {
           child.enableBody(true, child.x, 0, true, true);
       });
@@ -248,12 +271,10 @@ export default class minigameTPScene extends Phaser.Scene {
   }
 
   hitBomb (player, bomb) {
-    // this.physics.pause();
-    // this.player.visible = false
     this.bomb.destroy()
     this.player.disableBody(true, true);
-    // this.player.setActive(false)
-    // this.player.anims.play('turn');
-    // this.gameOver = true;
+    socket.emit('playerHit')
+    // this.p1scoreText.setText(`Player: BOMBED`);
+    this.add.text(250, 300, 'You ran into the bomb!!', { fontSize: '24px', fill: '#FFF' })
   }
 }

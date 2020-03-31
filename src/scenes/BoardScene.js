@@ -1,5 +1,6 @@
 import 'phaser'
 import { socket } from "../index";
+import minigameTPScene from './MinigameTP';
 
 export default class BoardScene extends Phaser.Scene {
   constructor() {
@@ -17,5 +18,25 @@ export default class BoardScene extends Phaser.Scene {
     //console.log('QUE', this.que, 'PLAYER', this.player, 'OTHER PLAYERS', this.otherPlayers)
     this.scene.launch('BoardBg', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers});
     this.scene.launch('BoardDice', {queue: this.queue, player: this.player});
+
+    // code below is for testing mini game directly
+    // leave commented out for now
+
+    this.input.on('pointerup', function (pointer) { //on click the scene will change
+      socket.emit('startMinigame');
+
+    }, this);
+
+    socket.on('minigameStarted', () => {
+      //make the current scene sleep + minigame wake
+      const data = {
+        queue: this.queue,
+        // player: this.player,
+        // otherPlayers: this.otherPlayers
+      }
+      console.log('socketon miniGameStarted', data)
+      this.scene.add('minigameTPScene', minigameTPScene)
+      this.scene.switch('minigameTPScene', data)
+    })
   }
 }

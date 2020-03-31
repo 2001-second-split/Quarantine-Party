@@ -59,7 +59,7 @@ class Game extends Phaser.Game {
 
     this.scene.add('EndScene', EndScene)
 
-    this.scene.add('minigameTPScene', minigameTPScene)
+    // this.scene.add('minigameTPScene', minigameTPScene)
 
     // Start the game with the mainscene
     this.scene.start('StartingScene')
