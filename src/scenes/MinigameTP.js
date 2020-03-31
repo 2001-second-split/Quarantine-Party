@@ -1,4 +1,5 @@
 import { socket } from "../index";
+import Align from "../entity/Align";
 import Player from '../entity/Player'
 
 export default class minigameTPScene extends Phaser.Scene {
@@ -75,6 +76,9 @@ export default class minigameTPScene extends Phaser.Scene {
     this.otherPlayersArr = [];
     socket.emit('currentPlayersMG')
 
+    let skyBg = this.add.image(0, 0, 'sky');
+    Align.scaleToGame(skyBg,1)
+    Align.center(skyBg)
     socket.on('currentPlayersMG', (players, room) => {
 
       const playersInRoom = {};
