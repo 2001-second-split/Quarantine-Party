@@ -37,7 +37,7 @@ export default class StartingScene extends Phaser.Scene {
 
   create () {
     this.add.image(400, 300, 'pic').setScale(0.5);
-
+    this.room = ''
     let text1 = this.add.text(250, 10, 'Welcome!!!', { color: 'black', fontFamily: 'Arial', fontSize: '24px '});
     let text2 = this.add.text(250, 50, 'Please join or create a game', { color: 'black', fontFamily: 'Arial', fontSize: '16px '});
 
@@ -67,17 +67,30 @@ export default class StartingScene extends Phaser.Scene {
       domElement.addListener('click');
     })
 
+    //disable already selected characters in a room
+    socket.on('disableSelectedChars', selectedChars => {
+      selectedChars.forEach(char => {
+        const opt = domElement.getChildByID(char)
+        opt.disabled = true;
+      })
+    })
+
     // element that lets you create or join a room
     let domElement = this.add.dom(400, 600).createFromCache('roomForm');
     domElement.setPerspective(800);
     domElement.addListener('click');
 
+    const roomId = domElement.getChildByName('roomId')
+    const spriteSkin = domElement.getChildByName('spriteSkin')
+
+    //listen for user room input and get the room name from input tag
+    roomId.addEventListener('keyup', event => {
+      this.room = event.target.value
+      socket.emit('disableSelectedChars', this.room)
+    })
+
+
     domElement.on('click', function (event) {
-
-      const username = domElement.getChildByName('username');
-      const roomId = domElement.getChildByName('roomId');
-      const spriteSkin =  domElement.getChildByName('spriteSkin')
-
       if (event.target.name === 'createButton') {
         data.roomCreator = true;
       }
@@ -88,10 +101,13 @@ export default class StartingScene extends Phaser.Scene {
       //  Have they entered anything?
       if (event.target.name === 'createButton' || event.target.name === 'joinButton') {
 
-        if (username.value !== '' && roomId.value !== '') {
+        if (roomId.value !== '' && spriteSkin.value !== '') {
 
           socket.emit('subscribe', roomId.value, spriteSkin.value, data.roomCreator)
+          socket.emit('characterSelected', spriteSkin.value, roomId.value)
           domElement.removeListener('click'); //  Turn off the click events
+          //reset the room
+          this.room = ''
 
         }
       }
