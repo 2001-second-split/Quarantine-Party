@@ -19,6 +19,7 @@ export default class BoardBg extends Phaser.Scene {
     // associate character names with corresponding tiles in tilemap
     this.characterIndexes = {ayse: 68, stephanie: 69, tiffany: 70, patty: 71}
     this.charPosition = {}
+    this.distanceToEnd = {}
   }
 
   init(data){
@@ -55,7 +56,9 @@ export default class BoardBg extends Phaser.Scene {
     //build map
     this.buildMap()
 
-    this.queuePrompt = this.add.text(700, 16, `${this.queue[0]} starts!`, { fontSize: '12px', fill: '#FFF' })
+    this.queuePrompt = this.add.text(700, 16, `${this.queue[0].toUpperCase()} starts! Click the Dice to roll!`, { fontSize: '12px', fill: '#FFF' })
+
+    this.currentLeader = this.add.text(50, 16, `${this.queue[0].toUpperCase()} is in the lead!`, { fontSize: '12px', fill: '#FFF' })
 
     //place first player in line to tile 0
     socket.emit('placeOnBoard', 0, this.queue[0])
@@ -82,8 +85,25 @@ export default class BoardBg extends Phaser.Scene {
     //listen for changes in queue, update background queue prompt accordingly
     socket.on('changeQueuePrompt', currentPlayer => {
       this.queuePrompt.destroy()
-      this.queuePrompt = this.add.text(700, 16, `${currentPlayer}'s turn! Click the Dice`, { fontSize: '12px', fill: '#FFF' })
+      this.queuePrompt = this.add.text(700, 16, `${currentPlayer.toUpperCase()}'s turn! Click the Dice to roll!`, { fontSize: '12px', fill: '#FFF' })
+
+      let lowestNum = Math.min(...Object.values(this.distanceToEnd))
+      console.log("lowest", lowestNum)
+      let nameCurrent = this.queue.find(name => this.distanceToEnd[name] === lowestNum)
+
+      this.currentLeader.destroy()
+      this.currentLeader = this.add.text(50, 16, `${nameCurrent.toUpperCase()} is in the lead!`, { fontSize: '12px', fill: '#FFF' })
     })
+
+    //listen to change to distanceToEnd
+    // socket.on('changeCurrentLeader', () => {
+    //   let lowestNum = Math.min(Object.values(this.distanceToEnd))
+
+    //   let nameCurrent = this.queue.find(name =>  this.distanceToEnd[name] === lowestNum)
+
+    //   this.currentLeader.destroy()
+    //   this.currentLeader = this.add.text(50, 16, `${nameCurrent.toUpperCase()} is in the lead!`, { fontSize: '12px', fill: '#FFF' })
+    // })
 
     //listen for minigames
     socket.on('minigameStarted', () => {
@@ -154,7 +174,8 @@ export default class BoardBg extends Phaser.Scene {
         fourth: notWinners[2],
       }
       // transition to end scene
-      this.scene.stop('BoardScene')
+      this.scene.stop('BoardBg')
+      this.scene.stop('BoardDice')
       this.scene.start('EndScene', data);
 
       // this.scene.transition({
@@ -186,6 +207,10 @@ export default class BoardBg extends Phaser.Scene {
     movedChar.depth = this.centerY + ty
     movedChar.prevIndex = prevIdx + idx
     console.log('PREVIDX +IDX', movedChar.prevIndex)
+
+    // once prevIndex updated, add to distanceToEndObject
+    this.distanceToEnd[charName] = this.walkablePath.length - movedChar.prevIndex
+    console.log(this.distanceToEnd)
 
     this.charPosition[charName] = movedChar
     //update characters' previous location index by adding current index

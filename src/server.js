@@ -147,6 +147,13 @@ io.on('connection', (socket)  => {
     socket.in(room).emit('changeQueuePrompt', currentPlayer)
   })
 
+  // update the current Leader
+  // socket.on('changeCurrentLeader', () => {
+  //   console.log("server socket leader")
+  //   const room = players[socket.id].roomId
+  //   socket.in(room).emit('changeCurrentLeader')
+  // })
+
   socket.on('startMinigame', () => {
     io.in(players[socket.id].roomId).emit('minigameStarted')
   })
