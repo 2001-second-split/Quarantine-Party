@@ -119,13 +119,14 @@ export default class minigameTPScene extends Phaser.Scene {
       }
     });
 
-     socket.on('gameOverClient', () => {
-       console.log("in gameOver socket.on")
+    socket.on('gameOverClient', () => {
+      console.log("in gameOver socket.on")
 
-       this.scene.wake('BoardBg');
-       this.scene.wake('BoardDice')
-       this.scene.wake('BoardScene')
-       this.scene.stop('MinigameTPScene');
+      // this.scene.restart();
+
+      this.scene.wake('BoardBg');
+      this.scene.wake('BoardDice')
+      this.scene.switch('BoardScene')
      })
 
     // << END SOCKETS >>
@@ -188,12 +189,7 @@ export default class minigameTPScene extends Phaser.Scene {
      //when you click the button
      returnButton.on('pointerup', () => {
       console.log('returnButton pressed')
-
-      //  socket.emit("gameOver")
-
-      this.scene.wake('BoardScene')
-      this.scene.wake('BoardBg');
-      this.scene.wake('BoardDice')
+      socket.emit("gameOver")
 
      })
 
