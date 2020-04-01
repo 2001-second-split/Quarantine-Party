@@ -11,6 +11,8 @@ let charactersInRoom = {};
 let queue = {};
 let playerHitByBombsCount = 0;
 
+const roomMaxPlayers = 2;
+
 app.use(express.static(path.join(__dirname + '/public')));
 
 // sends index.html
@@ -52,7 +54,7 @@ io.on('connection', (socket)  => {
       socket.emit('roomAlreadyCreated') //deny them
       return;
 
-    } else if (rooms[room] === 4) {
+    } else if (rooms[room] === roomMaxPlayers) {
       socket.emit('roomFull');
       return;
 
@@ -78,7 +80,7 @@ io.on('connection', (socket)  => {
     //if there are four players subscribed to room, emit playersReady
     io.in(room).clients((error, clients) => {
       if (error) throw error
-      if(clients.length === 4){
+      if(clients.length === roomMaxPlayers){
         io.in(room).emit('playersReady')
       }
     });
@@ -193,13 +195,14 @@ io.on('connection', (socket)  => {
     ++playerHitByBombsCount;
     console.log('bodyCount incremented', playerHitByBombsCount)
     const room = players[socket.id].roomId
-    io.in(room).emit('updatedPlayersHit', playerHitByBombsCount);
+    io.in(room).emit('updatedPlayersHit', playerHitByBombsCount, roomMaxPlayers);
   })
 
   socket.on('gameOver', () => {
     //tell everyone's client to return to main game
+    console.log("server gameOver")
     const room = players[socket.id].roomId
-    io.in(room).emit('gameOver');
+    io.in(room).emit('gameOverClient');
   })
 
   /*   END MINI GAME SOCKETS   */
