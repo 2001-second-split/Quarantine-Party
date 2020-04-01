@@ -1,6 +1,6 @@
 import 'phaser'
 import { socket } from "../index";
-import minigameTPScene from './MinigameTP';
+// import minigameTPScene from './MinigameTP';
 
 export default class BoardScene extends Phaser.Scene {
   constructor() {
@@ -16,27 +16,31 @@ export default class BoardScene extends Phaser.Scene {
   create() {
     // << LOAD BACKGROUND AND FOREGROUND SCENES IN PARALLEL HERE >>
     //console.log('QUE', this.que, 'PLAYER', this.player, 'OTHER PLAYERS', this.otherPlayers)
+    // this.scene.add('minigameTPScene')
     this.scene.launch('BoardBg', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers});
     this.scene.launch('BoardDice', {queue: this.queue, player: this.player});
 
     // code below is for testing mini game directly
     // leave commented out for now
 
-    this.input.on('pointerup', function (pointer) { //on click the scene will change
-      socket.emit('startMinigame');
+    // this.input.on('pointerup', function (pointer) { //on click the scene will change
+    //   socket.emit('startMinigame');
 
-    }, this);
+    // }, this);
 
-    socket.on('minigameStarted', () => {
-      //make the current scene sleep + minigame wake
-      const data = {
-        queue: this.queue,
-        // player: this.player,
-        // otherPlayers: this.otherPlayers
-      }
-      console.log('socketon miniGameStarted', data)
-      this.scene.add('minigameTPScene', minigameTPScene)
-      this.scene.switch('minigameTPScene', data)
-    })
+    // socket.on('minigameStarted', () => {
+    //   //make the current scene sleep + minigame wake
+    //   const data = {
+    //     queue: this.queue,
+    //     // player: this.player,
+    //     // otherPlayers: this.otherPlayers
+    //   }
+    //   // console.log('socketon miniGameStarted', data)
+    //   this.scene.sleep('BoardBg')
+    //     .sleep('BoardDice')
+    //     .sleep('BoardScene')
+
+    //   this.scene.switch('minigameTPScene', data) //switch will sleep current scene (BoardScene)
+    // })
   }
 }
