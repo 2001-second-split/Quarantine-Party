@@ -88,22 +88,10 @@ export default class BoardBg extends Phaser.Scene {
       this.queuePrompt = this.add.text(700, 16, `${currentPlayer.toUpperCase()}'s turn! Click the Dice to roll!`, { fontSize: '12px', fill: '#FFF' })
 
       let lowestNum = Math.min(...Object.values(this.distanceToEnd))
-      console.log("lowest", lowestNum)
       let nameCurrent = this.queue.find(name => this.distanceToEnd[name] === lowestNum)
-
       this.currentLeader.destroy()
       this.currentLeader = this.add.text(50, 16, `${nameCurrent.toUpperCase()} is in the lead!`, { fontSize: '12px', fill: '#FFF' })
     })
-
-    //listen to change to distanceToEnd
-    // socket.on('changeCurrentLeader', () => {
-    //   let lowestNum = Math.min(Object.values(this.distanceToEnd))
-
-    //   let nameCurrent = this.queue.find(name =>  this.distanceToEnd[name] === lowestNum)
-
-    //   this.currentLeader.destroy()
-    //   this.currentLeader = this.add.text(50, 16, `${nameCurrent.toUpperCase()} is in the lead!`, { fontSize: '12px', fill: '#FFF' })
-    // })
 
     //listen for minigames
     socket.on('minigameStarted', () => {
