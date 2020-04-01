@@ -41,7 +41,7 @@ export default class minigameTPScene extends Phaser.Scene {
       frameHeight: 300,
       endFrame: 8
     });
-    // this.load.path = 'assets/minigameTP/'
+
     this.load.image('sky', 'assets/minigameTP/sky.png');
     this.load.image('platform', 'assets/minigameTP/platform.png');
     this.load.image('tp', 'assets/minigameTP/tp.png');
@@ -131,7 +131,7 @@ export default class minigameTPScene extends Phaser.Scene {
     // << END SOCKETS >>
 
 
-    // EMIT NECESSARY REQUESTS TO SERVER
+    // << SOCKET EMITS NEEDED IN BEGINNING OF GAME >>
     socket.emit('currentPlayersMG')
 
 
@@ -149,7 +149,7 @@ export default class minigameTPScene extends Phaser.Scene {
 
     //  Input Events
     this.cursors = this.input.keyboard.createCursorKeys();
-    this.jumpSound = this.sound.add("jump");
+    // this.jumpSound = this.sound.add("jump");
 
     //  Some toiletpaper to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
     this.toiletpaper = this.physics.add.group({
@@ -183,9 +183,9 @@ export default class minigameTPScene extends Phaser.Scene {
      // Return To Game Button
      this.add.text(250, 200, 'Mini Game Under Construction', { fontSize: '32px', fill: '#FFF' });
      const returnButton = this.add.text(250, 250, 'Return To Board', { fontSize: '32px', fill: '#FFF' });
-
      returnButton.setInteractive();
 
+     //when you click the button
      returnButton.on('pointerup', () => {
        console.log('returnButton pressed')
 
@@ -195,8 +195,6 @@ export default class minigameTPScene extends Phaser.Scene {
       this.scene.wake('BoardScene')
       this.scene.wake('BoardBg');
       this.scene.wake('BoardDice')
-
-
 
      })
 
