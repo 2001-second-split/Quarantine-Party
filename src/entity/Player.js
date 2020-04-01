@@ -38,6 +38,16 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.anims.play('run', true)
       }
     }
+    else if (cursors.up.isDown) {
+      if(this.facingLeft){
+        this.flipX = !this.flipX
+        this.facingLeft = false
+      }
+      this.setVelocityY(-180)
+      if(this.body.touching.down){
+        this.anims.play('run', true)
+      }
+    }
     // Neutral (no movement)
     else {
       this.setVelocityX(0)
