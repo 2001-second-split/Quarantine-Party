@@ -119,7 +119,7 @@ export default class minigameTPScene extends Phaser.Scene {
       }
     });
 
-     socket.on('gameOver', () => {
+     socket.on('gameOverClient', () => {
        console.log("in gameOver socket.on")
 
        this.scene.wake('BoardBg');
