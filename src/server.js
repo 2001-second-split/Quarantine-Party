@@ -9,6 +9,7 @@ let players = {};
 let rooms = {};
 let charactersInRoom = {};
 let queue = {};
+let playerHitByBombsCount = 0;
 
 app.use(express.static(path.join(__dirname + '/public')));
 
@@ -32,17 +33,11 @@ io.on('connection', (socket)  => {
 
   };
 
-  //get current players when you first enter the room
+  // STARTING SCENE SOCKETS
+  // get current players when you first enter the room
   socket.on('currentPlayers', () => {
     const room = players[socket.id].roomId;
     socket.emit('currentPlayers', players, room, queue[room]);
-  })
-
-  socket.on('currentPlayersMG', () => {
-    console.log("in server/currentPlayerMG")
-    console.log("players", players)
-    const room = players[socket.id].roomId;
-    socket.emit('currentPlayersMG', players, room);
   })
 
   socket.on('subscribe', (room, spriteSkin, roomCreator) => {
@@ -110,6 +105,7 @@ io.on('connection', (socket)  => {
       delete rooms[room]
       delete charactersInRoom[room]
       delete queue[room]
+      playerHitByBombsCount = 0;
     }
 
     // emit a message to all players to remove this player
@@ -170,6 +166,26 @@ io.on('connection', (socket)  => {
       const selectedChars = charactersInRoom[room]
       socket.emit('disableSelectedChars', selectedChars, room)
     }
+  })
+
+  // MINI GAME SOCKETS
+  socket.on('currentPlayersMG', () => {
+    const room = players[socket.id].roomId;
+    socket.emit('currentPlayersMG', players, room, queue[room]);
+  })
+
+  socket.on('playerHit', () => {
+    console.log('playerHit', playerHitByBombsCount)
+    ++playerHitByBombsCount;
+    console.log('bodyCount incremented', playerHitByBombsCount)
+    const room = players[socket.id].roomId
+    io.in(room).emit('updatedPlayersHit', playerHitByBombsCount);
+  })
+
+  socket.on('gameOver', () => {
+    //tell everyone's client to return to main game
+    const room = players[socket.id].roomId
+    io.in(room).emit('gameOver');
   })
 
 });

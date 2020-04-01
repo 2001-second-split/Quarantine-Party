@@ -102,7 +102,7 @@ export default class StartingScene extends Phaser.Scene {
       if (event.target.name === 'createButton' || event.target.name === 'joinButton') {
 
         if (roomId.value !== '' && spriteSkin.value !== '') {
-
+          data.roomId = roomId.value
           socket.emit('subscribe', roomId.value, spriteSkin.value, data.roomCreator)
           socket.emit('characterSelected', spriteSkin.value, roomId.value)
           domElement.removeListener('click'); //  Turn off the click events
