@@ -104,11 +104,11 @@ export default class minigameTPScene extends Phaser.Scene {
       });
     });
 
-    socket.on('updatedPlayersHit', (count) => {
-      console.log("received updatedBodyCount", count);
+    socket.on('updatedPlayersHit', (count, totalPlayers) => {
+      console.log("players bombed", count);
 
-      if (count === 3) {
-        console.log('bodyCount is 3')
+      if (count === (totalPlayers-1)) {
+        // console.log('bodyCount is 3')
         this.physics.pause();
 
         // game over text
@@ -187,10 +187,9 @@ export default class minigameTPScene extends Phaser.Scene {
 
      //when you click the button
      returnButton.on('pointerup', () => {
-       console.log('returnButton pressed')
+      console.log('returnButton pressed')
 
       //  socket.emit("gameOver")
-      this.scene.remove('minigameTPScene');
 
       this.scene.wake('BoardScene')
       this.scene.wake('BoardBg');
