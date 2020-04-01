@@ -1,8 +1,12 @@
 <div class="gameForm">
+  <h2>Welcome!</h2>
+  <h3> Please create or join a game room</h3>
   <label for="roomname"> Room name: </label>
-  <input type="text" placeholder="Room name" id="roomId" name="roomId"><br/>
+  <input type="text" placeholder="Room name" id="roomId" name="roomId">
+  <br/><br/>
   <label for="skin-select">Choose a sprite:</label>
   <select id="spriteSkin" name="spriteSkin" >
+    <option value="" selected> ---Please select your character--- </option>
     <option value="ayse" id="ayse">Ayse</option>
     <option value="stephanie" id="stephanie">Stephanie</option>
     <option value="tiffany" id="tiffany">Tiffany</option>
@@ -10,7 +14,7 @@
   </select>
 <br/><br/>
   <input type="submit" class="submitBtn" value="Create Game" name="createButton">
-  <input type="submit" value="Join Game" name="joinButton">
+  <input type="submit" class="submitBtn" value="Join Game" name="joinButton">
 </div>
 
 

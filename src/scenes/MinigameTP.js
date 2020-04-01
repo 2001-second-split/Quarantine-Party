@@ -168,10 +168,7 @@ export default class minigameTPScene extends Phaser.Scene {
        //this.scene.wake('BoardScene')
        this.scene.wake('BoardBg');
        this.scene.wake('BoardDice')
-
      })
-
-
   }
 
   // SOCKET RELATED FUNCTIONS

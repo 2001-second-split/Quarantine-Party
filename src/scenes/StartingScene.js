@@ -46,9 +46,6 @@ export default class StartingScene extends Phaser.Scene {
     Align.scaleToGame(bg, 1)
     Align.center(bg)
     this.room = ''
-    let text1 = this.add.text(250, 10, 'Welcome!!!', { color: 'black', fontFamily: 'Arial', fontSize: '24px '});
-    let text2 = this.add.text(250, 50, 'Please join or create a game', { color: 'black', fontFamily: 'Arial', fontSize: '16px '});
-
     //data to be passed to WaitBG for button purposes
     let data = {}
 
@@ -112,6 +109,8 @@ export default class StartingScene extends Phaser.Scene {
           //reset the room
           this.room = ''
 
+        } else {
+          alert('Please select valid room and/or character')
         }
       }
 
@@ -119,7 +118,7 @@ export default class StartingScene extends Phaser.Scene {
 
     this.tweens.add({
         targets: domElement,
-        y: 250,
+        y: 350,
         duration: 3000,
         ease: 'Power3'
     });
