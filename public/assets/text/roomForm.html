@@ -1,20 +1,121 @@
 <div class="gameForm">
-  <label for="roomname"> Room name: </label>
-  <input type="text" placeholder="Room name" id="roomId" name="roomId"><br/>
-  <label for="skin-select">Choose a sprite:</label>
-  <select id="spriteSkin" name="spriteSkin" >
-    <option value="ayse" id="ayse">Ayse</option>
-    <option value="stephanie" id="stephanie">Stephanie</option>
-    <option value="tiffany" id="tiffany">Tiffany</option>
-    <option value="patty" id="patty">Patty</option>
-  </select>
-<br/><br/>
-  <input type="submit" class="submitBtn" value="Create Game" name="createButton">
-  <input type="submit" value="Join Game" name="joinButton">
+  <div id="prompt">
+    <!-- <h2>Welcome!</h2> -->
+    <h3> Create or join a game room</h3>
+  </div>
+  <div id="user-input">
+    <div id="room">
+      <!-- <label for="roomname"> Room name: </label> -->
+      <input type="text" placeholder="Room name" id="roomId" name="roomId">
+    </div>
+    <br/><br/>
+    <div id="sprite">
+      <!-- <label for="skin-select">Choose a sprite:</label> -->
+      <select id="spriteSkin" name="spriteSkin" >
+        <optgroup>
+          <option id="placeholder" value="" selected> ---Please select your character--- </option>
+          <option value="ayse" id="ayse">Ayse</option>
+          <option value="stephanie" id="stephanie">Stephanie</option>
+          <option value="tiffany" id="tiffany">Tiffany</option>
+          <option value="patty" id="patty">Patty</option>
+        </optgroup>
+      </select>
+    </div>
+  </div>
+  <br/><br/>
+  <div id="button">
+    <input type="submit" id="blue" class="submitBtn" value="Create Game" name="createButton">
+    <input type="submit" id="red" class="submitBtn" value="Join Game" name="joinButton">
+  </div>
 </div>
 
 
 <style>
+  .gameForm{
+    display: flex;
+    flex-direction: column;
+    background:  #D0CCD0;
+    border-radius: 6px;
+    height: 300px;
+    margin: 20px auto 0;
+    width: 300px;
+    align-content: center;
+    padding: 30px;
+    box-shadow: 0 1px #fff;
+    opacity: 0.95;
+  }
+
+  input[type="text"]::-webkit-input-placeholder {
+    color: gray;
+    font-size: 20px;
+  }
+  input[type="text"]{
+    font-size: 20px
+  }
+
+  optgroup{
+    color: gray;
+    font-size: 20px;
+  }
+
+  #prompt{
+    display: flex;
+    flex-direction: column
+  }
+  #prompt h3{
+    color: white;
+    font-family: Verdana;
+    font-size: 18px;
+  }
+  #user-input{
+    display: flex;
+    flex-direction: column
+  }
+  #room{
+    display: flex;
+  }
+
+  #room input{
+    width: 300px;
+    height: 30px;
+    border: 2px solid white;
+  }
+
+  #sprite{
+    display: flex
+  }
+  #sprite select{
+    width: 300px;
+    height: 30px;
+    border: 2px solid white;
+  }
+
+  #button{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  #button > input{
+    width: 300px;
+    height: 30px;
+    margin: 5px;
+  }
+
+  #red{
+    background: #FC766A;
+    font-size: 20px;
+    font-family: 'Verdana';
+    color: white
+  }
+  #blue{
+    background: #4282C0;
+    font-size: 20px;
+    font-family: 'Verdana';
+    color: white
+  }
+</style>
+
+<!-- <style>
   .gameForm {
     background: #252525;
     border-radius: 6px;
@@ -104,7 +205,7 @@
      text-align:center;
      position:relative;
   }
-</style>
+</style> -->
 
 
 

@@ -11,7 +11,7 @@ let charactersInRoom = {};
 let queue = {};
 let playerHitByBombsCount = 0;
 
-const roomMaxPlayers = 4;
+const roomMaxPlayers = 2;
 
 app.use(express.static(path.join(__dirname + '/public')));
 
@@ -184,6 +184,11 @@ io.on('connection', (socket)  => {
 
 
   /*     MINI GAME SOCKETS     */
+  // get current players when you first enter the room
+  socket.on('currentPlayers', () => {
+    const room = players[socket.id].roomId;
+    socket.emit('currentPlayers', players, room, queue[room]);
+  })
 
   socket.on('currentPlayersMG', () => {
     const room = players[socket.id].roomId;
@@ -206,15 +211,6 @@ io.on('connection', (socket)  => {
   })
 
   /*   END MINI GAME SOCKETS   */
-
-
-  /*   NOT USED SOCKETS   */
-
-  // get current players when you first enter the room
-  socket.on('currentPlayers', () => {
-    const room = players[socket.id].roomId;
-    socket.emit('currentPlayers', players, room, queue[room]);
-  })
 
 });
 
