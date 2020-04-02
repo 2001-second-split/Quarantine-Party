@@ -23,25 +23,27 @@ export default class BoardScene extends Phaser.Scene {
     // code below is for testing mini game directly
     // leave commented out for now
 
-    this.input.on('pointerup', function (pointer) { //on click the scene will change
-      socket.emit('startMinigame');
+    // this.input.on('pointerup', function (pointer) { //on click the scene will change
+    //   socket.emit('startMinigame');
 
-    }, this);
+    // }, this);
 
-    socket.on('minigameStarted', () => {
-      //make the current scene sleep + minigame wake
-      const data = {
-        queue: this.queue,
-      }
-      // console.log('socketon miniGameStarted', data)
-      this.scene.sleep('BoardBg')
-        .sleep('BoardDice')
-        .sleep('BoardScene');
+    // socket.on('minigameStarted', () => {
+    //   //make the current scene sleep + minigame wake
+    //   const data = {
+    //     queue: this.queue,
+    //   }
+    //   // console.log('socketon miniGameStarted', data)
+    //   this.scene.sleep('BoardBg')
+    //     .sleep('BoardDice')
+    //     .sleep('BoardScene');
 
-      // const mgTP = this.scene.get('minigameTPScene')
-      // mgTP.scene.restart();
+    //   // const mgTP = this.scene.get('minigameTPScene')
+    //   // mgTP.scene.restart();
 
-      this.scene.run('minigameTPScene', data) //switch will sleep current scene (BoardScene)
-    })
+    //   this.scene.run('minigameTPScene', data) //switch will sleep current scene (BoardScene)
+    //   //could be switch or run
+    //   // commands that don't work: launch, start
+    // })
   }
 }
