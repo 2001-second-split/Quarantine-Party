@@ -19,6 +19,7 @@ export default class BoardBg extends Phaser.Scene {
     // associate character names with corresponding tiles in tilemap
     this.characterIndexes = {ayse: 68, stephanie: 69, tiffany: 70, patty: 71}
     this.charPosition = {}
+    this.distanceToEnd = {}
   }
 
   init(data){
@@ -148,14 +149,17 @@ export default class BoardBg extends Phaser.Scene {
       // this.scene.pause('BoardScene')
 
       //data to pass to endScene
+      const notWinners = this.queue.filter(name => name !== charName)
+
       const data = {
-        first: 'ayse',
-        second: 'tiffany',
-        third: 'stephanie',
-        fourth: 'patty',
+        first: charName,
+        second: notWinners[0],
+        third: notWinners[1],
+        fourth: notWinners[2],
       }
       // transition to end scene
-      this.scene.stop('BoardScene')
+      this.scene.stop('BoardBg')
+      this.scene.stop('BoardDice')
       this.scene.start('EndScene', data);
 
       // this.scene.transition({
@@ -187,6 +191,10 @@ export default class BoardBg extends Phaser.Scene {
     movedChar.depth = this.centerY + ty
     movedChar.prevIndex = prevIdx + idx
     console.log('PREVIDX +IDX', movedChar.prevIndex)
+
+    // once prevIndex updated, add to distanceToEndObject
+    this.distanceToEnd[charName] = this.walkablePath.length - movedChar.prevIndex
+    console.log(this.distanceToEnd)
 
     this.charPosition[charName] = movedChar
     //update characters' previous location index by adding current index

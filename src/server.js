@@ -11,6 +11,8 @@ let charactersInRoom = {};
 let queue = {};
 let playerHitByBombsCount = 0;
 
+const roomMaxPlayers = 4;
+
 app.use(express.static(path.join(__dirname + '/public')));
 
 // sends index.html
@@ -22,7 +24,6 @@ app.get('/', (req, res) => {
 io.on('connection', (socket)  => {
   console.log(`${socket.id} connected`);
 
-  // << CURRENTLY USED SOCKET LISTENERS >>
   // create a new player and add it to our players object
   players[socket.id] = {
     rotation: 0,
@@ -33,12 +34,9 @@ io.on('connection', (socket)  => {
 
   };
 
-  // STARTING SCENE SOCKETS
-  // get current players when you first enter the room
-  socket.on('currentPlayers', () => {
-    const room = players[socket.id].roomId;
-    socket.emit('currentPlayers', players, room, queue[room]);
-  })
+  /*                                   */
+  /*      STARTING SCENE SOCKETS       */
+  /*                                   */
 
   socket.on('subscribe', (room, spriteSkin, roomCreator) => {
 
@@ -56,7 +54,7 @@ io.on('connection', (socket)  => {
       socket.emit('roomAlreadyCreated') //deny them
       return;
 
-    } else if (rooms[room] === 4) {
+    } else if (rooms[room] === roomMaxPlayers) {
       socket.emit('roomFull');
       return;
 
@@ -77,24 +75,42 @@ io.on('connection', (socket)  => {
 
     //add players to queue in the order they join room
     queue[room].push(players[socket.id].name)
-    console.log(queue)
+    console.log("queue", queue)
 
     //if there are four players subscribed to room, emit playersReady
     io.in(room).clients((error, clients) => {
       if (error) throw error
-      if(clients.length === 4){
+      if(clients.length === roomMaxPlayers){
         io.in(room).emit('playersReady')
       }
     });
+  }) // end 'subscribe'
+
+  //update characters in room when a new character is selected
+  socket.on('characterSelected', (char, room) => {
+    if (charactersInRoom.hasOwnProperty(room)){
+      charactersInRoom[room].push(char)
+    } else {
+      charactersInRoom[room] = [char]
+    }
   })
 
-  //listen for request to transition to board
-  socket.on('transitionToBoard', () => {
-    const room = players[socket.id].roomId;
-    io.in(room).emit('transitionedToBoard')
+  //if there are already chosen characters in room,
+  // disable them from new players' options
+  socket.on('disableSelectedChars', room => {
+    if (charactersInRoom.hasOwnProperty(room)){
+      const selectedChars = charactersInRoom[room]
+      socket.emit('disableSelectedChars', selectedChars, room)
+    }
   })
 
-  // disconnecting
+  /*                                   */
+  /*     END STARTING SCENE SOCKETS    */
+  /*                                   */
+
+
+  /*    GENERAL DISCONNECT SOCKET      */
+
   socket.on('disconnect', () => {
     console.log(`${socket.id} disconnected`);
 
@@ -115,6 +131,18 @@ io.on('connection', (socket)  => {
 
   });
 
+
+  /*    WAIT BG     */
+
+  //listen for request to transition to board
+  socket.on('transitionToBoard', () => {
+    const room = players[socket.id].roomId;
+    io.in(room).emit('transitionedToBoard')
+  })
+
+
+  /*  PLAYER ENTITY */
+
   // when a player moves, update the player data
   socket.on('playerMovement', (movementData) => {
     players[socket.id].x = movementData.x;
@@ -125,6 +153,7 @@ io.on('connection', (socket)  => {
   });
 
 
+  /*   BOARD DICE   */
 
   //when a player rolls a dice, update their position on self/others' board, shift the queue & update dice for other players
   socket.on('diceRoll', (rolledNum, charName) => {
@@ -134,6 +163,8 @@ io.on('connection', (socket)  => {
     io.in(room).emit('unshiftQueue')
     io.to(room).emit('updateDice', rolledNum)
   })
+
+  /*    BOARD BG     */
 
   //when BoardBg first initiates, place the first player in line to tile 0 on all players' boards
   socket.on('placeOnBoard', (rolledNum, charName) => {
@@ -151,21 +182,38 @@ io.on('connection', (socket)  => {
     io.in(players[socket.id].roomId).emit('minigameStarted')
   })
 
-  //update characters in room when a new character is selected
-  socket.on('characterSelected', (char, room) => {
-    if (charactersInRoom.hasOwnProperty(room)){
-      charactersInRoom[room].push(char)
-    } else {
-      charactersInRoom[room] = [char]
-    }
+
+  /*     MINI GAME SOCKETS     */
+
+  socket.on('currentPlayersMG', () => {
+    const room = players[socket.id].roomId;
+    socket.emit('currentPlayersMG', players, room, queue[room]);
   })
 
-  //if there are already chosen characters in room, disable them from new players' options
-  socket.on('disableSelectedChars', room => {
-    if (charactersInRoom.hasOwnProperty(room)){
-      const selectedChars = charactersInRoom[room]
-      socket.emit('disableSelectedChars', selectedChars, room)
-    }
+  socket.on('playerHit', () => {
+    console.log('playerHit', playerHitByBombsCount)
+    ++playerHitByBombsCount;
+    console.log('bodyCount incremented', playerHitByBombsCount)
+    const room = players[socket.id].roomId
+    io.in(room).emit('updatedPlayersHit', playerHitByBombsCount, roomMaxPlayers);
+  })
+
+  socket.on('gameOver', () => {
+    //tell everyone's client to return to main game
+    console.log("server gameOver")
+    const room = players[socket.id].roomId
+    io.in(room).emit('gameOverClient');
+  })
+
+  /*   END MINI GAME SOCKETS   */
+
+
+  /*   NOT USED SOCKETS   */
+
+  // get current players when you first enter the room
+  socket.on('currentPlayers', () => {
+    const room = players[socket.id].roomId;
+    socket.emit('currentPlayers', players, room, queue[room]);
   })
 
   // MINI GAME SOCKETS
