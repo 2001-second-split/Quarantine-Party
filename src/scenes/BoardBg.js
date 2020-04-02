@@ -54,8 +54,7 @@ export default class BoardBg extends Phaser.Scene {
 
     //build map
     this.buildMap()
-
-    this.queuePrompt = this.add.text(700, 16, `${this.queue[0]} starts!`, { fontSize: '12px', fill: '#FFF' })
+    this.queuePrompt = this.add.text(700, 16, `${this.capitalizeFirst(this.queue[0])} starts! Click the dice...`, { fontFamily: 'Verdana', fontSize: 32, fill: '#FFF', stroke: '#000000', strokeThickness: 4 })
 
     //place first player in line to tile 0
     socket.emit('placeOnBoard', 0, this.queue[0])
@@ -82,7 +81,7 @@ export default class BoardBg extends Phaser.Scene {
     //listen for changes in queue, update background queue prompt accordingly
     socket.on('changeQueuePrompt', currentPlayer => {
       this.queuePrompt.destroy()
-      this.queuePrompt = this.add.text(700, 16, `${currentPlayer}'s turn! Click the Dice`, { fontSize: '12px', fill: '#FFF' })
+      this.queuePrompt = this.add.text(700, 16, `${this.capitalizeFirst(currentPlayer)}'s turn! Click the Dice`, { fontFamily: 'Verdana', fontSize: 32, fill: '#FFF', stroke: '#000000', strokeThickness: 4 })
     })
 
     //listen for minigames
@@ -91,6 +90,10 @@ export default class BoardBg extends Phaser.Scene {
       this.scene.add('minigameTPScene')
       this.scene.switch('minigameTPScene', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers})
     })
+  }
+
+  capitalizeFirst(str){
+    return str.charAt(0).toUpperCase() + str.slice(1)
   }
 
   buildMap (){

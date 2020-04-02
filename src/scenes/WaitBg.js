@@ -14,9 +14,6 @@ export default class WaitBg extends Phaser.Scene {
   }
 
   create(data) {
-
-    this.createAnimations()
-
     //data received from StartingScene --> WaitScene --> WaitBg
     const roomCreator = data.roomCreator;
     const roomId = data.roomId
@@ -27,9 +24,9 @@ export default class WaitBg extends Phaser.Scene {
     Align.scaleToGame(waitingBg, 1)
     Align.center(waitingBg)
 
-    this.header = this.add.text(400, 16, `Room # ${roomId}`, { fontFamily: 'Arial Black', fontSize: '28px', fill: '#713E5A' });
+    this.header = this.add.text(400, 16, `Room # ${roomId}`, { fontFamily: 'Verdana', fontSize: '28px', fill: '#713E5A' });
     //display different loading messages for game creator vs joiners
-    this.loading = roomCreator? this.add.text(300, 50, 'Waiting for other players to join...', { fontFamily: 'Arial Black', fontSize: '32px', fill: '#F9A03F', stroke: '#000000', strokeThickness: 4}): this.add.text(300, 50, 'Waiting for Room Creator to start the game...', { fontFamily: 'Arial Black', fontSize: '32px', fill: '#F9A03F', stroke: '#000000', strokeThickness: 4});
+    this.loading = roomCreator? this.add.text(16, 300, 'Waiting for other players to join...', { fontFamily: 'Verdana', fontSize: 64, fill: '#DCEDFF', stroke: '#000000', strokeThickness: 6}): this.add.text(16, 300, 'Waiting for Room Creator to start the game...', { fontFamily: 'Verdana', fontSize: 48, fill: '#DCEDFF', stroke: '#000000', strokeThickness: 6});
 
     //wait for all four players to join
     socket.on('playersReady', () => {
@@ -38,9 +35,7 @@ export default class WaitBg extends Phaser.Scene {
       if (roomCreator) {
         //create a "start button" for room creator
         this.loading.setActive(false).setVisible(false);
-        let startButton = this.add.sprite(1000, 50, 'startBtn').setScale(0.25)
-
-        //this.add.text(250, 250, 'Start Button', { fontSize: '32px', fill: '#FFF' });
+        let startButton = this.add.sprite(1100, 70, 'startBtn').setScale(0.35)
 
         //make it interactive! so when we click it...
         startButton.setInteractive();
@@ -55,7 +50,6 @@ export default class WaitBg extends Phaser.Scene {
           console.log('OUT')
           this.setFrame(0)
         })
-
         //when mouse is released, emit transitionToBoard & listen for it in WaitFg (since we want to pass the queue info)
         startButton.on('pointerup', function(){
           this.setFrame(0)
@@ -65,14 +59,4 @@ export default class WaitBg extends Phaser.Scene {
     })
   }
 
-  createAnimations() {
-    this.anims.create({
-      key: "reset",
-      frames: [{key:'startBtn', frame: 0}],
-    });
-    this.anims.create({
-      key: "over",
-      frames: [{key: 'startBtn', frame: 1}],
-    })
-  }
 }
