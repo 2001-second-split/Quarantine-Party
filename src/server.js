@@ -11,7 +11,7 @@ let charactersInRoom = {};
 let queue = {};
 let playerHitByBombsCount = 0;
 
-const roomMaxPlayers = 4;
+const roomMaxPlayers = 2;
 
 app.use(express.static(path.join(__dirname + '/public')));
 
