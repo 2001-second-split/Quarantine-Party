@@ -184,6 +184,11 @@ io.on('connection', (socket)  => {
 
 
   /*     MINI GAME SOCKETS     */
+  // get current players when you first enter the room
+  socket.on('currentPlayers', () => {
+    const room = players[socket.id].roomId;
+    socket.emit('currentPlayers', players, room, queue[room]);
+  })
 
   socket.on('currentPlayersMG', () => {
     const room = players[socket.id].roomId;
@@ -206,35 +211,6 @@ io.on('connection', (socket)  => {
   })
 
   /*   END MINI GAME SOCKETS   */
-
-
-  /*   NOT USED SOCKETS   */
-
-  // get current players when you first enter the room
-  socket.on('currentPlayers', () => {
-    const room = players[socket.id].roomId;
-    socket.emit('currentPlayers', players, room, queue[room]);
-  })
-
-  // MINI GAME SOCKETS
-  socket.on('currentPlayersMG', () => {
-    const room = players[socket.id].roomId;
-    socket.emit('currentPlayersMG', players, room, queue[room]);
-  })
-
-  socket.on('playerHit', () => {
-    console.log('playerHit', playerHitByBombsCount)
-    ++playerHitByBombsCount;
-    console.log('bodyCount incremented', playerHitByBombsCount)
-    const room = players[socket.id].roomId
-    io.in(room).emit('updatedPlayersHit', playerHitByBombsCount);
-  })
-
-  socket.on('gameOver', () => {
-    //tell everyone's client to return to main game
-    const room = players[socket.id].roomId
-    io.in(room).emit('gameOver');
-  })
 
 });
 
