@@ -27,7 +27,9 @@ export default class WaitBg extends Phaser.Scene {
 
     this.header = this.add.text(250, 50, 'Waiting Room!!', { fontSize: '32px', fill: '#000' });
     //display different loading messages for game creator vs joiners
-    this.loading = roomCreator? this.add.text(100, 250, 'Waiting for other players to join...', { fontSize: '24px', fill: '#FFF' }): this.add.text(100, 250, 'Waiting for Room Creator to start game...', { fontSize: '24px', fill: '#FFF' });
+    this.loading = roomCreator
+      ? this.add.text(100, 250, 'Waiting for other players to join...', { fontSize: '24px', fill: '#FFF' })
+      : this.add.text(100, 250, 'Waiting for Room Creator to start game...', { fontSize: '24px', fill: '#FFF' });
 
 
     //wait for all four players to join

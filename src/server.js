@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
 })
 
 io.on('connection', (socket)  => {
-  console.log(`${socket.id} connected`);
+  console.log(`src/server.js - ${socket.id} connected`);
 
   // create a new player and add it to our players object
   players[socket.id] = {
@@ -39,6 +39,7 @@ io.on('connection', (socket)  => {
   /*                                   */
 
   socket.on('subscribe', (room, spriteSkin, roomCreator) => {
+    console.log("src/server.js subscribe")
 
     if (rooms[room] === undefined && roomCreator) {
       rooms[room] = 0;
@@ -88,6 +89,7 @@ io.on('connection', (socket)  => {
 
   //update characters in room when a new character is selected
   socket.on('characterSelected', (char, room) => {
+    console.log("src/server.js characterSelected")
     if (charactersInRoom.hasOwnProperty(room)){
       charactersInRoom[room].push(char)
     } else {
@@ -98,6 +100,8 @@ io.on('connection', (socket)  => {
   //if there are already chosen characters in room,
   // disable them from new players' options
   socket.on('disableSelectedChars', room => {
+    console.log("src/server.js disableSelectedChars")
+
     if (charactersInRoom.hasOwnProperty(room)){
       const selectedChars = charactersInRoom[room]
       socket.emit('disableSelectedChars', selectedChars, room)
@@ -112,7 +116,7 @@ io.on('connection', (socket)  => {
   /*    GENERAL DISCONNECT SOCKET      */
 
   socket.on('disconnect', () => {
-    console.log(`${socket.id} disconnected`);
+    console.log(`/src/server.js - ${socket.id} disconnected`);
 
     //make sure to reset room count
     const room = players[socket.id].roomId;
@@ -136,6 +140,7 @@ io.on('connection', (socket)  => {
 
   //listen for request to transition to board
   socket.on('transitionToBoard', () => {
+    console.log("src/server - transitionToBoard ")
     const room = players[socket.id].roomId;
     io.in(room).emit('transitionedToBoard')
   })
@@ -145,6 +150,7 @@ io.on('connection', (socket)  => {
 
   // when a player moves, update the player data
   socket.on('playerMovement', (movementData) => {
+    // console.log("src/server - playerMovement ")
     players[socket.id].x = movementData.x;
     players[socket.id].y = movementData.y;
 
@@ -157,6 +163,7 @@ io.on('connection', (socket)  => {
 
   //when a player rolls a dice, update their position on self/others' board, shift the queue & update dice for other players
   socket.on('diceRoll', (rolledNum, charName) => {
+    console.log("src/server - diceRoll ")
     const room = players[socket.id].roomId
     //socket.emit('moveSelfOnBoard', rolledNum);
     io.in(room).emit('moveCharOnBoard', rolledNum, charName)
@@ -168,29 +175,36 @@ io.on('connection', (socket)  => {
 
   //when BoardBg first initiates, place the first player in line to tile 0 on all players' boards
   socket.on('placeOnBoard', (rolledNum, charName) => {
+    console.log("src/server - placeOnBoard by", socket.id)
     const room = players[socket.id].roomId
-    io.in(room).emit('placedOnBoard', rolledNum, charName)
+    // io.in(room).emit('placedOnBoard', rolledNum, charName)
+    socket.emit('placedOnBoard', rolledNum, charName)
   })
 
   //update the queue in boardbg scene
   socket.on('changeQueuePrompt', currentPlayer => {
+    console.log("src/server - queuePrompt ")
     const room = players[socket.id].roomId
     socket.in(room).emit('changeQueuePrompt', currentPlayer)
   })
 
   socket.on('startMinigame', () => {
-    io.in(players[socket.id].roomId).emit('minigameStarted')
+    console.log("src/server - startminigame ")
+    // io.in(players[socket.id].roomId).emit('minigameStarted')
+    socket.emit('minigameStarted')
   })
 
 
   /*     MINI GAME SOCKETS     */
 
   socket.on('currentPlayersMG', () => {
+    console.log("src/server - currentPlayersMG ")
     const room = players[socket.id].roomId;
     socket.emit('currentPlayersMG', players, room, queue[room]);
   })
 
   socket.on('playerHit', () => {
+    console.log("src/server - playerHit ow ")
     console.log('playerHit', playerHitByBombsCount)
     ++playerHitByBombsCount;
     console.log('bodyCount incremented', playerHitByBombsCount)
@@ -211,9 +225,28 @@ io.on('connection', (socket)  => {
   /*   NOT USED SOCKETS   */
 
   // get current players when you first enter the room
-  socket.on('currentPlayers', () => {
+  socket.on('currentPlayersInRoom', () => {
+    console.log("src/server - currentPlayersInRoom")
+    // console.log("players", players)
+    // console.log("socketId", socket.id)
+
+    let playersInRoom = {};
     const room = players[socket.id].roomId;
-    socket.emit('currentPlayers', players, room, queue[room]);
+    Object.keys(players).forEach(id => {
+      if (players[id].roomId === room) {
+        playersInRoom[id] = players[id];
+      }
+    });
+    // console.log("playersInRoom", playersInRoom)
+
+    socket.emit('currentPlayersInRoom', playersInRoom, room, queue[room]);
+  })
+
+  //this is the old "currentPlayers"
+  socket.on('allPlayersConnected', () => {
+    console.log("src/server - currentPlayers")
+    console.log("players", players)
+    socket.emit('allPlayers', players, room, queue[room]);
   })
 
 });
