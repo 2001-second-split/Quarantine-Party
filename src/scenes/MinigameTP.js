@@ -114,8 +114,6 @@ export default class minigameTPScene extends Phaser.Scene {
       const otherPlayer0 = new Player(this, 200, 100, passedDataOtherPlayers[0].name).setScale(0.35)
       otherPlayer0.body.enable = false
       otherPlayer0[name] = passedDataOtherPlayers[0].name
-      console.log("otherPlayer0", otherPlayer0[name])
-      console.log("passedDataOtherPlayers", passedDataOtherPlayers[0].name)
       otherPlayersArr.push(otherPlayer0)
       this.createAnimations(passedDataOtherPlayers[0].name)
 
@@ -149,10 +147,9 @@ export default class minigameTPScene extends Phaser.Scene {
       //otherPlayersArr?
       //playerInfo in playerMoved?
 
+      // loop through array to set player tint
       otherPlayersArr.forEach( (player) => {
-        console.log(otherPlayersArr)
-        console.log("forEach player", player)
-        if (player.name === playerHit.name){ //ISSUE: PLAYER.NAME IS ""
+        if (player[name] === playerHit.name){
           console.log("if", player.name, playerHit.name)
           player.setTint(0xff0000);
         }
