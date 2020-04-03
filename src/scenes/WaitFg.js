@@ -10,6 +10,7 @@ export default class WaitFg extends Phaser.Scene {
   }
   preload() {
     this.load.audio("jump", "assets/audio/jump.wav");
+    this.load.audio("footstep", "assets/audio/single-footstep.mp3")
   }
 
 
@@ -17,7 +18,8 @@ export default class WaitFg extends Phaser.Scene {
       // Create game entities
       this.cursors = this.input.keyboard.createCursorKeys();
       // Create sounds
-      // this.jumpSound = this.sound.add("jump");
+      this.jumpSound = this.sound.add("jump");
+      this.walkSound = this.sound.add("footstep")
 
       //  << SOCKET THINGS!!! >>
       this.otherPlayers = [];
@@ -136,7 +138,7 @@ export default class WaitFg extends Phaser.Scene {
   update(time, delta) {
     //only when the player is created, update it with cursors
     if (typeof this.player !== 'undefined'){
-      this.player.update(this.cursors)
+      this.player.update(this.cursors, this.jumpSound, this.walkSound)
     }
   }
 
