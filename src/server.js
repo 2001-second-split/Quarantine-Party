@@ -11,7 +11,7 @@ let charactersInRoom = {};
 let queue = {};
 let playerHitByBombsCount = 0;
 
-const roomMaxPlayers = 2;
+const roomMaxPlayers = 4;
 
 app.use(express.static(path.join(__dirname + '/public')));
 
@@ -217,19 +217,20 @@ io.on('connection', (socket)  => {
 
   /*     MINI GAME SOCKETS     */
 
-  socket.on('currentPlayersMG', () => {
-    console.log("src/server - currentPlayersMG ")
-    const room = players[socket.id].roomId;
-    socket.emit('currentPlayersMG', players, room, queue[room]);
-  })
+  // socket.on('currentPlayersMG', () => {
+  //   console.log("src/server - currentPlayersMG ")
+  //   const room = players[socket.id].roomId;
+  //   socket.emit('currentPlayersMG', players, room, queue[room]);
+  // })
 
-  socket.on('playerHit', () => {
+  socket.on('playerHit', (player) => {
     console.log("src/server - playerHit ow ")
     console.log('playerHit', playerHitByBombsCount)
     ++playerHitByBombsCount;
     console.log('bodyCount incremented', playerHitByBombsCount)
     const room = players[socket.id].roomId
-    io.in(room).emit('updatedPlayersHit', playerHitByBombsCount, roomMaxPlayers);
+    console.log("room in playerHit", room)
+    io.in(room).emit('updatedPlayersHit', playerHitByBombsCount, roomMaxPlayers, player);
   })
 
   socket.on('gameOver', () => {
@@ -237,6 +238,15 @@ io.on('connection', (socket)  => {
     console.log("server gameOver")
     const room = players[socket.id].roomId
     io.in(room).emit('gameOverClient');
+  })
+
+  socket.on('scoredTP', (playerWhoScored, score) => {
+    console.log("src/server - scoredTP yaaas")
+
+    score += 10;
+    const room = players[socket.id].roomId;
+    io.in(room).emit('updateScores', playerWhoScored, score);
+    // socket.emit('updateScores', playerWhoScored, score)
   })
 
   /*   END MINI GAME SOCKETS   */
