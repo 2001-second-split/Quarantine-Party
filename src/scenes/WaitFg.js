@@ -17,28 +17,32 @@ export default class WaitFg extends Phaser.Scene {
       // Create game entities
       this.cursors = this.input.keyboard.createCursorKeys();
       // Create sounds
-      this.jumpSound = this.sound.add("jump");
+      // this.jumpSound = this.sound.add("jump");
 
       //  << SOCKET THINGS!!! >>
       this.otherPlayers = [];
       // ask the server who current players are
-      socket.emit('currentPlayers');
+      socket.emit("currentPlayersInRoom");
 
       //get currentPlayers in room and add self and other players
-      socket.on('currentPlayers', (players, room, queue) => {
+      socket.on("currentPlayersInRoom", (playersInRoom, room, queue) => {
+
+        console.log("WaitFG - currentPlayersInRoom", playersInRoom)
         //Find all the players in the same room
-        const playersInRoom = {};
-        Object.keys(players).forEach(id => {
-          if (players[id].roomId === room) {
-            playersInRoom[id] = players[id];
-          }
-        });
+        // const playersInRoom = {};
+        // Object.keys(players).forEach(id => {
+        //   if (players[id].roomId === room) {
+        //     playersInRoom[id] = players[id];
+        //   }
+        // });
 
         Object.keys(playersInRoom).forEach(id => {
-          if (players[id].playerId === socket.id) {
-            this.addPlayer(players[id],socket.id, players[id].name);
+          console.log("in playersInRoom Loop")
+          // Note: playersInRoom[id] gives you the entire player object
+          if (id === socket.id) {
+            this.addPlayer(playersInRoom[id], socket.id, playersInRoom[id].name);
           } else {
-            this.addOtherPlayers(players[id], id,players[id].name);
+            this.addOtherPlayers(playersInRoom[id], id, playersInRoom[id].name);
           }
         });
 
@@ -47,7 +51,8 @@ export default class WaitFg extends Phaser.Scene {
       });
 
       //add new players as other players
-      socket.on('newPlayer', (playerInfo, socketId, spriteSkin) => {
+      socket.on("newPlayer", (playerInfo, socketId, spriteSkin) => {
+        console.log("WaitFG - newPlayer socket")
         this.addOtherPlayers(playerInfo, socketId,spriteSkin);
       });
 
@@ -67,37 +72,20 @@ export default class WaitFg extends Phaser.Scene {
         })
       })
 
-      //wait for all four players to join
-      // socket.on('playersReady', () => {
-      //   //if the current player is the first in que show them start button
-      //   if (this.player.name === this.queue[0]){
-      //     const startButton = this.add.text(250, 250, 'Start Button', { fontSize: '32px', fill: '#FFF' });
-      //     //make the button interactive
-      //     startButton.setInteractive();
-      //     //when mouse is released, emit transitionToBoard
-      //     startButton.on('pointerup', () => {
-      //       socket.emit('transitionToBoard')
-      //     })
-      //   }
-      // })
-
       //on transition to board request switch to board scene and pass the player que to it
       socket.on('transitionedToBoard', () => {
         this.scene.stop('WaitFg')
         this.scene.stop('WaitBg')
         this.scene.stop('WaitScene')
-        this.scene.start('BoardScene', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers})
+        const data1 = {
+          queue: this.queue,
+          player: this.player,
+          otherPlayers: this.otherPlayers
+        }
+        console.log("WaitFG Data created - ", data1)
+        this.scene.start('BoardScene', data1)
       })
 
-
-      // socket.on('otherPlayerMoved', (cursors) => {
-      //   this.otherPlayers.forEach(player => {
-      //     console.log('OHTERPLAYERMOVED')
-      //     console.log('CURSORS', cursors)
-      //     player.moved = true
-      //     player.cursors = cursors
-      //   })
-      // })
 
   }
 
