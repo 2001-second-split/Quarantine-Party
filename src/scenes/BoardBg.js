@@ -57,9 +57,9 @@ export default class BoardBg extends Phaser.Scene {
     //build map
     this.buildMap()
 
-    this.queuePrompt = this.add.text(700, 16, `${this.queue[0].toUpperCase()} starts! Click the Dice to roll!`, { fontSize: '12px', fill: '#FFF' })
+    this.queuePrompt = this.add.text(700, 16, `${this.capitalizeFirst(this.queue[0])} starts! Click the dice...`, { fontFamily: 'Verdana', fontSize: 32, fill: '#FFF', stroke: '#000000', strokeThickness: 4 })
 
-    this.currentLeader = this.add.text(50, 16, `${this.queue[0].toUpperCase()} is in the lead!`, { fontSize: '12px', fill: '#FFF' })
+    this.currentLeader = this.add.text(50, 16, `${this.capitalizeFirst(this.queue[0])} is in the lead!`, { fontFamily: 'Verdana', fontSize: 32, fill: '#FFF', stroke: '#000000', strokeThickness: 4 })
 
     //place first player in line to tile 0
     socket.emit('placeOnBoard', 0, this.queue[0])
