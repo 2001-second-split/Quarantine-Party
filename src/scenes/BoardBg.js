@@ -89,12 +89,12 @@ export default class BoardBg extends Phaser.Scene {
     socket.on('changeQueuePrompt', currentPlayer => {
       console.log("BoardBg - in changeQueuePrompt")
       this.queuePrompt.destroy()
-      this.queuePrompt = this.add.text(700, 16, `${currentPlayer.toUpperCase()}'s turn! Click the Dice to roll!`, { fontSize: '12px', fill: '#FFF' })
+      this.queuePrompt = this.add.text(700, 16, `${this.capitalizeFirst(currentPlayer)}'s turn! Click the Dice`, { fontFamily: 'Verdana', fontSize: 32, fill: '#FFF', stroke: '#000000', strokeThickness: 4 })
 
       let lowestNum = Math.min(...Object.values(this.distanceToEnd))
       let nameCurrent = this.queue.find(name => this.distanceToEnd[name] === lowestNum)
       this.currentLeader.destroy()
-      this.currentLeader = this.add.text(50, 16, `${nameCurrent.toUpperCase()} is in the lead!`, { fontSize: '12px', fill: '#FFF' })
+      this.currentLeader = this.add.text(50, 16, `${this.capitalizeFirst(nameCurrent)} is in the lead!`, { fontFamily: 'Verdana', fontSize: 32, fill: '#FFF', stroke: '#000000', strokeThickness: 4  })
     })
 
     //listen for minigames
@@ -107,6 +107,11 @@ export default class BoardBg extends Phaser.Scene {
     //   .sleep('BoardScene');
     //   this.scene.run('minigameTPScene')
     // })
+
+  } // end create
+
+  capitalizeFirst(str){
+    return str.charAt(0).toUpperCase() + str.slice(1)
   }
 
   buildMap (){
