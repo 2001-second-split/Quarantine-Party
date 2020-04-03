@@ -72,15 +72,12 @@ export default class minigameTPScene extends Phaser.Scene {
 
   create(data) {
 
-    // PLAYER SET UP BASED ON DATA FROM BOARD SCENE
+    /*     PLAYER SET UP BASED ON DATA FROM BOARD SCENE     */
 
     console.log("data in create", data)
     const passedDataPlayer = data.player;
     const passedDataOtherPlayers = data.otherPlayers;
 
-    console.log(passedDataPlayer.name)
-
-    // show player entity
     this.player = new Player(this, 100, 400, passedDataPlayer.name);
     this.player
       .setScale(0.5)
@@ -102,35 +99,33 @@ export default class minigameTPScene extends Phaser.Scene {
     // })
 
 
-
-    /*    DISPLAY OTHER PLAYER SPRITES     */
+    /*     DISPLAY OTHER PLAYER SPRITES     */
 
     // WE SHOULD TRY TO REFACTOR THIS INTO A FOR EACH
     // REASON: IF WE ARE TESTING WITH LESS THAN 4 PEOPLE, WE DON'T HAVE TO REMEMBER TO COMMENT OUT A PLAYER
 
-    // passedDataOtherPlayers.forEach( (playerData) => {
+    passedDataOtherPlayers.forEach( (playerData) => {
+      // refactor code here if we get to it
+    })
 
-    // }))
+    const otherPlayer0 = new Player(this, 900, 50, passedDataOtherPlayers[0].name).setScale(0.35)
+    otherPlayer0.body.enable = false
+    otherPlayer0[name] = passedDataOtherPlayers[0].name
+    otherPlayersArr.push(otherPlayer0)
+    this.createAnimations(passedDataOtherPlayers[0].name)
 
-      const otherPlayer0 = new Player(this, 900, 50, passedDataOtherPlayers[0].name).setScale(0.35)
-
-      otherPlayer0.body.enable = false
-      otherPlayer0[name] = passedDataOtherPlayers[0].name
-      otherPlayersArr.push(otherPlayer0)
-      this.createAnimations(passedDataOtherPlayers[0].name)
-
-      const otherPlayer1 = new Player(this, 1050, 50, passedDataOtherPlayers[1].name).setScale(0.35)
-      otherPlayer1.body.enable = false
-      otherPlayer1[name] = passedDataOtherPlayers[1].name
-      otherPlayersArr.push(otherPlayer1)
-      this.createAnimations(passedDataOtherPlayers[1].name)
+    const otherPlayer1 = new Player(this, 1050, 50, passedDataOtherPlayers[1].name).setScale(0.35)
+    otherPlayer1.body.enable = false
+    otherPlayer1[name] = passedDataOtherPlayers[1].name
+    otherPlayersArr.push(otherPlayer1)
+    this.createAnimations(passedDataOtherPlayers[1].name)
 
 
-      const otherPlayer2 = new Player(this, 1200, 50, passedDataOtherPlayers[2].name).setScale(0.35)
-      otherPlayer2.body.enable = false
-      otherPlayer2[name] = passedDataOtherPlayers[2].name
-      otherPlayersArr.push(otherPlayer2)
-      this.createAnimations(passedDataOtherPlayers[2].name)
+    const otherPlayer2 = new Player(this, 1200, 50, passedDataOtherPlayers[2].name).setScale(0.35)
+    otherPlayer2.body.enable = false
+    otherPlayer2[name] = passedDataOtherPlayers[2].name
+    otherPlayersArr.push(otherPlayer2)
+    this.createAnimations(passedDataOtherPlayers[2].name)
 
 
     /*          LIST SOCKETS         */
@@ -143,23 +138,17 @@ export default class minigameTPScene extends Phaser.Scene {
     //   });
     // });
 
-
     socket.on('updatedPlayersHit', (count, totalPlayers, playerHit) => {
-      console.log("players bombed", count);
-      console.log("updatedplayerhit param", playerHit)
-
-      //otherPlayersArr?
-      //playerInfo in playerMoved?
 
       // loop through array to set player tint
       otherPlayersArr.forEach( (player) => {
         if (player[name] === playerHit.name){
+          console.log("player[name]", player[name])
           player.setTint(0xff0000);
         }
       })
 
       if (count === (totalPlayers-1)) {
-        // console.log('bodyCount is 3')
         this.physics.pause();
 
         // game over text
@@ -171,29 +160,19 @@ export default class minigameTPScene extends Phaser.Scene {
       }
     });
 
-    // socket.on('turnmeRed', (player) => {
-    //   console.log("turnmered socket", player)
-
-    //   otherPlayersArr.forEach(playerObj => {
-    //     if(playerObj.name === player.name){
-    //       playerObj.setTint(0xff0000);
-    //     }
-    //   })
-    // })
-
     socket.on('gameOverClient', () => {
-      console.log("minigameTP - in gameOver socket")
+
 
       this.scene.stop('minigameTPScene');
-
       this.scene.wake('BoardBg');
       this.scene.wake('BoardDice')
       this.scene.wake('BoardScene')
     })
 
-    socket.on('updateScores', (scores) => {
-      console.log('TP - scores', scores);
-      this.clientScore = scores;
+    socket.on('updateScores', (playerWhoScored, score) => {
+      console.log('TP - scores', score);
+      this.clientScore[playerWhoScored] = score;
+      // this.clientScore = scores;
       this.score1.destroy();
       this.score2.destroy();
       this.score3.destroy();
@@ -202,11 +181,7 @@ export default class minigameTPScene extends Phaser.Scene {
       this.updateScore = true;
     })
 
-    // << END SOCKETS >>
-
-
-    // << SOCKET EMITS NEEDED IN BEGINNING OF GAME >>
-
+    /*          END SOCKETS         */
 
 
     // << GAME ENTITIES >>
@@ -271,17 +246,11 @@ export default class minigameTPScene extends Phaser.Scene {
     // Return To Game Button
 
     // const returnButton = this.add.text(250, 250, 'Return To Board', { fontSize: '32px', fill: '#FFF' });
-
-
     // returnButton.setInteractive();
-
-    // //when you click the button
     // returnButton.on('pointerup', () => {
     //   console.log('returnButton pressed')
     //   socket.emit("gameOver")
-
     // })
-
 
 
   } // end create
@@ -299,36 +268,15 @@ export default class minigameTPScene extends Phaser.Scene {
     this.player.update(this.cursors)
   }
 
-
-  // SOCKET RELATED FUNCTIONS
-  // addPlayer(playerInfo, socketId, spriteSkin) {
-  //   // //create player entity to show in minigame scene
-  //   // this.player = new Player(this, playerInfo.x, playerInfo.y, spriteSkin).setScale(0.5);
-  //   // this.player.playerId = socketId
-  //   // this.player.name = spriteSkin
-  //   // this.createAnimations(spriteSkin);
-
-  //   // //character physics
-  //   // this.player.setCollideWorldBounds(true);
-  //   // this.player.setBounce(0.2);
-
-  //   // this.physics.add.collider(this.player, this.platforms);
-  //   this.physics.add.overlap(this.player, this.toiletpaper, this.collectTP.bind(this), null, this);
-  //   this.physics.add.collider(this.player, this.bombs, this.hitBomb.bind(this), null, this);
-
-  //   return this.player;
-  // }
-
-
-
   collectTP(player, toiletpaper) {
     console.log("in collectTP")
     toiletpaper.disableBody(true, true);
 
     //  Send message to server that this player scored
     // this.firstPlayerScore += 10;
-    console.log("this.player", this.player.name)
-    socket.emit('scoredTP', this.player.name, this.clientScore)
+    const name = this.player.name;
+    console.log("collecTP name", name)
+    socket.emit('scoredTP', name, this.clientScore[name])
     // this.p1scoreText.setText(`${data.queue[0]}: ${this.firstPlayerScore}`);
 
     if (this.toiletpaper.countActive(true) === 0) {
@@ -355,6 +303,9 @@ export default class minigameTPScene extends Phaser.Scene {
     socket.emit('playerHit', player)
     // this.firstPlayerScore.setText(`Player: BOMBED`);
     this.instructions.destroy()
-    this.instructions = this.add.text(250, 200, 'You caught the virus! Please wait for the others to finish.', { fontSize: '32px', fill: '#FFF' })
+
+    this.add.text(350, 150, 'You caught the virus!', { fontSize: '24px', fill: '#FFF' })
+    this.add.text(350, 200, 'Please wait for the others to finish playing.', { fontSize: '24px', fill: '#FFF' })
   }
+
 }

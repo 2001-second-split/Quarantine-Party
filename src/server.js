@@ -229,9 +229,8 @@ io.on('connection', (socket)  => {
     ++playerHitByBombsCount;
     console.log('bodyCount incremented', playerHitByBombsCount)
     const room = players[socket.id].roomId
+    console.log("room in playerHit", room)
     io.in(room).emit('updatedPlayersHit', playerHitByBombsCount, roomMaxPlayers, player);
-    // socket.emit('turnmeRed', player)
-
   })
 
   socket.on('gameOver', () => {
@@ -241,18 +240,13 @@ io.on('connection', (socket)  => {
     io.in(room).emit('gameOverClient');
   })
 
-  socket.on('scoredTP', (playerWhoScored, scores) => {
+  socket.on('scoredTP', (playerWhoScored, score) => {
     console.log("src/server - scoredTP yaaas")
-    console.log('playerWhoScored', playerWhoScored)
-    // let scores = {
-    //   ayse: 0,
-    //   patty: 0,
-    //   stephanie: 0,
-    //   tiffany: 0,
-    // }
-    scores[playerWhoScored] += 10;
 
-    socket.emit('updateScores', scores)
+    score += 10;
+    const room = players[socket.id].roomId;
+    io.in(room).emit('updateScores', playerWhoScored, score);
+    // socket.emit('updateScores', playerWhoScored, score)
   })
 
   /*   END MINI GAME SOCKETS   */
