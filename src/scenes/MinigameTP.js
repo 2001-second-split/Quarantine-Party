@@ -153,7 +153,6 @@ export default class minigameTPScene extends Phaser.Scene {
 
         // game over text
         this.add.text(250, 150, 'Game Over!', { fontSize: '32px', fill: '#FFF' })
-
         count = 0;
         socket.emit("gameOver")
         return;
@@ -161,8 +160,6 @@ export default class minigameTPScene extends Phaser.Scene {
     });
 
     socket.on('gameOverClient', () => {
-
-
       this.scene.stop('minigameTPScene');
       this.scene.wake('BoardBg');
       this.scene.wake('BoardDice')
@@ -184,7 +181,7 @@ export default class minigameTPScene extends Phaser.Scene {
     /*          END SOCKETS         */
 
 
-    // << GAME ENTITIES >>
+    /*          GAME ENTITIES CREATED         */
 
     // Add Background & Scale to game size
     // const bg = this.add.image(-0, 0, 'sky2');
@@ -244,7 +241,6 @@ export default class minigameTPScene extends Phaser.Scene {
     this.instructions = this.add.text(350, 150, 'Collect toilet paper! Avoid the virus!', { fontSize: '24px', fill: '#FFF' });
 
     // Return To Game Button
-
     // const returnButton = this.add.text(250, 250, 'Return To Board', { fontSize: '32px', fill: '#FFF' });
     // returnButton.setInteractive();
     // returnButton.on('pointerup', () => {
@@ -269,15 +265,12 @@ export default class minigameTPScene extends Phaser.Scene {
   }
 
   collectTP(player, toiletpaper) {
-    console.log("in collectTP")
+
     toiletpaper.disableBody(true, true);
 
     //  Send message to server that this player scored
-    // this.firstPlayerScore += 10;
     const name = this.player.name;
-    console.log("collecTP name", name)
     socket.emit('scoredTP', name, this.clientScore[name])
-    // this.p1scoreText.setText(`${data.queue[0]}: ${this.firstPlayerScore}`);
 
     if (this.toiletpaper.countActive(true) === 0) {
       //  A new batch of toiletpaper to collect
@@ -297,13 +290,11 @@ export default class minigameTPScene extends Phaser.Scene {
 
   hitBomb (player, bomb) {
     this.bomb.destroy()
-    // this.player.disableBody(true, true);
     this.physics.pause()
     player.setTint(0xff0000);
     socket.emit('playerHit', player)
-    // this.firstPlayerScore.setText(`Player: BOMBED`);
-    this.instructions.destroy()
 
+    this.instructions.destroy()
     this.add.text(350, 150, 'You caught the virus!', { fontSize: '24px', fill: '#FFF' })
     this.add.text(350, 200, 'Please wait for the others to finish playing.', { fontSize: '24px', fill: '#FFF' })
   }
