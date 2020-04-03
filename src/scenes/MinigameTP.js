@@ -91,13 +91,30 @@ export default class minigameTPScene extends Phaser.Scene {
 
     const otherPlayersArr = []
     // passedDataOtherPlayers.forEach(player => {
-    //   const otherPlayer = new Player(this, 150, 400, player.name)
+
+    //   const otherPlayer = new Player(this, 100, 100, player.name)
     //     .setScale(0.5)
     //     .setCollideWorldBounds(true)
     //     .setBounce(0.2);
+    //   otherPlayer.body.enable = false
     //   otherPlayersArr.push(otherPlayer)
     //   this.createAnimations(player.name)
     // })
+
+      const otherPlayer0 = new Player(this, 200, 100, passedDataOtherPlayers[0].name).setScale(0.35)
+      otherPlayer0.body.enable = false
+      otherPlayersArr.push(otherPlayer0)
+      this.createAnimations(passedDataOtherPlayers[0].name)
+
+      const otherPlayer1 = new Player(this, 400, 100, passedDataOtherPlayers[1].name).setScale(0.35)
+      otherPlayer1.body.enable = false
+      otherPlayersArr.push(otherPlayer1)
+      this.createAnimations(passedDataOtherPlayers[1].name)
+
+      const otherPlayer2 = new Player(this, 600, 100, passedDataOtherPlayers[2].name).setScale(0.35)
+      otherPlayer2.body.enable = false
+      otherPlayersArr.push(otherPlayer2)
+      this.createAnimations(passedDataOtherPlayers[2].name)
 
     // << LIST ALL THE SOCKETS FIRST >>
 
@@ -109,8 +126,14 @@ export default class minigameTPScene extends Phaser.Scene {
     //   });
     // });
 
-    socket.on('updatedPlayersHit', (count, totalPlayers) => {
+    socket.on('updatedPlayersHit', (count, totalPlayers, player) => {
       console.log("players bombed", count);
+      console.log("updatedplayerhit param", player)
+
+      //otherPlayersArr?
+      //playerInfo in playerMoved?
+
+      player.setTint(0xff0000);
 
       if (count === (totalPlayers-1)) {
         // console.log('bodyCount is 3')
@@ -119,6 +142,7 @@ export default class minigameTPScene extends Phaser.Scene {
         // game over text
         this.add.text(250, 150, 'Game Over!', { fontSize: '32px', fill: '#FFF' })
 
+        count = 0;
         socket.emit("gameOver")
         return;
       }
@@ -203,9 +227,13 @@ export default class minigameTPScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
 
 
+    this.instructions = this.add.text(250, 200, 'Collect toilet paper! Avoid the virus!', { fontSize: '32px', fill: '#FFF' });
+
     // Return To Game Button
-    this.add.text(350, 250, 'Mini Game Under Construction', { fontSize: '16px', fill: '#FFF' });
-    const returnButton = this.add.text(350, 300, '[Return To Board]', { fontSize: '16px', fill: '#FFF' });
+
+    const returnButton = this.add.text(250, 250, 'Return To Board', { fontSize: '32px', fill: '#FFF' });
+
+
     returnButton.setInteractive();
 
     //when you click the button
@@ -280,8 +308,11 @@ export default class minigameTPScene extends Phaser.Scene {
   hitBomb (player, bomb) {
     this.bomb.destroy()
     // this.player.disableBody(true, true);
-    socket.emit('playerHit')
+    this.physics.pause()
+    player.setTint(0xff0000);
+    socket.emit('playerHit', player)
     // this.firstPlayerScore.setText(`Player: BOMBED`);
-    this.add.text(250, 300, 'You ran into the bomb!!', { fontSize: '24px', fill: '#FFF' })
+    this.instructions.destroy()
+    this.instructions = this.add.text(250, 200, 'You caught the virus! Please wait for the others to finish.', { fontSize: '32px', fill: '#FFF' })
   }
 }
