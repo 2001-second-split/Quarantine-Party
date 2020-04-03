@@ -101,17 +101,17 @@ export default class minigameTPScene extends Phaser.Scene {
     //   this.createAnimations(player.name)
     // })
 
-      const otherPlayer0 = new Player(this, 200, 100, passedDataOtherPlayers[0].name).setScale(0.35)
+      const otherPlayer0 = new Player(this, 900, 50, passedDataOtherPlayers[0].name).setScale(0.35)
       otherPlayer0.body.enable = false
       otherPlayersArr.push(otherPlayer0)
       this.createAnimations(passedDataOtherPlayers[0].name)
 
-      const otherPlayer1 = new Player(this, 400, 100, passedDataOtherPlayers[1].name).setScale(0.35)
+      const otherPlayer1 = new Player(this, 1050, 50, passedDataOtherPlayers[1].name).setScale(0.35)
       otherPlayer1.body.enable = false
       otherPlayersArr.push(otherPlayer1)
       this.createAnimations(passedDataOtherPlayers[1].name)
 
-      const otherPlayer2 = new Player(this, 600, 100, passedDataOtherPlayers[2].name).setScale(0.35)
+      const otherPlayer2 = new Player(this, 1200, 50, passedDataOtherPlayers[2].name).setScale(0.35)
       otherPlayer2.body.enable = false
       otherPlayersArr.push(otherPlayer2)
       this.createAnimations(passedDataOtherPlayers[2].name)
@@ -126,14 +126,8 @@ export default class minigameTPScene extends Phaser.Scene {
     //   });
     // });
 
-    socket.on('updatedPlayersHit', (count, totalPlayers, player) => {
+    socket.on('updatedPlayersHit', (count, totalPlayers) => {
       console.log("players bombed", count);
-      console.log("updatedplayerhit param", player)
-
-      //otherPlayersArr?
-      //playerInfo in playerMoved?
-
-      player.setTint(0xff0000);
 
       if (count === (totalPlayers-1)) {
         // console.log('bodyCount is 3')
@@ -147,6 +141,16 @@ export default class minigameTPScene extends Phaser.Scene {
         return;
       }
     });
+
+    socket.on('turnmeRed', (player) => {
+      console.log("turnmered socket", player)
+
+      otherPlayersArr.forEach(playerObj => {
+        if(playerObj.name === player.name){
+          playerObj.setTint(0xff0000);
+        }
+      })
+    })
 
     socket.on('gameOverClient', () => {
       console.log("minigameTP - in gameOver socket")
@@ -227,21 +231,21 @@ export default class minigameTPScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
 
 
-    this.instructions = this.add.text(250, 200, 'Collect toilet paper! Avoid the virus!', { fontSize: '32px', fill: '#FFF' });
+    this.instructions = this.add.text(350, 150, 'Collect toilet paper! Avoid the virus!', { fontSize: '24px', fill: '#FFF' });
 
     // Return To Game Button
 
-    const returnButton = this.add.text(250, 250, 'Return To Board', { fontSize: '32px', fill: '#FFF' });
+    // const returnButton = this.add.text(250, 250, 'Return To Board', { fontSize: '32px', fill: '#FFF' });
 
 
-    returnButton.setInteractive();
+    // returnButton.setInteractive();
 
-    //when you click the button
-    returnButton.on('pointerup', () => {
-      console.log('returnButton pressed')
-      socket.emit("gameOver")
+    // //when you click the button
+    // returnButton.on('pointerup', () => {
+    //   console.log('returnButton pressed')
+    //   socket.emit("gameOver")
 
-    })
+    // })
 
 
 

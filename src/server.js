@@ -229,9 +229,8 @@ io.on('connection', (socket)  => {
     ++playerHitByBombsCount;
     console.log('bodyCount incremented', playerHitByBombsCount)
     const room = players[socket.id].roomId
-
-    io.in(room).emit('updatedPlayersHit', playerHitByBombsCount, roomMaxPlayers, player);
-    //socket.emit('turnmeRed')
+    io.in(room).emit('updatedPlayersHit', playerHitByBombsCount, roomMaxPlayers);
+    socket.emit('turnmeRed', player)
 
   })
 
