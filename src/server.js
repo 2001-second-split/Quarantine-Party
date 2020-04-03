@@ -217,11 +217,11 @@ io.on('connection', (socket)  => {
 
   /*     MINI GAME SOCKETS     */
 
-  socket.on('currentPlayersMG', () => {
-    console.log("src/server - currentPlayersMG ")
-    const room = players[socket.id].roomId;
-    socket.emit('currentPlayersMG', players, room, queue[room]);
-  })
+  // socket.on('currentPlayersMG', () => {
+  //   console.log("src/server - currentPlayersMG ")
+  //   const room = players[socket.id].roomId;
+  //   socket.emit('currentPlayersMG', players, room, queue[room]);
+  // })
 
   socket.on('playerHit', (player) => {
     console.log("src/server - playerHit ow ")
@@ -229,8 +229,8 @@ io.on('connection', (socket)  => {
     ++playerHitByBombsCount;
     console.log('bodyCount incremented', playerHitByBombsCount)
     const room = players[socket.id].roomId
-    io.in(room).emit('updatedPlayersHit', playerHitByBombsCount, roomMaxPlayers);
-    socket.emit('turnmeRed', player)
+    io.in(room).emit('updatedPlayersHit', playerHitByBombsCount, roomMaxPlayers, player);
+    // socket.emit('turnmeRed', player)
 
   })
 

@@ -154,7 +154,6 @@ export default class minigameTPScene extends Phaser.Scene {
       // loop through array to set player tint
       otherPlayersArr.forEach( (player) => {
         if (player[name] === playerHit.name){
-          console.log("if", player.name, playerHit.name)
           player.setTint(0xff0000);
         }
       })
@@ -172,15 +171,15 @@ export default class minigameTPScene extends Phaser.Scene {
       }
     });
 
-    socket.on('turnmeRed', (player) => {
-      console.log("turnmered socket", player)
+    // socket.on('turnmeRed', (player) => {
+    //   console.log("turnmered socket", player)
 
-      otherPlayersArr.forEach(playerObj => {
-        if(playerObj.name === player.name){
-          playerObj.setTint(0xff0000);
-        }
-      })
-    })
+    //   otherPlayersArr.forEach(playerObj => {
+    //     if(playerObj.name === player.name){
+    //       playerObj.setTint(0xff0000);
+    //     }
+    //   })
+    // })
 
     socket.on('gameOverClient', () => {
       console.log("minigameTP - in gameOver socket")
