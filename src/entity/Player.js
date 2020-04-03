@@ -6,7 +6,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     super(scene, x, y, spriteKey);
 
     // << INITIALIZE PLAYER ATTRIBUTES HERE >>
-    console.log('IM A PLAYER', this)
+    console.log('I MA PLAYER')
     this.scene = scene;
     this.scene.add.existing(this);
 

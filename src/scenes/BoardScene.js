@@ -40,7 +40,7 @@ export default class BoardScene extends Phaser.Scene {
 
       // const mgTP = this.scene.get('minigameTPScene')
       // mgTP.scene.restart();
-      console.log('MINIGAME STARTED for ')
+      console.log('MINIGAME STARTED')
       console.log('this.player', this.player)
       this.scene.sleep('BoardBg').sleep('BoardDice')
       this.scene.run('minigameTPScene', {player: this.player, otherPlayers: this.otherPlayers}) //switch will sleep current scene (BoardScene)

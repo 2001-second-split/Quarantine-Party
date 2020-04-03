@@ -1,7 +1,7 @@
 import 'phaser'
 // import io from 'socket.io-client';
 import {socket} from '../index'
-// import config from '../config/config'
+import config from '../config/config'
 import Align from '../entity/Align'
 
 export default class StartingScene extends Phaser.Scene {
@@ -45,14 +45,12 @@ export default class StartingScene extends Phaser.Scene {
     let bg = this.add.image(0, 0, 'picBg');
     Align.scaleToGame(bg, 1)
     Align.center(bg)
-
     this.room = ''
     //data to be passed to WaitBG for button purposes
     let data = {}
 
     //sockets to receive from server
     socket.on('createdOrJoinedRoom', () => {
-      console.log("startingScene - createdOrJoinedRoom")
       //Take user to the waiting scene
       this.scene.start('WaitScene', data)
     })
@@ -76,7 +74,6 @@ export default class StartingScene extends Phaser.Scene {
 
     //disable already selected characters in a room
     socket.on('disableSelectedChars', (selectedChars, room) => {
-      console.log("startingScene - disabled selected chars")
       selectedChars.forEach(char => {
         if (this.room === room){
           const opt = domElement.getChildByID(char)
