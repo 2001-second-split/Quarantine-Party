@@ -8,10 +8,13 @@ export default class minigameTPScene extends Phaser.Scene {
 
     this.gameOver = false;
 
-    this.firstPlayerScore = 0;
-    this.secondPlayerScore = 0;
-    this.thirdPlayerScore = 0;
-    this.fourthPlayerScore = 0;
+    this.clientScore = {
+      ayse: 0,
+      patty: 0,
+      stephanie: 0,
+      tiffany: 0,
+    }
+
 
     this.collectTP = this.collectTP.bind(this);
     this.hitBomb = this.hitBomb.bind(this);
@@ -84,9 +87,11 @@ export default class minigameTPScene extends Phaser.Scene {
       .setCollideWorldBounds(true)
       .setBounce(0.2);
     this.createAnimations(passedDataPlayer.name)
+    this.player.name = passedDataPlayer.name;
 
     const otherPlayersArr = []
     // passedDataOtherPlayers.forEach(player => {
+
     //   const otherPlayer = new Player(this, 100, 100, player.name)
     //     .setScale(0.5)
     //     .setCollideWorldBounds(true)
@@ -113,13 +118,13 @@ export default class minigameTPScene extends Phaser.Scene {
 
     // << LIST ALL THE SOCKETS FIRST >>
 
-    socket.on('playerMoved', (playerInfo) => {
-      otherPlayersArr.forEach(otherPlayer => {
-        if (playerInfo.playerId === otherPlayer.playerId) {
-          otherPlayer.setPosition(playerInfo.x, playerInfo.y);
-        }
-      });
-    });
+    // socket.on('playerMoved', (playerInfo) => {
+    //   otherPlayersArr.forEach(otherPlayer => {
+    //     if (playerInfo.playerId === otherPlayer.playerId) {
+    //       otherPlayer.setPosition(playerInfo.x, playerInfo.y);
+    //     }
+    //   });
+    // });
 
     socket.on('updatedPlayersHit', (count, totalPlayers, player) => {
       console.log("players bombed", count);
@@ -153,6 +158,11 @@ export default class minigameTPScene extends Phaser.Scene {
       this.scene.wake('BoardScene')
     })
 
+    socket.on('updateScores', (scores) => {
+      console.log('TP - scores', scores);
+      this.clientScore = scores;
+    })
+
     // << END SOCKETS >>
 
 
@@ -168,12 +178,18 @@ export default class minigameTPScene extends Phaser.Scene {
     // Align.center(bg)
 
     this.platforms = this.physics.add.staticGroup();
-    // this.platforms.create(400, 800, 'platform').setScale(2).refreshBody();
 
-    //  Now let's create some ledges
-    // this.platforms.create(600, 400, 'platform');
-    // this.platforms.create(50, 250, 'platform');
-    // this.platforms.create(750, 220, 'platform');
+    //  Floating Platforms from left to right
+    this.platforms.create(0, 250, 'platform');
+    this.platforms.create(100, 600, 'platform');
+    this.platforms.create(800, 500, 'platform');
+    this.platforms.create(1200, 250, 'platform');
+
+    // Platforms on bottom of screen
+    this.platforms.create(200, 800, 'platform');
+    this.platforms.create(400, 800, 'platform');
+    this.platforms.create(800, 800, 'platform');
+    this.platforms.create(1200, 800, 'platform');
 
     //  Input Events
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -182,7 +198,7 @@ export default class minigameTPScene extends Phaser.Scene {
     //  Some toiletpaper to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
     this.toiletpaper = this.physics.add.group({
         key: 'tp',
-        repeat: 11,
+        repeat: 17,
         setXY: { x: 12, y: 0, stepX: 70 }
     });
 
@@ -194,10 +210,11 @@ export default class minigameTPScene extends Phaser.Scene {
     this.bombs = this.physics.add.group();
 
     //  The score
-    this.add.text(16, 16, `Score: ${this.firstPlayerScore}`, { fontSize: '16px', fill: '#000' });
-    // this.p2scoreText = this.add.text(166, 16, `${data.queue[1]}: 0`, { fontSize: '16px', fill: '#000' });
-    // this.p3scoreText = this.add.text(316, 16, `${data.queue[2]}: 0`, { fontSize: '16px', fill: '#000' });
-    // this.p4scoreText = this.add.text(466, 16, `${data.queue[3]}: 0`, { fontSize: '16px', fill: '#000' });
+    // this.add.text(16, 16, `Ayse's Score: ${this.clientScore['ayse']}`, { fontSize: '24px', fill: '#FFF' });
+    // this.add.text(16, 36, `Patty's Score: ${this.clientScore['patty']}`, { fontSize: '24px', fill: '#FFF' });
+    // this.add.text(16, 56, `Tiffany's's Score: ${this.clientScore['tiffany']}`, { fontSize: '24px', fill: '#FFF' });
+    // this.add.text(16, 76, `Stephanie's's Score: ${this.clientScore['stephanie']}`, { fontSize: '24px', fill: '#FFF' });
+
 
     // physics things
     this.physics.add.collider(this.player, this.platforms);
@@ -213,7 +230,10 @@ export default class minigameTPScene extends Phaser.Scene {
     this.instructions = this.add.text(250, 200, 'Collect toilet paper! Avoid the virus!', { fontSize: '32px', fill: '#FFF' });
 
     // Return To Game Button
+
     const returnButton = this.add.text(250, 250, 'Return To Board', { fontSize: '32px', fill: '#FFF' });
+
+
     returnButton.setInteractive();
 
     //when you click the button
@@ -228,6 +248,12 @@ export default class minigameTPScene extends Phaser.Scene {
   } // end create
 
   update () {
+
+    this.add.text(16, 16, `Ayse's Score: ${this.clientScore['ayse']}`, { fontSize: '24px', fill: '#FFF' });
+    this.add.text(16, 36, `Patty's Score: ${this.clientScore['patty']}`, { fontSize: '24px', fill: '#FFF' });
+    this.add.text(16, 56, `Tiffany's's Score: ${this.clientScore['tiffany']}`, { fontSize: '24px', fill: '#FFF' });
+    this.add.text(16, 76, `Stephanie's's Score: ${this.clientScore['stephanie']}`, { fontSize: '24px', fill: '#FFF' });
+
     this.player.update(this.cursors)
   }
 
@@ -254,10 +280,13 @@ export default class minigameTPScene extends Phaser.Scene {
 
 
   collectTP(player, toiletpaper) {
+    console.log("in collectTP")
     toiletpaper.disableBody(true, true);
 
-    //  Add and update the score
-    this.firstPlayerScore += 10;
+    //  Send message to server that this player scored
+    // this.firstPlayerScore += 10;
+    console.log("this.player", this.player.name)
+    socket.emit('scoredTP', this.player.name, this.clientScore)
     // this.p1scoreText.setText(`${data.queue[0]}: ${this.firstPlayerScore}`);
 
     if (this.toiletpaper.countActive(true) === 0) {
