@@ -11,7 +11,7 @@ let charactersInRoom = {};
 let queue = {};
 let playerHitByBombsCount = 0;
 
-const roomMaxPlayers = 2;
+const roomMaxPlayers = 4;
 
 app.use(express.static(path.join(__dirname + '/public')));
 
@@ -223,14 +223,16 @@ io.on('connection', (socket)  => {
     socket.emit('currentPlayersMG', players, room, queue[room]);
   })
 
-  socket.on('playerHit', () => {
+  socket.on('playerHit', (player) => {
     console.log("src/server - playerHit ow ")
     console.log('playerHit', playerHitByBombsCount)
     ++playerHitByBombsCount;
     console.log('bodyCount incremented', playerHitByBombsCount)
     const room = players[socket.id].roomId
-    io.in(room).emit('updatedPlayersHit', playerHitByBombsCount, roomMaxPlayers);
-    socket.emit('turnmeRed')
+
+    io.in(room).emit('updatedPlayersHit', playerHitByBombsCount, roomMaxPlayers, player);
+    //socket.emit('turnmeRed')
+
   })
 
   socket.on('gameOver', () => {
