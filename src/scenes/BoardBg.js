@@ -23,7 +23,7 @@ export default class BoardBg extends Phaser.Scene {
   }
 
   init(data){
-    console.log('DATABOARDBG', data)
+    console.log('BoardBg - init data', data)
     this.queue = data.queue
     this.player = data.player
     this.otherPlayers = data.otherPlayers
@@ -65,12 +65,14 @@ export default class BoardBg extends Phaser.Scene {
     socket.emit('placeOnBoard', 0, this.queue[0])
 
     socket.on('placedOnBoard', (rolledNum, charName) => {
+      console.log("BoardBG - placed on Board, called by ", this.player.name)
       this.moveCharacter(rolledNum, charName)
     })
 
 
     //listen for movement on board
     socket.on('moveCharOnBoard', (rolledNum, charName) => {
+      console.log("BoardBG - move char on board")
       this.moveCharacter(rolledNum, charName)
 
       //Update queue once a player moves. This will first update the queue in BoardDice and then BoardBg (in next render cycle)
@@ -85,6 +87,7 @@ export default class BoardBg extends Phaser.Scene {
 
     //listen for changes in queue, update background queue prompt accordingly
     socket.on('changeQueuePrompt', currentPlayer => {
+      console.log("BoardBg - in changeQueuePrompt")
       this.queuePrompt.destroy()
       this.queuePrompt = this.add.text(700, 16, `${currentPlayer.toUpperCase()}'s turn! Click the Dice to roll!`, { fontSize: '12px', fill: '#FFF' })
 
@@ -146,7 +149,8 @@ export default class BoardBg extends Phaser.Scene {
     const charExists = typeof this.charPosition[charName] !== 'undefined'
 
     const prevIdx = charExists? this.charPosition[charName].prevIndex : 0
-    console.log('CHAR', charName, 'PREV INDEX', prevIdx)
+    console.log('MoveCharacter function - CHAR', charName, 'PREV INDEX', prevIdx)
+
     //if user throws a dice larger than the spaces left on the board, the user wins
     if((prevIdx  + idx) >= (this.walkablePath.length -1)){
       console.log('YOU WON');
@@ -179,7 +183,7 @@ export default class BoardBg extends Phaser.Scene {
 
 
       return
-    }
+    } // end winner function
 
 
     //convert Cartesian coords to isometric ones
@@ -203,7 +207,7 @@ export default class BoardBg extends Phaser.Scene {
 
     // once prevIndex updated, add to distanceToEndObject
     this.distanceToEnd[charName] = this.walkablePath.length - movedChar.prevIndex
-    console.log(this.distanceToEnd)
+    console.log("distance to the end", this.distanceToEnd)
 
     this.charPosition[charName] = movedChar
     //update characters' previous location index by adding current index
@@ -212,6 +216,7 @@ export default class BoardBg extends Phaser.Scene {
     //after placing the character to new position, check to see if he lands on a coin
     //trigger minigame if on a coin
     if(charExists &&  this.walkablePath[this.charPosition[charName].prevIndex].length === 3){
+      console.log("stepped on a coin")
       socket.emit('startMinigame')
     }
   }

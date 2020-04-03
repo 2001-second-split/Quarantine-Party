@@ -12,6 +12,8 @@ export default class WaitScene extends Phaser.Scene {
 
   create(data) {
 
+    console.log("WaitScene - Data", data)
+
     this.scene.launch("WaitBg", data); //passing it roomCreator data
     this.scene.launch("WaitFg");
 
