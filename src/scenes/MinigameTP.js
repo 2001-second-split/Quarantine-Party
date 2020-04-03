@@ -14,7 +14,7 @@ export default class minigameTPScene extends Phaser.Scene {
       stephanie: 0,
       tiffany: 0,
     }
-
+    this.updateScore = false;
 
     this.collectTP = this.collectTP.bind(this);
     this.hitBomb = this.hitBomb.bind(this);
@@ -101,22 +101,39 @@ export default class minigameTPScene extends Phaser.Scene {
     //   this.createAnimations(player.name)
     // })
 
+
+
+    /*    DISPLAY OTHER PLAYER SPRITES     */
+
+    // WE SHOULD TRY TO REFACTOR THIS INTO A FOR EACH
+    // REASON: IF WE ARE TESTING WITH LESS THAN 4 PEOPLE, WE DON'T HAVE TO REMEMBER TO COMMENT OUT A PLAYER
+
+    // passedDataOtherPlayers.forEach( (playerData) => {
+
+    // }))
+
       const otherPlayer0 = new Player(this, 900, 50, passedDataOtherPlayers[0].name).setScale(0.35)
+
       otherPlayer0.body.enable = false
+      otherPlayer0[name] = passedDataOtherPlayers[0].name
       otherPlayersArr.push(otherPlayer0)
       this.createAnimations(passedDataOtherPlayers[0].name)
 
       const otherPlayer1 = new Player(this, 1050, 50, passedDataOtherPlayers[1].name).setScale(0.35)
       otherPlayer1.body.enable = false
+      otherPlayer1[name] = passedDataOtherPlayers[1].name
       otherPlayersArr.push(otherPlayer1)
       this.createAnimations(passedDataOtherPlayers[1].name)
 
+
       const otherPlayer2 = new Player(this, 1200, 50, passedDataOtherPlayers[2].name).setScale(0.35)
       otherPlayer2.body.enable = false
+      otherPlayer2[name] = passedDataOtherPlayers[2].name
       otherPlayersArr.push(otherPlayer2)
       this.createAnimations(passedDataOtherPlayers[2].name)
 
-    // << LIST ALL THE SOCKETS FIRST >>
+
+    /*          LIST SOCKETS         */
 
     // socket.on('playerMoved', (playerInfo) => {
     //   otherPlayersArr.forEach(otherPlayer => {
@@ -126,8 +143,21 @@ export default class minigameTPScene extends Phaser.Scene {
     //   });
     // });
 
-    socket.on('updatedPlayersHit', (count, totalPlayers) => {
+
+    socket.on('updatedPlayersHit', (count, totalPlayers, playerHit) => {
       console.log("players bombed", count);
+      console.log("updatedplayerhit param", playerHit)
+
+      //otherPlayersArr?
+      //playerInfo in playerMoved?
+
+      // loop through array to set player tint
+      otherPlayersArr.forEach( (player) => {
+        if (player[name] === playerHit.name){
+          console.log("if", player.name, playerHit.name)
+          player.setTint(0xff0000);
+        }
+      })
 
       if (count === (totalPlayers-1)) {
         // console.log('bodyCount is 3')
@@ -165,6 +195,12 @@ export default class minigameTPScene extends Phaser.Scene {
     socket.on('updateScores', (scores) => {
       console.log('TP - scores', scores);
       this.clientScore = scores;
+      this.score1.destroy();
+      this.score2.destroy();
+      this.score3.destroy();
+      this.score4.destroy();
+
+      this.updateScore = true;
     })
 
     // << END SOCKETS >>
@@ -214,10 +250,10 @@ export default class minigameTPScene extends Phaser.Scene {
     this.bombs = this.physics.add.group();
 
     //  The score
-    // this.add.text(16, 16, `Ayse's Score: ${this.clientScore['ayse']}`, { fontSize: '24px', fill: '#FFF' });
-    // this.add.text(16, 36, `Patty's Score: ${this.clientScore['patty']}`, { fontSize: '24px', fill: '#FFF' });
-    // this.add.text(16, 56, `Tiffany's's Score: ${this.clientScore['tiffany']}`, { fontSize: '24px', fill: '#FFF' });
-    // this.add.text(16, 76, `Stephanie's's Score: ${this.clientScore['stephanie']}`, { fontSize: '24px', fill: '#FFF' });
+    this.score1 = this.add.text(16, 16, `Ayse's Score: ${this.clientScore['ayse']}`, { fontSize: '24px', fill: '#FFF' });
+    this.score2 = this.add.text(16, 36, `Patty's Score: ${this.clientScore['patty']}`, { fontSize: '24px', fill: '#FFF' });
+    this.score3 = this.add.text(16, 56, `Tiffany's's Score: ${this.clientScore['tiffany']}`, { fontSize: '24px', fill: '#FFF' });
+    this.score4 = this.add.text(16, 76, `Stephanie's's Score: ${this.clientScore['stephanie']}`, { fontSize: '24px', fill: '#FFF' });
 
 
     // physics things
@@ -253,10 +289,13 @@ export default class minigameTPScene extends Phaser.Scene {
 
   update () {
 
-    this.add.text(16, 16, `Ayse's Score: ${this.clientScore['ayse']}`, { fontSize: '24px', fill: '#FFF' });
-    this.add.text(16, 36, `Patty's Score: ${this.clientScore['patty']}`, { fontSize: '24px', fill: '#FFF' });
-    this.add.text(16, 56, `Tiffany's's Score: ${this.clientScore['tiffany']}`, { fontSize: '24px', fill: '#FFF' });
-    this.add.text(16, 76, `Stephanie's's Score: ${this.clientScore['stephanie']}`, { fontSize: '24px', fill: '#FFF' });
+    if (this.updateScore) {
+      this.score1 = this.add.text(16, 16, `Ayse's Score: ${this.clientScore['ayse']}`, { fontSize: '24px', fill: '#FFF' });
+      this.score2 = this.add.text(16, 36, `Patty's Score: ${this.clientScore['patty']}`, { fontSize: '24px', fill: '#FFF' });
+      this.score3 = this.add.text(16, 56, `Tiffany's's Score: ${this.clientScore['tiffany']}`, { fontSize: '24px', fill: '#FFF' });
+      this.score4 = this.add.text(16, 76, `Stephanie's's Score: ${this.clientScore['stephanie']}`, { fontSize: '24px', fill: '#FFF' });
+      this.updateScore = false;
+    }
 
     this.player.update(this.cursors)
   }
