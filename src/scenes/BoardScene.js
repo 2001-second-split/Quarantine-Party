@@ -15,8 +15,7 @@ export default class BoardScene extends Phaser.Scene {
 
   create() {
     // << LOAD BACKGROUND AND FOREGROUND SCENES IN PARALLEL HERE >>
-    //console.log('QUE', this.que, 'PLAYER', this.player, 'OTHER PLAYERS', this.otherPlayers)
-    // this.scene.add('minigameTPScene')
+
     this.scene.launch('BoardBg', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers});
     this.scene.launch('BoardDice', {queue: this.queue, player: this.player});
 
@@ -29,23 +28,20 @@ export default class BoardScene extends Phaser.Scene {
     // }, this);
 
     socket.on('minigameStarted', () => {
-      //make the current scene sleep + minigame wake
-      // const data = {
-      //   queue: this.queue,
-      // }
-      // console.log('socketon miniGameStarted', data)
-      // this.scene.sleep('BoardBg')
-      //   .sleep('BoardDice')
-      //   .sleep('BoardScene');
 
-      // const mgTP = this.scene.get('minigameTPScene')
-      // mgTP.scene.restart();
+      //make the current scene sleep + minigame wake
+      const passtoMiniGame = {
+        player: this.player,
+        otherPlayers: this.otherPlayers
+      }
+
       console.log('MINIGAME STARTED for ')
       console.log('this.player', this.player)
+
       this.scene.sleep('BoardBg').sleep('BoardDice')
-      this.scene.run('minigameTPScene', {player: this.player, otherPlayers: this.otherPlayers}) //switch will sleep current scene (BoardScene)
-      //could be switch or run
-      // commands that don't work: launch, start
+      this.scene.run('minigameTPScene', passtoMiniGame)
+      // using SWITCH doesn't let data be passed to minigame
+
     })
   }
 }

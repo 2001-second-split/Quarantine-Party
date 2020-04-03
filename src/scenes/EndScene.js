@@ -81,25 +81,26 @@ export default class EndScene extends Phaser.Scene {
 
       // stopping all scenes for now
       // refactor tasks: stop scenes as they're not necessary
-      // this.scene.stop('WaitBg')
-      // this.scene.stop('WaitFg')
-      // this.scene.stop('WaitScene')
+      this.scene.stop('WaitBg')
+      this.scene.stop('WaitFg')
+      this.scene.stop('WaitScene')
 
-      // this.scene.stop('BoardBg')
-      // this.scene.stop('BoardScene')
-      // this.scene.stop('BoardDice')
+      this.scene.stop('BoardBg')
+      this.scene.stop('BoardScene')
+      this.scene.stop('BoardDice')
 
       // this.scene.stop('EndScene')
+      socket.emit('disconnect')
 
-      // this.scene.start('StartingScene');
+      this.scene.start('StartingScene');
 
-    const gameUrl = 'https://super-quarantine-party.herokuapp.com/'
-    const s = window.open(gameUrl, '_blank');
-    if (s && s.focus){
-      s.focus()
-    } else if (!s){
-      window.location.href = gameUrl
-    }
+      // const gameUrl = 'https://super-quarantine-party.herokuapp.com/'
+      // const s = window.open(gameUrl, '_blank');
+      // if (s && s.focus){
+      //   s.focus()
+      // } else if (!s){
+      //   window.location.href = gameUrl
+      // }
     })
   }
 

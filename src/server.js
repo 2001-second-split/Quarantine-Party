@@ -217,11 +217,20 @@ io.on('connection', (socket)  => {
 
   /*     MINI GAME SOCKETS     */
 
-  socket.on('currentPlayersMG', () => {
-    console.log("src/server - currentPlayersMG ")
-    const room = players[socket.id].roomId;
-    socket.emit('currentPlayersMG', players, room, queue[room]);
-  })
+  // socket.on('currentPlayersMG', () => {
+  //   console.log("src/server - currentPlayersMG ")
+
+  //   let playersInRoom = {};
+
+  //   const room = players[socket.id].roomId;
+  //   Object.keys(players).forEach(id => {
+  //     if (players[id].roomId === room) {
+  //       playersInRoom[id] = players[id];
+  //     }
+  //   });
+
+  //   socket.emit('currentPlayersMG', playersInRoom, room, queue[room]);
+  // })
 
   socket.on('playerHit', () => {
     console.log("src/server - playerHit ow ")
