@@ -14,7 +14,6 @@ import BoardDice from './BoardDice'
 import EndScene from './EndScene'
 
 
-
 let scenes = [ WaitScene]
 
 export default scenes;

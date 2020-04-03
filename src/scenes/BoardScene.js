@@ -43,7 +43,9 @@ export default class BoardScene extends Phaser.Scene {
       console.log('MINIGAME STARTED for ')
       console.log('this.player', this.player)
       this.scene.sleep('BoardBg').sleep('BoardDice')
-      this.scene.run('minigameTPScene', {player: this.player, otherPlayers: this.otherPlayers}) //switch will sleep current scene (BoardScene)
+      //this.scene.run('minigameTPScene', {player: this.player, otherPlayers: this.otherPlayers}) //switch will sleep
+      this.scene.run('PuzzleScene', {player: this.player, otherPlayers: this.otherPlayers})
+      //current scene (BoardScene)
       //could be switch or run
       // commands that don't work: launch, start
     })

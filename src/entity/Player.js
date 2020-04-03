@@ -27,6 +27,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       if(this.body.onFloor()){
         walkSound.play()
         this.anims.play("run", true)
+      }
     }
     // Move right
     else if (cursors.right.isDown) {
