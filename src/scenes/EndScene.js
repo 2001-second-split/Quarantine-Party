@@ -1,5 +1,4 @@
 import 'phaser'
-import Align from '../entity/Align'
 
 export default class EndScene extends Phaser.Scene {
   constructor() {
@@ -52,14 +51,11 @@ export default class EndScene extends Phaser.Scene {
   create() {
 
     // Create Background
-    const bg = this.add.image(-0, 0, 'background');
-    // Resize screen to match
-    Align.scaleToGame(bg, 1)
-    Align.center(bg)
+    this.add.image(-160, 0, 'background').setOrigin(0).setScale(0.5);
 
     // Static Text for now
     const header = this.add.text(250, 50, `${this.first.toUpperCase()} WINS!`, { fontSize: '32px', fill: '#000' });
-    const credits = this.add.text(50, 750, 'Game Created by 2001-GH: Ayse, Patty, Tiffany, Stephanie', {fontSize: '32px', fill: '#000'})
+    const credits = this.add.text(10, 600, 'Game Created by 2001-GH: Ayse, Patty, Tiffany, Stephanie')
 
     // Display players based on how well they placed
     this.add.sprite(400,250, this.first).setScale(1)
