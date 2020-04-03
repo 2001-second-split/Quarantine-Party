@@ -223,13 +223,13 @@ io.on('connection', (socket)  => {
     socket.emit('currentPlayersMG', players, room, queue[room]);
   })
 
-  socket.on('playerHit', () => {
+  socket.on('playerHit', (player) => {
     console.log("src/server - playerHit ow ")
     console.log('playerHit', playerHitByBombsCount)
     ++playerHitByBombsCount;
     console.log('bodyCount incremented', playerHitByBombsCount)
     const room = players[socket.id].roomId
-    io.in(room).emit('updatedPlayersHit', playerHitByBombsCount, roomMaxPlayers);
+    io.in(room).emit('updatedPlayersHit', playerHitByBombsCount, roomMaxPlayers, player);
   })
 
   socket.on('gameOver', () => {

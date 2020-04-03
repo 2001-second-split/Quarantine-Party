@@ -121,8 +121,14 @@ export default class minigameTPScene extends Phaser.Scene {
       });
     });
 
-    socket.on('updatedPlayersHit', (count, totalPlayers) => {
+    socket.on('updatedPlayersHit', (count, totalPlayers, player) => {
       console.log("players bombed", count);
+      console.log("updatedplayerhit param", player)
+
+      //otherPlayersArr?
+      //playerInfo in playerMoved?
+
+      player.setTint(0xff0000);
 
       if (count === (totalPlayers-1)) {
         // console.log('bodyCount is 3')
@@ -275,7 +281,7 @@ export default class minigameTPScene extends Phaser.Scene {
     // this.player.disableBody(true, true);
     this.physics.pause()
     player.setTint(0xff0000);
-    socket.emit('playerHit')
+    socket.emit('playerHit', player)
     // this.firstPlayerScore.setText(`Player: BOMBED`);
     this.instructions.destroy()
     this.instructions = this.add.text(250, 200, 'You caught the virus! Please wait for the others to finish.', { fontSize: '32px', fill: '#FFF' })
