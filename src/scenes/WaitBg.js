@@ -22,6 +22,7 @@ export default class WaitBg extends Phaser.Scene {
 
     //data received from StartingScene --> WaitScene --> WaitBg
     const roomCreator = data.roomCreator;
+    const roomId = data.roomId
 
     // Create Sprites
     let waitingBg = this.add.image(0, 0, 'pic');
@@ -55,12 +56,13 @@ export default class WaitBg extends Phaser.Scene {
           this.setFrame(1)
         })
 
-        startButton.on('pointerup', function(){
+        startButton.on('pointerout', function(){
+          console.log('OUT')
           this.setFrame(0)
         })
-
         //when mouse is released, emit transitionToBoard & listen for it in WaitFg (since we want to pass the queue info)
-        startButton.on('pointerup', () => {
+        startButton.on('pointerup', function(){
+          this.setFrame(0)
           socket.emit('transitionToBoard')
         })
       }
