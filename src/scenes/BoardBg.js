@@ -23,6 +23,7 @@ export default class BoardBg extends Phaser.Scene {
   }
 
   init(data){
+    console.log('BoardBg - init data', data)
     this.queue = data.queue
     this.player = data.player
     this.otherPlayers = data.otherPlayers
@@ -55,20 +56,23 @@ export default class BoardBg extends Phaser.Scene {
 
     //build map
     this.buildMap()
-    this.queuePrompt = this.add.text(700, 16, `${this.capitalizeFirst(this.queue[0])} starts! Click the dice...`, { fontFamily: 'Verdana', fontSize: 32, fill: '#FFF', stroke: '#000000', strokeThickness: 4 })
 
-    this.currentLeader = this.add.text(50, 16, `${this.capitalizeFirst(this.queue[0])} is in the lead!`, { fontFamily: 'Verdana', fontSize: 32, fill: '#FFF', stroke: '#000000', strokeThickness: 4 })
+    this.queuePrompt = this.add.text(700, 16, `${this.queue[0].toUpperCase()} starts! Click the Dice to roll!`, { fontSize: '12px', fill: '#FFF' })
+
+    this.currentLeader = this.add.text(50, 16, `${this.queue[0].toUpperCase()} is in the lead!`, { fontSize: '12px', fill: '#FFF' })
 
     //place first player in line to tile 0
     socket.emit('placeOnBoard', 0, this.queue[0])
 
     socket.on('placedOnBoard', (rolledNum, charName) => {
+      console.log("BoardBG - placed on Board, called by ", this.player.name)
       this.moveCharacter(rolledNum, charName)
     })
 
 
     //listen for movement on board
     socket.on('moveCharOnBoard', (rolledNum, charName) => {
+      console.log("BoardBG - move char on board")
       this.moveCharacter(rolledNum, charName)
 
       //Update queue once a player moves. This will first update the queue in BoardDice and then BoardBg (in next render cycle)
@@ -83,29 +87,26 @@ export default class BoardBg extends Phaser.Scene {
 
     //listen for changes in queue, update background queue prompt accordingly
     socket.on('changeQueuePrompt', currentPlayer => {
+      console.log("BoardBg - in changeQueuePrompt")
       this.queuePrompt.destroy()
-      this.queuePrompt = this.add.text(700, 16, `${this.capitalizeFirst(currentPlayer)}'s turn! Click the Dice`, { fontFamily: 'Verdana', fontSize: 32, fill: '#FFF', stroke: '#000000', strokeThickness: 4 })
+      this.queuePrompt = this.add.text(700, 16, `${currentPlayer.toUpperCase()}'s turn! Click the Dice to roll!`, { fontSize: '12px', fill: '#FFF' })
 
       let lowestNum = Math.min(...Object.values(this.distanceToEnd))
       let nameCurrent = this.queue.find(name => this.distanceToEnd[name] === lowestNum)
       this.currentLeader.destroy()
-      this.currentLeader = this.add.text(50, 16, `${this.capitalizeFirst(nameCurrent)} is in the lead!`, { fontFamily: 'Verdana', fontSize: 32, fill: '#FFF', stroke: '#000000', strokeThickness: 4  })
+      this.currentLeader = this.add.text(50, 16, `${nameCurrent.toUpperCase()} is in the lead!`, { fontSize: '12px', fill: '#FFF' })
     })
 
     //listen for minigames
-    socket.on('minigameStarted', () => {
-      //make the current scene sleep + starts minigame
-      // this.scene.add('minigameTPScene')
-      // this.scene.switch('minigameTPScene', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers})
-      this.scene.sleep('BoardBg')
-      .sleep('BoardDice')
-      .sleep('BoardScene');
-      this.scene.run('minigameTPScene')
-    })
-  }
-
-  capitalizeFirst(str){
-    return str.charAt(0).toUpperCase() + str.slice(1)
+    // socket.on('minigameStarted', () => {
+    //   //make the current scene sleep + starts minigame
+    //   // this.scene.add('minigameTPScene')
+    //   // this.scene.switch('minigameTPScene', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers})
+    //   this.scene.sleep('BoardBg')
+    //   .sleep('BoardDice')
+    //   .sleep('BoardScene');
+    //   this.scene.run('minigameTPScene')
+    // })
   }
 
   buildMap (){
@@ -148,7 +149,8 @@ export default class BoardBg extends Phaser.Scene {
     const charExists = typeof this.charPosition[charName] !== 'undefined'
 
     const prevIdx = charExists? this.charPosition[charName].prevIndex : 0
-    console.log('CHAR', charName, 'PREV INDEX', prevIdx)
+    console.log('MoveCharacter function - CHAR', charName, 'PREV INDEX', prevIdx)
+
     //if user throws a dice larger than the spaces left on the board, the user wins
     if((prevIdx  + idx) >= (this.walkablePath.length -1)){
       console.log('YOU WON');
@@ -181,7 +183,7 @@ export default class BoardBg extends Phaser.Scene {
 
 
       return
-    }
+    } // end winner function
 
 
     //convert Cartesian coords to isometric ones
@@ -205,7 +207,7 @@ export default class BoardBg extends Phaser.Scene {
 
     // once prevIndex updated, add to distanceToEndObject
     this.distanceToEnd[charName] = this.walkablePath.length - movedChar.prevIndex
-    console.log(this.distanceToEnd)
+    console.log("distance to the end", this.distanceToEnd)
 
     this.charPosition[charName] = movedChar
     //update characters' previous location index by adding current index
@@ -214,6 +216,7 @@ export default class BoardBg extends Phaser.Scene {
     //after placing the character to new position, check to see if he lands on a coin
     //trigger minigame if on a coin
     if(charExists &&  this.walkablePath[this.charPosition[charName].prevIndex].length === 3){
+      console.log("stepped on a coin")
       socket.emit('startMinigame')
     }
   }
