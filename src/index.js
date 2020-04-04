@@ -71,15 +71,12 @@ class Game extends Phaser.Game {
   init() {}
 
   preload() {
-    this.load.audio('backgroundmusic',
-      ['../public/assets/audio/backgroundmusic.wav']
-    );
+    // this.load.audio('backgroundmusic', 'assets/audio/backgroundmusic.wav');
   }
 
   create() {
-    console.log("music")
-    let music = this.sound.add('backgroundmusic')
-    music.play();
+    // let music = this.sound.add('backgroundmusic')
+    // music.play();
   }
 
   update() {}

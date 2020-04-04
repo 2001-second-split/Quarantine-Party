@@ -38,9 +38,14 @@ export default class StartingScene extends Phaser.Scene {
     this.load.html('roomForm', 'assets/text/roomForm.html');
     this.load.image('pic', 'assets/backgrounds/introscene.png');
     this.load.image('picBg','assets/backgrounds/introBg.png');
+
+    this.load.audio('backgroundmusic', 'assets/audio/backgroundmusic.wav');
   }
 
   create () {
+
+    let music = this.sound.add('backgroundmusic')
+    music.play();
 
     let bg = this.add.image(0, 0, 'picBg');
     Align.scaleToGame(bg, 1)
