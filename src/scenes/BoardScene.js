@@ -28,7 +28,7 @@ export default class BoardScene extends Phaser.Scene {
 
     // }, this);
 
-    socket.on('minigameStarted', () => {
+    socket.on('minigameStarted', (coin) => {
       //make the current scene sleep + minigame wake
 
       // const mgTP = this.scene.get('minigameTPScene')
@@ -36,10 +36,14 @@ export default class BoardScene extends Phaser.Scene {
       console.log('MINIGAME STARTED for ')
       console.log('this.player', this.player)
       this.scene.sleep('BoardBg').sleep('BoardDice')
-      this.scene.run('minigameTPScene', {player: this.player, otherPlayers: this.otherPlayers})
-
-      //switch won't pass the minigame data fyi
-
+      if(coin === 'red'){
+        this.scene.run('minigameTPScene', {player: this.player, otherPlayers: this.otherPlayers})
+      } else {
+        this.scene.run('PuzzleScene', {player: this.player, otherPlayers: this.otherPlayers})
+    }
+      //current scene (BoardScene)
+      //could be switch or run
+      // commands that don't work: launch, start
     })
   }
 }

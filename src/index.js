@@ -32,6 +32,8 @@ import BoardDice from './scenes/BoardDice'
 
 import EndScene from './scenes/EndScene';
 
+import PuzzleScene from './scenes/PuzzleScene'
+
 //socket related
 import io from 'socket.io-client';
 export const socket = io("http://localhost:3000") // development
@@ -61,6 +63,7 @@ class Game extends Phaser.Game {
 
     this.scene.add('minigameTPScene', minigameTPScene)
 
+    this.scene.add('PuzzleScene', PuzzleScene)
     // Start the game with the mainscene
     this.scene.start('StartingScene')
   }
