@@ -32,7 +32,7 @@ import BoardDice from './scenes/BoardDice'
 
 import EndScene from './scenes/EndScene';
 
-import PuzzleScene from './scenes/Puzzle'
+import PuzzleScene from './scenes/PuzzleScene'
 
 //socket related
 import io from 'socket.io-client';
