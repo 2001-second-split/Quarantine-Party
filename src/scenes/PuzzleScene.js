@@ -10,17 +10,17 @@ export default class PuzzleScene extends Phaser.Scene {
 
   preload(){
     this.load.spritesheet("background", "assets/spriteSheets/kubrick.jpg",
-    {frameWidth: 200, frameHeight: 200});
+    {frameWidth: 250, frameHeight: 250});
     this.load.image("black", "assets/sprites/blackBlock.png")
   }
-
+//140 , 90
   create(){
     this.allowClick = true;
     this.blockGroup = this.add.group()
     let count = 0;
-    for (let row=0; row<4; row++){
-      for(let col=0; col<6; col++){
-        this.block = this.add.sprite(col*202 + 140, row*202 + 90, 'background').setFrame(count++)
+    for (let row=0; row<3; row++){
+      for(let col=0; col<4; col++){
+        this.block = this.add.sprite(col*252 + 300, row*252 + 150, 'background').setFrame(count++)
         this.block.origX = this.block.x
         this.block.origY = this.block.y
         this.blockGroup.add(this.block)
@@ -32,7 +32,8 @@ export default class PuzzleScene extends Phaser.Scene {
         this.selectBlock(block)
       })
     })
-    //this.blockGroup.getChildren().forEach(child => child.setXY = (100, 50))
+
+    // this.blockGroup.getChildren().forEach(child => child.setXY = (400, 100)
 
     this.endBlock = this.block;
     this.endBlock.setTexture("black")
