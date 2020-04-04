@@ -36,7 +36,7 @@ export default class BoardScene extends Phaser.Scene {
       console.log('MINIGAME STARTED for ')
       console.log('this.player', this.player)
       this.scene.sleep('BoardBg').sleep('BoardDice')
-      if(coin === 'red'){
+      if(coin === 'tp'){
         this.scene.run('minigameTPScene', {player: this.player, otherPlayers: this.otherPlayers})
       } else {
         this.scene.run('PuzzleScene', {player: this.player, otherPlayers: this.otherPlayers})

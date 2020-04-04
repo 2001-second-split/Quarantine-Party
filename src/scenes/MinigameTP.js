@@ -48,6 +48,8 @@ export default class minigameTPScene extends Phaser.Scene {
     this.load.image('platform', 'assets/minigameTP/platform.png');
     this.load.image('tp', 'assets/minigameTP/tp.png');
     this.load.image('bomb', 'assets/minigameTP/bomb.png');
+
+    this.load.audio('hit', 'assets/audio/hit.wav' )
   }
 
   createAnimations(name) {
@@ -86,6 +88,7 @@ export default class minigameTPScene extends Phaser.Scene {
     this.createAnimations(passedDataPlayer.name)
     this.player.name = passedDataPlayer.name;
 
+    this.hitSound = this.sound.add('hit')
     const otherPlayersArr = []
     // passedDataOtherPlayers.forEach(player => {
 
@@ -289,6 +292,7 @@ export default class minigameTPScene extends Phaser.Scene {
   }
 
   hitBomb (player, bomb) {
+    this.hitSound.play()
     this.bomb.destroy()
     this.physics.pause()
     player.setTint(0xff0000);
@@ -297,6 +301,7 @@ export default class minigameTPScene extends Phaser.Scene {
     this.instructions.destroy()
     this.add.text(350, 150, 'You caught the virus!', { fontSize: '24px', fill: '#FFF' })
     this.add.text(350, 200, 'Please wait for the others to finish playing.', { fontSize: '24px', fill: '#FFF' })
+
   }
 
 }
