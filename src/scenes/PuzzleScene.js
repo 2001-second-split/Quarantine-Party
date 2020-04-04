@@ -13,14 +13,13 @@ export default class PuzzleScene extends Phaser.Scene {
     {frameWidth: 250, frameHeight: 250});
     this.load.image("black", "assets/sprites/blackBlock.png")
   }
-//140 , 90
   create(){
     this.allowClick = true;
     this.blockGroup = this.add.group()
     let count = 0;
     for (let row=0; row<3; row++){
       for(let col=0; col<4; col++){
-        this.block = this.add.sprite(col*252 + 300, row*252 + 150, 'background').setFrame(count++)
+        this.block = this.add.sprite(col*252 + 300, row*252 + 120, 'background').setFrame(count++)
         this.block.origX = this.block.x
         this.block.origY = this.block.y
         this.blockGroup.add(this.block)
