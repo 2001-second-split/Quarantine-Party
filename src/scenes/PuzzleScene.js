@@ -122,5 +122,4 @@ export default class PuzzleScene extends Phaser.Scene {
       console.log('WIN')
     }
   }
-
 }

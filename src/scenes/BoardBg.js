@@ -9,11 +9,11 @@ export default class BoardBg extends Phaser.Scene {
     super('BoardBg');
     //define path that a user can traverse, add an aditional paramater for coins
     this.walkablePath = [
-      [0, 0], [0, 1], [0, 2], [0, 3, 'red'],
-      [0, 4], [0, 5], [1, 5], [2, 5, 'blue'],
+      [0, 0], [0, 1], [0, 2], [0, 3, 'tp'],
+      [0, 4], [0, 5], [1, 5], [2, 5, 'tp'],
       [2, 4], [2, 3], [2, 2], [3, 2],
-      [4, 2], [4, 1, 'red'], [5, 1], [6, 1],
-      [6, 2], [6, 3, 'blue'], [6, 4], [6, 5],
+      [4, 2], [4, 1, 'puzzle'], [5, 1], [6, 1],
+      [6, 2], [6, 3, 'puzzle'], [6, 4], [6, 5],
       [5, 5], [4, 5], [4, 6], [4, 7]
     ]
     // associate character names with corresponding tiles in tilemap
@@ -221,7 +221,8 @@ export default class BoardBg extends Phaser.Scene {
     //after placing the character to new position, check to see if he lands on a coin
     //trigger minigame if on a coin
     if(charExists &&  this.walkablePath[this.charPosition[charName].prevIndex].length === 3){
-      const coin = this.walkablePath[this.charPosition[charName].prevIndex][3]
+      const coin = this.walkablePath[this.charPosition[charName].prevIndex][2]
+      console.log('COIN', coin)
       console.log("stepped on a coin")
       socket.emit('startMinigame', coin)
     }
