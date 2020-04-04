@@ -214,6 +214,22 @@ io.on('connection', (socket)  => {
     socket.emit('minigameStarted', coin)
   })
 
+  //update characters in room when a new character is selected
+  socket.on('characterSelected', (char, room) => {
+    if (charactersInRoom.hasOwnProperty(room)){
+      charactersInRoom[room].push(char)
+    } else {
+      charactersInRoom[room] = [char]
+    }
+  })
+
+  //if there are already chosen characters in room, disable them from new players' options
+  socket.on('disableSelectedChars', room => {
+    if (charactersInRoom.hasOwnProperty(room)){
+      const selectedChars = charactersInRoom[room]
+      socket.emit('disableSelectedChars', selectedChars, room)
+    }
+  })
 
   /*     MINI GAME SOCKETS     */
 
