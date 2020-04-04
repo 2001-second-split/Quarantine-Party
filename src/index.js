@@ -36,8 +36,8 @@ import PuzzleScene from './scenes/PuzzleScene'
 
 //socket related
 import io from 'socket.io-client';
-export const socket = io("http://localhost:3000") // development
-// export const socket = io(); // production (heroku)
+// export const socket = io("http://localhost:3000") // development
+export const socket = io(); // production (heroku)
 
 import config from './config/config'
 
@@ -62,8 +62,8 @@ class Game extends Phaser.Game {
     this.scene.add('EndScene', EndScene)
 
     this.scene.add('minigameTPScene', minigameTPScene)
-
     this.scene.add('PuzzleScene', PuzzleScene)
+
     // Start the game with the mainscene
     this.scene.start('StartingScene')
   }
