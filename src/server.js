@@ -208,10 +208,10 @@ io.on('connection', (socket)  => {
     socket.in(room).emit('changeQueuePrompt', currentPlayer)
   })
 
-  socket.on('startMinigame', () => {
+  socket.on('startMinigame', (coin) => {
     console.log("src/server - startminigame ")
     // io.in(players[socket.id].roomId).emit('minigameStarted')
-    socket.emit('minigameStarted')
+    socket.emit('minigameStarted', coin)
   })
 
 
@@ -251,6 +251,18 @@ io.on('connection', (socket)  => {
 
   /*   END MINI GAME SOCKETS   */
 
+
+  /*   PUZZLE MINIGAME SOCKETS   */
+
+  socket.on('wonPuzzle', () => {
+    const room = players[socket.id].roomId
+    console.log('WONPUZZLE')
+    io.in(room).emit('fromPuzzleToBoard')
+    socket.emit('wonMinigame')
+  })
+
+
+  /*   END PUZZLE MINIGAME SOCKETS   */
 
 
   /*   NOT USED SOCKETS   */

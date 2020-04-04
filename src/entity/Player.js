@@ -16,7 +16,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.facingLeft = false;
   }
 
-  updateMovement(cursors) {
+  updateMovement(cursors, walkSound) {
     // Move left
     if (cursors.left.isDown) {
       if(!this.facingLeft){
@@ -24,7 +24,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.facingLeft = true;
       }
       this.setVelocityX(-360)
-      if(this.body.touching.down){
+      if(this.body.onFloor()){
+        walkSound.play()
         this.anims.play("run", true)
       }
     }
@@ -35,7 +36,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.facingLeft = false
       }
       this.setVelocityX(360)
-      if(this.body.touching.down){
+      if(this.body.onFloor()){
+        walkSound.play()
         this.anims.play('run', true)
       }
     }
@@ -45,7 +47,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.facingLeft = false
       }
       this.setVelocityY(-180)
-      if(this.body.touching.down){
+      if(this.body.onFloor()){
         this.anims.play('run', true)
       }
     }
@@ -56,22 +58,25 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  updateInAir(){
-    if(!this.body.touching.down){
-      this.play("jump")
-    }
-  }
-  updateJump(cursors) {
-    if (cursors.up.isDown && this.body.touching.down) {
-      this.setVelocityY(-800);
+  updateJump(cursors, jumpSound) {
+    if (cursors.up.isDown && this.body.onFloor()) {
+      this.setVelocityY(-200);
+      jumpSound.play();
     }
   }
 
+  updateInAir() {
+    if (!this.body.touching.down) {
+      this.play('jump')
+    }
+  }
+
+
   // Check which controller button is being pushed and execute movement & animation
-  update(cursors) {
+  update(cursors, jumpSound, walkSound) {
     // << INSERT CODE HERE >>
-    this.updateMovement(cursors);
-    this.updateJump(cursors)
+    this.updateMovement(cursors, walkSound);
+    this.updateJump(cursors, jumpSound)
     this.updateInAir();
 
     const x = this.x;
