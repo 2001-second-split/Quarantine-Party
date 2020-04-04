@@ -1,5 +1,3 @@
-const gameWidth = 1280;
-const gameHeight = 800;
 import { socket } from "../index";
 
 
@@ -9,7 +7,7 @@ export default class PuzzleScene extends Phaser.Scene {
   }
 
   preload(){
-    this.load.spritesheet("background", "assets/spriteSheets/kubrick.jpg",
+    this.load.spritesheet("background", "assets/spriteSheets/puzzle.png",
     {frameWidth: 250, frameHeight: 250});
     this.load.image("black", "assets/sprites/blackBlock.png")
   }
@@ -17,25 +15,27 @@ export default class PuzzleScene extends Phaser.Scene {
     this.allowClick = true;
     this.blockGroup = this.add.group()
     let count = 0;
+    //Divide the background image into a 3x4 grid
     for (let row=0; row<3; row++){
       for(let col=0; col<4; col++){
-        this.block = this.add.sprite(col*252 + 300, row*252 + 120, 'background').setFrame(count++)
+        this.block = this.add.sprite(col*252 + 250, row*252 + 150, 'background').setFrame(count++)
+        //keep track of original locations of pieces to check for win condition
         this.block.origX = this.block.x
         this.block.origY = this.block.y
         this.blockGroup.add(this.block)
       }
     }
+    //make each block interactive
     this.blockGroup.getChildren().forEach(block => {
       block.setInteractive()
       block.on('pointerdown', () => {
         this.selectBlock(block)
       })
     })
-
-    // this.blockGroup.getChildren().forEach(child => child.setXY = (400, 100)
-
+    //make the last block black, to enable block movement
     this.endBlock = this.block;
     this.endBlock.setTexture("black")
+    //scramble the blocks to set up the puzzle
     this.scrambleBlocks()
 
     //sockets
@@ -57,12 +57,12 @@ export default class PuzzleScene extends Phaser.Scene {
     }
     const diffX = Math.abs(this.endBlock.x - block.x)
     const diffY = Math.abs(this.endBlock.y - block.y)
-    // if(diffX > 82 || diffY > 82){
-    //   return;
-    // }
-    // if(diffX === 82 && diffY === 82){
-    //   return;
-    // }
+    if(diffX > 252 || diffY > 252){
+      return;
+    }
+    if(diffX === 252 && diffY === 252){
+      return;
+    }
     this.allowClick = false
     block.setDepth(1)
     const tempX = block.x;
