@@ -16,7 +16,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.facingLeft = false;
   }
 
-  updateMovement(cursors, walkSound) {
+  updateMovement(cursors) {
     // Move left
     if (cursors.left.isDown) {
       if(!this.facingLeft){
@@ -25,7 +25,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       }
       this.setVelocityX(-360)
       if(this.body.onFloor()){
-        walkSound.play()
         this.anims.play("run", true)
       }
     }
@@ -37,7 +36,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       }
       this.setVelocityX(360)
       if(this.body.onFloor()){
-        walkSound.play()
         this.anims.play('run', true)
       }
     }
@@ -73,9 +71,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
 
   // Check which controller button is being pushed and execute movement & animation
-  update(cursors, jumpSound, walkSound) {
+  update(cursors, jumpSound) {
     // << INSERT CODE HERE >>
-    this.updateMovement(cursors, walkSound);
+    this.updateMovement(cursors);
     this.updateJump(cursors, jumpSound)
     this.updateInAir();
 

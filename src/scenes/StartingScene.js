@@ -45,7 +45,7 @@ export default class StartingScene extends Phaser.Scene {
   create () {
 
     let music = this.sound.add('backgroundmusic')
-    music.play();
+    //music.play();
 
     let bg = this.add.image(0, 0, 'picBg');
     Align.scaleToGame(bg, 1)
@@ -126,6 +126,7 @@ export default class StartingScene extends Phaser.Scene {
 
     this.tweens.add({
         targets: domElement,
+        x: 200,
         y: 350,
         duration: 3000,
         ease: 'Power3'

@@ -221,7 +221,8 @@ export default class BoardBg extends Phaser.Scene {
     //after placing the character to new position, check to see if he lands on a coin
     //trigger minigame if on a coin
     if(charExists &&  this.walkablePath[this.charPosition[charName].prevIndex].length === 3){
-      const coin = this.walkablePath[this.charPosition[charName].prevIndex][3]
+      const coin = this.walkablePath[this.charPosition[charName].prevIndex][2]
+      console.log('COIN', coin)
       console.log("stepped on a coin")
       socket.emit('startMinigame', coin)
     }
