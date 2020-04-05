@@ -9,7 +9,6 @@ let players = {};
 let rooms = {};
 let charactersInRoom = {};
 let queue = {};
-let playerHitByBombsCount = 0;
 
 const roomMaxPlayers = 4;
 
@@ -17,7 +16,6 @@ app.use(express.static(path.join(__dirname + '/public')));
 
 // sends index.html
 app.get('/', (req, res) => {
-  console.log('INSIDE GET', path.join(__dirname, '../public/index.html'))
   res.sendFile(path.join(__dirname, '../public/index.html'))
 })
 
@@ -39,7 +37,6 @@ io.on('connection', (socket)  => {
   /*                                   */
 
   socket.on('subscribe', (room, spriteSkin, roomCreator) => {
-    console.log("src/server.js subscribe")
 
     if (rooms[room] === undefined && roomCreator) {
       rooms[room] = 0;
@@ -89,7 +86,6 @@ io.on('connection', (socket)  => {
 
   //update characters in room when a new character is selected
   socket.on('characterSelected', (char, room) => {
-    console.log("src/server.js characterSelected")
     if (charactersInRoom.hasOwnProperty(room)){
       charactersInRoom[room].push(char)
     } else {
@@ -100,8 +96,6 @@ io.on('connection', (socket)  => {
   //if there are already chosen characters in room,
   // disable them from new players' options
   socket.on('disableSelectedChars', room => {
-    console.log("src/server.js disableSelectedChars")
-
     if (charactersInRoom.hasOwnProperty(room)){
       const selectedChars = charactersInRoom[room]
       socket.emit('disableSelectedChars', selectedChars, room)
@@ -140,7 +134,6 @@ io.on('connection', (socket)  => {
 
   //listen for request to transition to board
   socket.on('transitionToBoard', () => {
-    console.log("src/server - transitionToBoard ")
     const room = players[socket.id].roomId;
     io.in(room).emit('transitionedToBoard')
   })
@@ -149,18 +142,15 @@ io.on('connection', (socket)  => {
 
   // get current players when you first enter the room
   socket.on('currentPlayersInRoom', () => {
-    console.log("src/server - currentPlayersInRoom")
-    // console.log("players", players)
-    // console.log("socketId", socket.id)
 
     let playersInRoom = {};
     const room = players[socket.id].roomId;
+
     Object.keys(players).forEach(id => {
       if (players[id].roomId === room) {
         playersInRoom[id] = players[id];
       }
     });
-    // console.log("playersInRoom", playersInRoom)
 
     socket.emit('currentPlayersInRoom', playersInRoom, room, queue[room]);
   })
@@ -170,7 +160,6 @@ io.on('connection', (socket)  => {
 
   // when a player moves, update the player data
   socket.on('playerMovement', (movementData) => {
-    // console.log("src/server - playerMovement ")
     players[socket.id].x = movementData.x;
     players[socket.id].y = movementData.y;
 
@@ -183,9 +172,7 @@ io.on('connection', (socket)  => {
 
   //when a player rolls a dice, update their position on self/others' board, shift the queue & update dice for other players
   socket.on('diceRoll', (rolledNum, charName) => {
-    console.log("src/server - diceRoll ")
     const room = players[socket.id].roomId
-    //socket.emit('moveSelfOnBoard', rolledNum);
     io.in(room).emit('moveCharOnBoard', rolledNum, charName)
     io.in(room).emit('unshiftQueue')
     io.to(room).emit('updateDice', rolledNum)
@@ -195,41 +182,20 @@ io.on('connection', (socket)  => {
 
   //when BoardBg first initiates, place the first player in line to tile 0 on all players' boards
   socket.on('placeOnBoard', (rolledNum, charName) => {
-    console.log("src/server - placeOnBoard by", socket.id)
     const room = players[socket.id].roomId
-    // io.in(room).emit('placedOnBoard', rolledNum, charName)
     socket.emit('placedOnBoard', rolledNum, charName)
   })
 
   //update the queue in boardbg scene
   socket.on('changeQueuePrompt', currentPlayer => {
-    console.log("src/server - queuePrompt ")
     const room = players[socket.id].roomId
     socket.in(room).emit('changeQueuePrompt', currentPlayer)
   })
 
   socket.on('startMinigame', (coin) => {
-    console.log("src/server - startminigame ")
-    // io.in(players[socket.id].roomId).emit('minigameStarted')
     socket.emit('minigameStarted', coin)
   })
 
-  //update characters in room when a new character is selected
-  socket.on('characterSelected', (char, room) => {
-    if (charactersInRoom.hasOwnProperty(room)){
-      charactersInRoom[room].push(char)
-    } else {
-      charactersInRoom[room] = [char]
-    }
-  })
-
-  //if there are already chosen characters in room, disable them from new players' options
-  socket.on('disableSelectedChars', room => {
-    if (charactersInRoom.hasOwnProperty(room)){
-      const selectedChars = charactersInRoom[room]
-      socket.emit('disableSelectedChars', selectedChars, room)
-    }
-  })
 
   /*     MINI GAME SOCKETS     */
 
@@ -239,26 +205,26 @@ io.on('connection', (socket)  => {
   //   socket.emit('currentPlayersMG', players, room, queue[room]);
   // })
 
+  //minigame TP variables
+  let playerHitByBombsCount = 0;
+
+  socket.on('resetTPgame', () => {
+    playerHitByBombsCount = 0;
+  })
+
   socket.on('playerHit', (player) => {
-    console.log("src/server - playerHit ow ")
-    console.log('playerHit', playerHitByBombsCount)
     ++playerHitByBombsCount;
-    console.log('bodyCount incremented', playerHitByBombsCount)
     const room = players[socket.id].roomId
-    console.log("room in playerHit", room)
     io.in(room).emit('updatedPlayersHit', playerHitByBombsCount, roomMaxPlayers, player);
   })
 
   socket.on('gameOver', () => {
     //tell everyone's client to return to main game
-    console.log("server gameOver")
     const room = players[socket.id].roomId
     io.in(room).emit('gameOverClient');
   })
 
   socket.on('scoredTP', (playerWhoScored, score) => {
-    console.log("src/server - scoredTP yaaas")
-
     score += 10;
     const room = players[socket.id].roomId;
     io.in(room).emit('updateScores', playerWhoScored, score);
@@ -272,7 +238,6 @@ io.on('connection', (socket)  => {
 
   socket.on('wonPuzzle', () => {
     const room = players[socket.id].roomId
-    console.log('WONPUZZLE')
     io.in(room).emit('fromPuzzleToBoard')
     socket.emit('wonMinigame')
   })
@@ -285,8 +250,6 @@ io.on('connection', (socket)  => {
 
   //this is the old "currentPlayers"
   socket.on('allPlayersConnected', () => {
-    // console.log("src/server - currentPlayers")
-    // console.log("players", players)
     const room = players[socket.id].roomId;
     socket.emit('allPlayers', players, room, queue[room]);
   })
