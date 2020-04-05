@@ -11,8 +11,8 @@ import BoardDice from './BoardDice'
 
 import EndScene from './EndScene'
 
+//mini game scenes
 import minigameTPScene from './MinigameTP';
-
 import PuzzleScene from './PuzzleScene'
 
 export const scenes = [StartingScene, WaitBg, WaitFg, WaitScene, BoardBg, BoardScene, BoardDice, EndScene, minigameTPScene, PuzzleScene]
