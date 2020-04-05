@@ -158,7 +158,9 @@ export default class minigameTPScene extends Phaser.Scene {
         // game over text
         this.add.text(250, 150, 'Game Over!', { fontSize: '32px', fill: '#FFF' })
         count = 0;
+
         socket.emit("gameOver")
+        socket.emit('resetTPgame')
         return;
       }
     });
