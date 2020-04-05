@@ -9,7 +9,6 @@ let players = {};
 let rooms = {};
 let charactersInRoom = {};
 let queue = {};
-let playerHitByBombsCount = 0;
 let puzzle = {};
 
 const roomMaxPlayers = 4;
@@ -210,6 +209,13 @@ io.on('connection', (socket)  => {
 
 
   /*     MINI GAME SOCKETS     */
+
+  //minigame TP variables
+  let playerHitByBombsCount = 0;
+
+  socket.on('resetTPgame', () => {
+    playerHitByBombsCount = 0;
+  })
 
   socket.on('playerHit', (player) => {
     console.log("src/server - playerHit ow ")
