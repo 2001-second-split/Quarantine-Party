@@ -12,11 +12,11 @@ import BoardDice from './BoardDice'
 import EndScene from './EndScene'
 
 //mini game scenes
-import minigameTPScene from './MinigameTP';
+import TPScene from './TPScene';
 import PuzzleScene from './PuzzleScene'
 
-export const scenes = [StartingScene, WaitBg, WaitFg, WaitScene, BoardBg, BoardScene, BoardDice, EndScene, minigameTPScene, PuzzleScene]
+export const scenes = [StartingScene, WaitBg, WaitFg, WaitScene, BoardBg, BoardScene, BoardDice, EndScene, TPScene, PuzzleScene]
 
-export const keys = ['StartingScene','WaitBg','WaitFg', 'WaitScene','BoardBg','BoardScene','BoardDice', 'EndScene','minigameTPScene','PuzzleScene']
+export const keys = ['StartingScene','WaitBg','WaitFg', 'WaitScene','BoardBg','BoardScene','BoardDice', 'EndScene','TPScene','PuzzleScene']
 
 

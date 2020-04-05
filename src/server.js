@@ -202,7 +202,7 @@ io.on('connection', (socket)  => {
   })
 
 
-  /*     MINI GAME SOCKETS     */
+  /*    TP MINI GAME SOCKETS     */
 
   //minigame TP variables
 
@@ -229,7 +229,7 @@ io.on('connection', (socket)  => {
     io.in(room).emit('updateScores', playerWhoScored, score);
   })
 
-  /*   END MINI GAME SOCKETS   */
+  /*   END TP MINIGAME SOCKETS   */
 
 
   /*   PUZZLE MINIGAME SOCKETS   */

@@ -24,9 +24,9 @@ export default class BoardScene extends Phaser.Scene {
         player: this.player,
         otherPlayers: this.otherPlayers
       }
-      //trigger minigameTPScene or PuzzleScene based on the coin landed
+      //trigger TPScene or PuzzleScene based on the coin landed
       if (coin === 'tp'){
-        this.scene.run('minigameTPScene', dataForMiniGames)
+        this.scene.run('TPScene', dataForMiniGames)
       }
       if (coin === 'puzzle'){
         this.scene.run('PuzzleScene', dataForMiniGames)

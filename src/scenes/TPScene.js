@@ -2,9 +2,9 @@ import { socket } from "../index";
 // import Align from "../entity/Align"; //not being used here?
 import Player from '../entity/Player'
 
-export default class minigameTPScene extends Phaser.Scene {
+export default class TPScene extends Phaser.Scene {
   constructor() {
-    super('minigameTPScene');
+    super('TPScene');
 
     this.gameOver = false;
 
@@ -136,7 +136,7 @@ export default class minigameTPScene extends Phaser.Scene {
     });
 
     socket.on('gameOverClient', () => {
-      this.scene.stop('minigameTPScene');
+      this.scene.stop('TPScene');
       this.scene.wake('BoardBg');
       this.scene.wake('BoardDice')
       this.scene.wake('BoardScene')
@@ -190,10 +190,14 @@ export default class minigameTPScene extends Phaser.Scene {
     this.bombs = this.physics.add.group();
 
     //  The score
-    this.score1 = this.add.text(16, 16, `Ayse's Score: ${this.clientScore['ayse']}`, { fontSize: '24px', fill: '#FFF' });
-    this.score2 = this.add.text(16, 36, `Patty's Score: ${this.clientScore['patty']}`, { fontSize: '24px', fill: '#FFF' });
-    this.score3 = this.add.text(16, 56, `Tiffany's's Score: ${this.clientScore['tiffany']}`, { fontSize: '24px', fill: '#FFF' });
-    this.score4 = this.add.text(16, 76, `Stephanie's's Score: ${this.clientScore['stephanie']}`, { fontSize: '24px', fill: '#FFF' });
+    const scoreStyle = {
+      fontSize: '24px',
+      fill: '#FFF' }
+                  this.add.text(16, 16, 'Character   Score', scoreStyle )
+    this.score1 = this.add.text(16, 36, `     Ayse :  ${this.clientScore['ayse']}`, scoreStyle);
+    this.score2 = this.add.text(16, 56, `    Patty :  ${this.clientScore['patty']}`, scoreStyle);
+    this.score3 = this.add.text(16, 76, `  Tiffany :  ${this.clientScore['tiffany']}`, scoreStyle);
+    this.score4 = this.add.text(16, 96, `Stephanie :  ${this.clientScore['stephanie']}`, scoreStyle);
 
     // physics things
     this.physics.add.collider(this.player, this.platforms);
