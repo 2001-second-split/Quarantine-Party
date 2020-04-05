@@ -8,28 +8,25 @@ export default class WaitBg extends Phaser.Scene {
   }
 
   preload() {
-    // Preload Sprites
-    // placeholder text
+    // Preload assets
     this.load.spritesheet("startBtn", "assets/sprites/startbtn.png", {
       frameWidth: 500,
       frameHeight: 300,
     })
-    // this.load.image('waitingRoomBanner', 'assets/backgrounds/waitingRoomBanner.png')
-
+    this.load.image('pic', 'assets/backgrounds/introscene.png');
   }
 
   create(data) {
-
     //data received from StartingScene --> WaitScene --> WaitBg
     const roomCreator = data.roomCreator;
     const roomId = data.roomId
 
     // Create Sprites
     let waitingBg = this.add.image(0, 0, 'pic');
-    // this.add.image(380,80,'waitingRoomBanner').setScale(5)
     Align.scaleToGame(waitingBg, 1)
     Align.center(waitingBg)
 
+    //add a header with the unique room id
     this.header = this.add.text(400, 16, `Room # ${roomId}`, { fontFamily: 'Verdana', fontSize: '28px', fill: '#713E5A' });
 
     //display different loading messages for game creator vs joiners
@@ -41,7 +38,6 @@ export default class WaitBg extends Phaser.Scene {
     //wait for all four players to join
     socket.on('playersReady', () => {
       //if the current player is the room creator enable start button
-
       if (roomCreator) {
         //create a "start button" for room creator
         this.loading.setActive(false).setVisible(false);
@@ -51,13 +47,10 @@ export default class WaitBg extends Phaser.Scene {
         startButton.setInteractive();
 
         startButton.on('pointerover', function(){
-          console.log('OVER')
-          console.log('THIS', this)
           this.setFrame(1)
         })
 
         startButton.on('pointerout', function(){
-          console.log('OUT')
           this.setFrame(0)
         })
         //when mouse is released, emit transitionToBoard & listen for it in WaitFg (since we want to pass the queue info)

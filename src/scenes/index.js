@@ -13,7 +13,10 @@ import BoardDice from './BoardDice'
 
 import EndScene from './EndScene'
 
+import PuzzleScene from './PuzzleScene'
 
-let scenes = [ WaitScene]
+export const scenes = [StartingScene, WaitBg, WaitFg, WaitScene, BoardBg, BoardScene, BoardDice, EndScene, minigameTPScene, PuzzleScene]
 
-export default scenes;
+export const keys = ['StartingScene','WaitBg','WaitFg', 'WaitScene','BoardBg','BoardScene','BoardDice', 'EndScene','minigameTPScene','PuzzleScene']
+
+

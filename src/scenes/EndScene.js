@@ -16,37 +16,17 @@ export default class EndScene extends Phaser.Scene {
 
   preload() {
     // LOAD SPRITES
-    this.load.spritesheet("ayse", "assets/spriteSheets/ayse-sheet.png", {
-      frameWidth: 300,
-      frameHeight: 300,
-      endFrame: 8
-    });
-    this.load.spritesheet("stephanie", "assets/spriteSheets/stephanie-sheet.png",{
+    const spriteKeys = ["ayse", "stephanie", "tiffany", "patty"]
+    spriteKeys.forEach(key => {
+      this.load.spritesheet(key, `assets/spriteSheets/${key}-sheet.png`, {
         frameWidth: 300,
         frameHeight: 300,
         endFrame: 8
-      }
-    );
-    this.load.spritesheet("tiffany", "assets/spriteSheets/tiffany-sheet.png", {
-      frameWidth: 300,
-      frameHeight: 300,
-      endFrame: 8
-    });
-    this.load.spritesheet("patty", "assets/spriteSheets/patty-sheet.png", {
-      frameWidth: 300,
-      frameHeight: 300,
-      endFrame: 8
-    });
-
-    // LOAD FG athings
-    // this.load.image('podium', 'assets/sprites/podium.png')
+      });
+    })
 
     // LOAD BACKGROUND IMAGE
     this.load.image('background', 'assets/backgrounds/sky.png');
-  }
-
-  createCelebrations() {
-    //add jumping anims so person in first place can look like they're celebrating?
   }
 
   create() {
@@ -72,27 +52,11 @@ export default class EndScene extends Phaser.Scene {
     // Create celebration music
 
     // Play Again Button?
-    const playAgainButton = this.add.text(50, 250, 'PLAY AGAIN?', { fontSize: '32px', fill: '#FFF' });
+    const playAgainButton = this.add.text(50, 250, 'PLAY AGAIN?', { fontSize: '32px', fill: '#000000' });
     playAgainButton.setInteractive();
 
     // if Play Again is hit, restart game from beginning
     playAgainButton.on('pointerup', () => {
-      console.log('playagain pressed')
-
-      // stopping all scenes for now
-      // refactor tasks: stop scenes as they're not necessary
-      // this.scene.stop('WaitBg')
-      // this.scene.stop('WaitFg')
-      // this.scene.stop('WaitScene')
-
-      // this.scene.stop('BoardBg')
-      // this.scene.stop('BoardScene')
-      // this.scene.stop('BoardDice')
-
-      // this.scene.stop('EndScene')
-
-      // this.scene.start('StartingScene');
-
     const gameUrl = 'https://super-quarantine-party.herokuapp.com/'
     const s = window.open(gameUrl, '_blank');
     if (s && s.focus){
@@ -101,8 +65,5 @@ export default class EndScene extends Phaser.Scene {
       window.location.href = gameUrl
     }
     })
-  }
-
-  update() {
   }
 }
