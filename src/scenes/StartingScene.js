@@ -1,7 +1,5 @@
 import 'phaser'
-// import io from 'socket.io-client';
 import {socket} from '../index'
-// import config from '../config/config'
 import Align from '../entity/Align'
 
 export default class StartingScene extends Phaser.Scene {
@@ -23,8 +21,10 @@ export default class StartingScene extends Phaser.Scene {
 
     //load html element that will prompt user for input
     this.load.html('roomForm', 'assets/text/roomForm.html');
+
     //load background image
     this.load.image('picBg','assets/backgrounds/introBg.png');
+
     //load bg audio
     this.load.audio('backgroundmusic', 'assets/audio/backgroundmusic.wav');
   }
@@ -40,10 +40,9 @@ export default class StartingScene extends Phaser.Scene {
     Align.center(bg)
 
     this.room = ''
-    //data to be passed to WaitBG for button purposes
-    let data = {}
+    let data = {} //data to be passed to WaitBG for button purposes
 
-    //sockets to receive from server
+    /*      SOCKETS       */
     socket.on('createdOrJoinedRoom', () => {
       //Take user to the waiting scene
       this.scene.start('WaitScene', data)
@@ -102,7 +101,6 @@ export default class StartingScene extends Phaser.Scene {
           domElement.removeListener('click'); //  Turn off the click events
           //reset the room
           this.room = ''
-
         } else {
           alert('Please select valid room and/or character')
         }
