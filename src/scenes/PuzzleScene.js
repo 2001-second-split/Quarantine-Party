@@ -39,7 +39,7 @@ export default class PuzzleScene extends Phaser.Scene {
     this.scrambleBlocks()
 
     //listen for keyboard event and trigger socket
-    var keyObj = scene.input.keyboard.addKey('Q');  // Get key object
+    const keyObj = this.input.keyboard.addKey('Q');  // Get key object
     keyObj.on('down', () => {
       socket.emit('quitPuzzle')
     })

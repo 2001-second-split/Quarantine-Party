@@ -251,7 +251,7 @@ io.on('connection', (socket)  => {
     const room = players[socket.id].roomId;
     if (puzzle[room] === 2){
       puzzle[room] = 0
-      socket.emit('fromPuzzleToBoard')
+      io.in(room).emit('fromPuzzleToBoard')
     } else {
       if(typeof puzzle[room] === 'undefined'){
         puzzle[room] = 1
