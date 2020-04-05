@@ -38,17 +38,21 @@ export default class EndScene extends Phaser.Scene {
     Align.center(bg)
 
     // Static Text for now
-    const header = this.add.text(250, 50, `${this.first.toUpperCase()} WINS!`, { fontSize: '32px', fill: '#000' });
-    const credits = this.add.text(50, 750, 'Game Created by 2001-GH: Ayse, Patty, Tiffany, Stephanie', {fontSize: '32px', fill: '#000'})
+    const style = {
+      fontSize: '32px',
+      fill: '#000' }
+
+    const header = this.add.text(300, 50, `${this.first.toUpperCase()} WINS!`, style);
+    const credits = this.add.text(50, 750, 'Game Created by 2001-GH: Ayse, Patty, Tiffany, Stephanie', style)
 
     // Display players based on how well they placed
-    this.add.sprite(400,250, this.first).setScale(1)
-    this.add.sprite(200,450, this.second).setScale(0.5)
-    this.add.sprite(400,450, this.third).setScale(0.5)
-    this.add.sprite(600,450, this.fourth).setScale(0.5)
+    this.add.sprite(400,250, this.first).setScale(1)  // make first place bigger
+    this.add.sprite(200,500, this.second).setScale(0.5)
+    this.add.sprite(400,500, this.third).setScale(0.5)
+    this.add.sprite(600,500, this.fourth).setScale(0.5)
 
     // Play Again Button?
-    const playAgainButton = this.add.text(50, 250, 'PLAY AGAIN?', { fontSize: '32px', fill: '#000000' });
+    const playAgainButton = this.add.text(50, 250, 'PLAY AGAIN?', style);
     playAgainButton.setInteractive();
 
     // if Play Again is hit, restart game from beginning
