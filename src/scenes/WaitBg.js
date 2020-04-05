@@ -34,12 +34,11 @@ export default class WaitBg extends Phaser.Scene {
       ? this.add.text(16, 300, 'Waiting for other players to join...', { fontFamily: 'Verdana', fontSize: 64, fill: '#DCEDFF', stroke: '#000000', strokeThickness: 6})
       : this.add.text(16, 300, 'Waiting for Room Creator to start the game...', { fontFamily: 'Verdana', fontSize: 48, fill: '#DCEDFF', stroke: '#000000', strokeThickness: 6});
 
-
     //wait for all four players to join
     socket.on('playersReady', () => {
-      //if the current player is the room creator enable start button
+
+      //if the current player is the room creator enable "start" button
       if (roomCreator) {
-        //create a "start button" for room creator
         this.loading.setActive(false).setVisible(false);
         let startButton = this.add.sprite(1100, 70, 'startBtn').setScale(0.35)
 
@@ -53,6 +52,7 @@ export default class WaitBg extends Phaser.Scene {
         startButton.on('pointerout', function(){
           this.setFrame(0)
         })
+
         //when mouse is released, emit transitionToBoard & listen for it in WaitFg (since we want to pass the queue info)
         startButton.on('pointerup', function(){
           this.setFrame(0)

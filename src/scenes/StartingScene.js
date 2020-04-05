@@ -26,12 +26,14 @@ export default class StartingScene extends Phaser.Scene {
     //load background image
     this.load.image('picBg','assets/backgrounds/introBg.png');
     //load bg audio
-    //this.load.audio('backgroundmusic', 'assets/audio/backgroundmusic.wav');
+    this.load.audio('backgroundmusic', 'assets/audio/backgroundmusic.wav');
   }
 
   create () {
-    //let music = this.sound.add('backgroundmusic')
-    //music.play();
+    let music = this.sound.add('backgroundmusic')
+    music.play();
+    music.setVolume(0.25);
+    music.setLoop(true)
 
     let bg = this.add.image(0, 0, 'picBg');
     Align.scaleToGame(bg, 1)
@@ -116,7 +118,6 @@ export default class StartingScene extends Phaser.Scene {
         ease: 'Power3'
     });
   }
-
 
   disableCharsCB(evt){
     this.room = evt.target.value

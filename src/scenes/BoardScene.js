@@ -1,6 +1,5 @@
 import 'phaser'
 import { socket } from "../index";
-// import minigameTPScene from './MinigameTP';
 
 export default class BoardScene extends Phaser.Scene {
   constructor() {
@@ -17,7 +16,6 @@ export default class BoardScene extends Phaser.Scene {
     // << LOAD BACKGROUND AND FOREGROUND SCENES IN PARALLEL HERE >>
     this.scene.launch('BoardBg', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers});
     this.scene.launch('BoardDice', {queue: this.queue, player: this.player});
-
 
     socket.on('minigameStarted', (coin) => {
       //make the current scene sleep + minigame wake

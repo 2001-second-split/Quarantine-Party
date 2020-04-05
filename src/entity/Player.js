@@ -1,15 +1,13 @@
 import 'phaser';
 import {socket} from '../index'
-//let cursors;
+
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, spriteKey) {
     super(scene, x, y, spriteKey);
 
     // << INITIALIZE PLAYER ATTRIBUTES HERE >>
-    console.log('IM A PLAYER', this)
     this.scene = scene;
     this.scene.add.existing(this);
-
     this.scene.physics.world.enable(this);
 
     //Is the player facing left?
@@ -39,12 +37,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.anims.play('run', true)
       }
     }
+    // Jump
     else if (cursors.up.isDown) {
-      if(this.facingLeft){
-        this.flipX = !this.flipX
-        this.facingLeft = false
-      }
-      this.setVelocityY(-180)
+      this.setVelocityY(-270)
       if(this.body.onFloor()){
         this.anims.play('run', true)
       }
@@ -68,7 +63,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.play('jump')
     }
   }
-
 
   // Check which controller button is being pushed and execute movement & animation
   update(cursors, jumpSound) {

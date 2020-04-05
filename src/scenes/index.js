@@ -1,5 +1,3 @@
-import minigameTPScene from './MinigameTP';
-
 //main game scenes
 import StartingScene from './StartingScene'
 
@@ -12,6 +10,8 @@ import BoardBg from './BoardBg'
 import BoardDice from './BoardDice'
 
 import EndScene from './EndScene'
+
+import minigameTPScene from './MinigameTP';
 
 import PuzzleScene from './PuzzleScene'
 

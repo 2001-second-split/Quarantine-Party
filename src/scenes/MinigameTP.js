@@ -1,5 +1,5 @@
 import { socket } from "../index";
-import Align from "../entity/Align";
+// import Align from "../entity/Align"; //not being used here?
 import Player from '../entity/Player'
 
 export default class minigameTPScene extends Phaser.Scene {
@@ -14,11 +14,11 @@ export default class minigameTPScene extends Phaser.Scene {
       stephanie: 0,
       tiffany: 0,
     }
+
     this.updateScore = false;
 
     this.collectTP = this.collectTP.bind(this);
     this.hitBomb = this.hitBomb.bind(this);
-
   }
 
   preload() {
@@ -74,19 +74,16 @@ export default class minigameTPScene extends Phaser.Scene {
     this.createAnimations(passedDataPlayer.name)
     this.player.name = passedDataPlayer.name;
 
-
     const otherPlayersArr = []
-
-
 
     /*     DISPLAY OTHER PLAYER SPRITES     */
 
     // WE SHOULD TRY TO REFACTOR THIS INTO A FOR EACH
     // REASON: IF WE ARE TESTING WITH LESS THAN 4 PEOPLE, WE DON'T HAVE TO REMEMBER TO COMMENT OUT A PLAYER
 
-    passedDataOtherPlayers.forEach( (playerData) => {
-      // refactor code here if we get to it
-    })
+    // passedDataOtherPlayers.forEach( (playerData) => {
+    //   // refactor code here if we get to it
+    // })
 
     const otherPlayer0 = new Player(this, 900, 50, passedDataOtherPlayers[0].name).setScale(0.35)
     otherPlayer0.body.enable = false
@@ -107,10 +104,9 @@ export default class minigameTPScene extends Phaser.Scene {
     otherPlayersArr.push(otherPlayer2)
     this.createAnimations(passedDataOtherPlayers[2].name)
 
-
     /*          LIST SOCKETS         */
-    socket.on('updatedPlayersHit', (count, totalPlayers, playerHit) => {
 
+    socket.on('updatedPlayersHit', (count, totalPlayers, playerHit) => {
       // loop through array to set player tint
       otherPlayersArr.forEach( (player) => {
         if (player[name] === playerHit.name){
@@ -125,14 +121,16 @@ export default class minigameTPScene extends Phaser.Scene {
         this.add.text(250, 150, 'Game Over!', { fontSize: '32px', fill: '#FFF' })
         count = 0;
 
-        socket.emit("gameOver")
-        socket.emit('resetTPgame')
         this.clientScore = {
           ayse: 0,
           patty: 0,
           stephanie: 0,
           tiffany: 0,
         }
+
+        socket.emit("gameOver")
+        socket.emit('resetTPgame')
+
         return;
       }
     });
@@ -157,9 +155,7 @@ export default class minigameTPScene extends Phaser.Scene {
 
     /*          END SOCKETS         */
 
-
     /*          GAME ENTITIES CREATED         */
-
 
     this.platforms = this.physics.add.staticGroup();
 
@@ -199,17 +195,14 @@ export default class minigameTPScene extends Phaser.Scene {
     this.score3 = this.add.text(16, 56, `Tiffany's's Score: ${this.clientScore['tiffany']}`, { fontSize: '24px', fill: '#FFF' });
     this.score4 = this.add.text(16, 76, `Stephanie's's Score: ${this.clientScore['stephanie']}`, { fontSize: '24px', fill: '#FFF' });
 
-
     // physics things
     this.physics.add.collider(this.player, this.platforms);
     this.physics.add.collider(this.toiletpaper, this.platforms);
     this.physics.add.collider(this.bombs, this.platforms);
 
-
-    //  Checks to see if the player overlaps with any of the toiletpaper, if he does call the collectTP function
+    //  Checks to see if the player overlaps with any of the toiletpaper, if she does call the collectTP function
     this.physics.add.overlap(this.player, this.toiletpaper, this.collectTP, null, this);
     this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
-
 
     this.instructions = this.add.text(350, 150, 'Collect toilet paper! Avoid the virus!', { fontSize: '24px', fill: '#FFF' });
 
@@ -256,12 +249,12 @@ export default class minigameTPScene extends Phaser.Scene {
     this.bomb.destroy()
     this.physics.pause()
     player.setTint(0xff0000);
+
     socket.emit('playerHit', player)
 
     this.instructions.destroy()
     this.add.text(350, 150, 'You caught the virus!', { fontSize: '24px', fill: '#FFF' })
     this.add.text(350, 200, 'Please wait for the others to finish playing.', { fontSize: '24px', fill: '#FFF' })
-
   }
 
 }

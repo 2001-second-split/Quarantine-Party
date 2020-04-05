@@ -18,7 +18,6 @@ export default class BoardDice extends Phaser.Scene {
     });
   }
 
-
   diceRollAnimations() {
     this.anims.create({
       key: 'roll',
@@ -84,19 +83,17 @@ export default class BoardDice extends Phaser.Scene {
     //listen for mouse up event to trigger dice roll
     this.dice.on('pointerup', () => {
       this.rollDice()
-
     });
 
     socket.on('updateDice', (rolledNum) => {
       this.dice.anims.play(rolledNum)
     })
-
-
-
   }
+
   enableDice(){
     this.dice.setInteractive()
   }
+
   disableDice(){
     this.dice.disableInteractive()
   }

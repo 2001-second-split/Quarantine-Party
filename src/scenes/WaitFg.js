@@ -1,17 +1,17 @@
 import Player from "../entity/Player";
-import Enemy from "../entity/Enemy";
 import { socket } from "../index";
 
 export default class WaitFg extends Phaser.Scene {
   constructor() {
     super("WaitFg");
+
     //keep track of players and the order of join
     this.queue = []
   }
+
   preload() {
     this.load.audio("jump", "assets/audio/jump.wav");
   }
-
 
   create() {
       // Enable and keep track of user input
@@ -71,8 +71,6 @@ export default class WaitFg extends Phaser.Scene {
         }
         this.scene.start('BoardScene', data1)
       })
-
-
   }
   //create sprite animations
   createAnimations(name) {
@@ -111,6 +109,7 @@ export default class WaitFg extends Phaser.Scene {
     const otherPlayer = new Player(this, playerInfo.x, playerInfo.y, spriteSkin ).setScale(0.5);
     otherPlayer.playerId = socketId;
     otherPlayer.name = spriteSkin
+
      //add the newly created player to que (to keep track of player turns)
     this.queue.push(otherPlayer.name)
 
@@ -125,5 +124,4 @@ export default class WaitFg extends Phaser.Scene {
       this.player.update(this.cursors, this.jumpSound)
     }
   }
-
 }

@@ -15,7 +15,6 @@ export const socket = io("http://localhost:3000") // development
 
 import config from './config/config'
 
-
 class Game extends Phaser.Game {
   constructor() {
     // Add the config file to the game
@@ -27,15 +26,6 @@ class Game extends Phaser.Game {
     }
     // Start the game with the starting scene
     this.scene.start('StartingScene')
-  }
-
-  preload() {
-    // this.load.audio('backgroundmusic', 'assets/audio/backgroundmusic.wav');
-  }
-
-  create() {
-    // let music = this.sound.add('backgroundmusic')
-    // music.play();
   }
 }
 
