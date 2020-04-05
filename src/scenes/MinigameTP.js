@@ -161,6 +161,12 @@ export default class minigameTPScene extends Phaser.Scene {
 
         socket.emit("gameOver")
         socket.emit('resetTPgame')
+        this.clientScore = {
+          ayse: 0,
+          patty: 0,
+          stephanie: 0,
+          tiffany: 0,
+        }
         return;
       }
     });
