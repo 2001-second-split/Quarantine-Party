@@ -47,10 +47,6 @@ export default class EndScene extends Phaser.Scene {
     this.add.sprite(400,450, this.third).setScale(0.5)
     this.add.sprite(600,450, this.fourth).setScale(0.5)
 
-    // Create podium
-
-    // Create celebration music
-
     // Play Again Button?
     const playAgainButton = this.add.text(50, 250, 'PLAY AGAIN?', { fontSize: '32px', fill: '#000000' });
     playAgainButton.setInteractive();
