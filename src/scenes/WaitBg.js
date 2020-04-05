@@ -21,7 +21,7 @@ export default class WaitBg extends Phaser.Scene {
     const roomCreator = data.roomCreator;
     const roomId = data.roomId
 
-    // Create Sprites
+    // Add and align background image
     let waitingBg = this.add.image(0, 0, 'pic');
     Align.scaleToGame(waitingBg, 1)
     Align.center(waitingBg)
@@ -30,9 +30,16 @@ export default class WaitBg extends Phaser.Scene {
     this.header = this.add.text(400, 16, `Room # ${roomId}`, { fontFamily: 'Verdana', fontSize: '28px', fill: '#713E5A' });
 
     //display different loading messages for game creator vs joiners
+    const style =  {
+      fontFamily: 'Verdana',
+      fontSize: 64,
+      fill: '#DCEDFF',
+      stroke: '#000000',
+      strokeThickness: 6}
+
     this.loading = roomCreator
-      ? this.add.text(16, 300, 'Waiting for other players to join...', { fontFamily: 'Verdana', fontSize: 64, fill: '#DCEDFF', stroke: '#000000', strokeThickness: 6})
-      : this.add.text(16, 300, 'Waiting for Room Creator to start the game...', { fontFamily: 'Verdana', fontSize: 48, fill: '#DCEDFF', stroke: '#000000', strokeThickness: 6});
+      ? this.add.text(16, 300, 'Waiting for other players to join...', style)
+      : this.add.text(16, 300, 'Waiting for Room Creator to start the game...', style);
 
     //wait for all four players to join
     socket.on('playersReady', () => {
@@ -45,16 +52,16 @@ export default class WaitBg extends Phaser.Scene {
         //make it interactive! so when we click it...
         startButton.setInteractive();
 
-        startButton.on('pointerover', function(){
+        startButton.on('pointerover', function() {
           this.setFrame(1)
         })
 
-        startButton.on('pointerout', function(){
+        startButton.on('pointerout', function() {
           this.setFrame(0)
         })
 
         //when mouse is released, emit transitionToBoard & listen for it in WaitFg (since we want to pass the queue info)
-        startButton.on('pointerup', function(){
+        startButton.on('pointerup', function() {
           this.setFrame(0)
           socket.emit('transitionToBoard')
         })

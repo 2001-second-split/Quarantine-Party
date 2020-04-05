@@ -14,64 +14,66 @@ export default class WaitFg extends Phaser.Scene {
   }
 
   create() {
-      // Enable and keep track of user input
-      this.cursors = this.input.keyboard.createCursorKeys();
-      // Create sounds
-      this.jumpSound = this.sound.add("jump");
+    // Enable and keep track of user input
+    this.cursors = this.input.keyboard.createCursorKeys();
+    // Create sounds
+    this.jumpSound = this.sound.add("jump");
 
-      //  << SOCKET THINGS!!! >>
-      this.otherPlayers = [];
-      // ask the server who current players are
-      socket.emit("currentPlayersInRoom");
+    //  << SOCKET THINGS!!! >>
+    this.otherPlayers = [];
+    // ask the server who current players are
+    socket.emit("currentPlayersInRoom");
 
-      //get currentPlayers in room and add self and other players
-      socket.on("currentPlayersInRoom", (playersInRoom, queue) => {
-        Object.keys(playersInRoom).forEach(id => {
-          // Note: playersInRoom[id] gives you the entire player object
-          if (id === socket.id) {
-            this.addPlayer(playersInRoom[id], socket.id, playersInRoom[id].name);
-          } else {
-            this.addOtherPlayers(playersInRoom[id], id, playersInRoom[id].name);
-          }
-        });
-
-        this.queue = queue;
-      });
-
-      //add new players as other players
-      socket.on("newPlayer", (playerInfo, socketId, spriteSkin) => {
-        this.addOtherPlayers(playerInfo, socketId,spriteSkin);
-      });
-
-      socket.on('playerMoved', (playerInfo) => {
-        this.otherPlayers.forEach(otherPlayer => {
-          if (playerInfo.playerId === otherPlayer.playerId) {
-            otherPlayer.setPosition(playerInfo.x, playerInfo.y);
-          }
-        });
-      });
-
-      socket.on('disconnect', clientId => {
-        this.otherPlayers.forEach(otherPlayer => {
-          if(otherPlayer.playerId === clientId){
-            otherPlayer.destroy()
-          }
-        })
-      })
-
-      //on transition to board request switch to board scene and pass the player que to it
-      socket.on('transitionedToBoard', () => {
-        this.scene.stop('WaitFg')
-        this.scene.stop('WaitBg')
-        this.scene.stop('WaitScene')
-        const data1 = {
-          queue: this.queue,
-          player: this.player,
-          otherPlayers: this.otherPlayers
+    //get currentPlayers in room and add self and other players
+    socket.on("currentPlayersInRoom", (playersInRoom, queue) => {
+      Object.keys(playersInRoom).forEach(id => {
+        // Note: playersInRoom[id] gives you the entire player object
+        if (id === socket.id) {
+          this.addPlayer(playersInRoom[id], socket.id, playersInRoom[id].name);
+        } else {
+          this.addOtherPlayers(playersInRoom[id], id, playersInRoom[id].name);
         }
-        this.scene.start('BoardScene', data1)
+      });
+
+      this.queue = queue;
+    });
+
+    //add new players as other players
+    socket.on("newPlayer", (playerInfo, socketId, spriteSkin) => {
+      this.addOtherPlayers(playerInfo, socketId,spriteSkin);
+    });
+
+    socket.on('playerMoved', (playerInfo) => {
+      this.otherPlayers.forEach(otherPlayer => {
+        if (playerInfo.playerId === otherPlayer.playerId) {
+          otherPlayer.setPosition(playerInfo.x, playerInfo.y);
+        }
+      });
+    });
+
+    socket.on('disconnect', clientId => {
+      this.otherPlayers.forEach(otherPlayer => {
+        if(otherPlayer.playerId === clientId){
+          otherPlayer.destroy()
+        }
       })
-  }
+    })
+
+    //on transition to board request switch to board scene and pass the player que to it
+    socket.on('transitionedToBoard', () => {
+      this.scene.stop('WaitFg')
+      this.scene.stop('WaitBg')
+      this.scene.stop('WaitScene')
+      const passToBoard = {
+        queue: this.queue,
+        player: this.player,
+        otherPlayers: this.otherPlayers
+      }
+      this.scene.start('BoardScene', passToBoard)
+    })
+
+  } // end create
+
   //create sprite animations
   createAnimations(name) {
     this.anims.create({
@@ -124,4 +126,5 @@ export default class WaitFg extends Phaser.Scene {
       this.player.update(this.cursors, this.jumpSound)
     }
   }
+
 }

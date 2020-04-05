@@ -18,13 +18,18 @@ export default class BoardScene extends Phaser.Scene {
     this.scene.launch('BoardDice', {queue: this.queue, player: this.player});
 
     socket.on('minigameStarted', (coin) => {
-      //make the current scene sleep + minigame wake
-      this.scene.sleep('BoardBg').sleep('BoardDice')
+      this.scene.sleep('BoardBg').sleep('BoardDice') //make the current scene sleep + minigame wake
+
+      const dataForMiniGames = {
+        player: this.player,
+        otherPlayers: this.otherPlayers
+      }
       //trigger minigameTPScene or PuzzleScene based on the coin landed
-      if(coin === 'tp'){
-        this.scene.run('minigameTPScene', {player: this.player, otherPlayers: this.otherPlayers})
-      } else if(coin === 'puzzle'){
-        this.scene.run('PuzzleScene', {player: this.player, otherPlayers: this.otherPlayers})
+      if (coin === 'tp'){
+        this.scene.run('minigameTPScene', dataForMiniGames)
+      }
+      if (coin === 'puzzle'){
+        this.scene.run('PuzzleScene', dataForMiniGames)
       }
     })
   }
