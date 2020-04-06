@@ -128,6 +128,7 @@ io.on('connection', (socket)  => {
 
     // emit a message to all players to remove this player
     io.to(room).emit('disconnect', socket.id);
+
     // remove this player from our players object
     delete players[socket.id];
 
@@ -199,28 +200,6 @@ io.on('connection', (socket)  => {
     socket.emit('minigameStarted', coin)
   })
 
-  /*   END MINI GAME SOCKETS   */
-
-
-  /*   PUZZLE MINIGAME SOCKETS   */
-
-  socket.on('wonPuzzle', () => {
-    const room = players[socket.id].roomId
-    io.in(room).emit('fromPuzzleToBoard')
-    socket.emit('wonMinigame')
-  })
-
-
-  /*   END PUZZLE MINIGAME SOCKETS   */
-
-
-  /*   NOT USED SOCKETS   */
-
-  //this is the old "currentPlayers"
-  socket.on('allPlayersConnected', () => {
-    const room = players[socket.id].roomId;
-    socket.emit('allPlayers', players, room, queue[room]);
-  })
 
   /*    TP MINI GAME SOCKETS     */
 
@@ -256,14 +235,13 @@ io.on('connection', (socket)  => {
 
   socket.on('quitPuzzle', () => {
     const room = players[socket.id].roomId;
-    if (puzzle[room] === 2){
-      puzzle[room] = 0
-      io.in(room).emit('fromPuzzleToBoard')
-    } else {
-      if(typeof puzzle[room] === 'undefined'){
-        puzzle[room] = 1
-      } else {
-        puzzle[room]++
+    if(typeof puzzle[room] === 'undefined'){
+      puzzle[room] = 1
+    } else{
+      puzzle[room]++
+      if(puzzle[room] === roomMaxPlayers - 1){
+        delete puzzle[room]
+        io.in(room).emit('fromPuzzleToBoard')
       }
     }
   })
