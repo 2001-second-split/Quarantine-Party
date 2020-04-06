@@ -206,11 +206,12 @@ export default class TPScene extends Phaser.Scene {
   update () {
 
     if (this.updateScore) {
-                    this.add.text(16, 16, 'Character   Score', this.scoreStyle )
       this.score1 = this.add.text(16, 36, `     Ayse :  ${this.clientScore['ayse']}`, this.scoreStyle);
       this.score2 = this.add.text(16, 56, `    Patty :  ${this.clientScore['patty']}`, this.scoreStyle);
       this.score3 = this.add.text(16, 76, `  Tiffany :  ${this.clientScore['tiffany']}`, this.scoreStyle);
       this.score4 = this.add.text(16, 96, `Stephanie :  ${this.clientScore['stephanie']}`, this.scoreStyle);
+
+      this.updateScore = false;
     }
 
     this.player.update(this.cursors, this.jumpSound)
