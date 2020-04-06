@@ -38,15 +38,8 @@ export default class EndScene extends Phaser.Scene {
       endFrame: 8
     });
 
-    // LOAD FG athings
-    // this.load.image('podium', 'assets/sprites/podium.png')
-
     // LOAD BACKGROUND IMAGE
     this.load.image('background', 'assets/backgrounds/sky.png');
-  }
-
-  createCelebrations() {
-    //add jumping anims so person in first place can look like they're celebrating?
   }
 
   create() {
@@ -67,9 +60,6 @@ export default class EndScene extends Phaser.Scene {
     this.add.sprite(400,450, this.third).setScale(0.5)
     this.add.sprite(600,450, this.fourth).setScale(0.5)
 
-    // Create podium
-
-    // Create celebration music
 
     // Play Again Button?
     const playAgainButton = this.add.text(50, 250, 'PLAY AGAIN?', { fontSize: '32px', fill: '#FFF' });
@@ -78,20 +68,6 @@ export default class EndScene extends Phaser.Scene {
     // if Play Again is hit, restart game from beginning
     playAgainButton.on('pointerup', () => {
       console.log('playagain pressed')
-
-      // stopping all scenes for now
-      // refactor tasks: stop scenes as they're not necessary
-      // this.scene.stop('WaitBg')
-      // this.scene.stop('WaitFg')
-      // this.scene.stop('WaitScene')
-
-      // this.scene.stop('BoardBg')
-      // this.scene.stop('BoardScene')
-      // this.scene.stop('BoardDice')
-
-      // this.scene.stop('EndScene')
-
-      // this.scene.start('StartingScene');
 
     const gameUrl = 'https://super-quarantine-party.herokuapp.com/'
     const s = window.open(gameUrl, '_blank');

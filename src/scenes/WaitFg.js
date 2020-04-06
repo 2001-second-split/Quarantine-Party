@@ -1,5 +1,4 @@
 import Player from "../entity/Player";
-import Enemy from "../entity/Enemy";
 import { socket } from "../index";
 
 export default class WaitFg extends Phaser.Scene {
@@ -27,17 +26,8 @@ export default class WaitFg extends Phaser.Scene {
       //get currentPlayers in room and add self and other players
       socket.on("currentPlayersInRoom", (playersInRoom, room, queue) => {
 
-        console.log("WaitFG - currentPlayersInRoom", playersInRoom)
         //Find all the players in the same room
-        // const playersInRoom = {};
-        // Object.keys(players).forEach(id => {
-        //   if (players[id].roomId === room) {
-        //     playersInRoom[id] = players[id];
-        //   }
-        // });
-
         Object.keys(playersInRoom).forEach(id => {
-          console.log("in playersInRoom Loop")
           // Note: playersInRoom[id] gives you the entire player object
           if (id === socket.id) {
             this.addPlayer(playersInRoom[id], socket.id, playersInRoom[id].name);
@@ -47,12 +37,10 @@ export default class WaitFg extends Phaser.Scene {
         });
 
         this.queue = queue;
-        console.log("waitFG queue", this.queue)
       });
 
       //add new players as other players
       socket.on("newPlayer", (playerInfo, socketId, spriteSkin) => {
-        console.log("WaitFG - newPlayer socket")
         this.addOtherPlayers(playerInfo, socketId,spriteSkin);
       });
 

@@ -51,13 +51,10 @@ export default class WaitBg extends Phaser.Scene {
         startButton.setInteractive();
 
         startButton.on('pointerover', function(){
-          console.log('OVER')
-          console.log('THIS', this)
           this.setFrame(1)
         })
 
         startButton.on('pointerout', function(){
-          console.log('OUT')
           this.setFrame(0)
         })
         //when mouse is released, emit transitionToBoard & listen for it in WaitFg (since we want to pass the queue info)

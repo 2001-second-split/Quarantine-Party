@@ -119,7 +119,6 @@ export default class PuzzleScene extends Phaser.Scene {
     //return win
     if(win){
       socket.emit('wonPuzzle')
-      console.log('WIN')
     }
   }
 }

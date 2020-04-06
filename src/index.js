@@ -88,8 +88,4 @@ class Game extends Phaser.Game {
 // Create new instance of game
 window.onload = function () {
   window.game = new Game();
-
-  // comment out the game you don't want to play
-  // window.game = new FullBlastAcademy();
-  // window.game = new MiniGameTP();
 }

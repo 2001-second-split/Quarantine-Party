@@ -1,5 +1,4 @@
 import { socket } from "../index";
-import Align from "../entity/Align";
 import Player from '../entity/Player'
 
 export default class minigameTPScene extends Phaser.Scene {
@@ -91,22 +90,6 @@ export default class minigameTPScene extends Phaser.Scene {
 
 
     const otherPlayersArr = []
-    // passedDataOtherPlayers.forEach(player => {
-
-    //   const otherPlayer = new Player(this, 100, 100, player.name)
-    //     .setScale(0.5)
-    //     .setCollideWorldBounds(true)
-    //     .setBounce(0.2);
-    //   otherPlayer.body.enable = false
-    //   otherPlayersArr.push(otherPlayer)
-    //   this.createAnimations(player.name)
-    // })
-
-
-    /*     DISPLAY OTHER PLAYER SPRITES     */
-
-    // WE SHOULD TRY TO REFACTOR THIS INTO A FOR EACH
-    // REASON: IF WE ARE TESTING WITH LESS THAN 4 PEOPLE, WE DON'T HAVE TO REMEMBER TO COMMENT OUT A PLAYER
 
     passedDataOtherPlayers.forEach( (playerData) => {
       // refactor code here if we get to it
@@ -133,14 +116,6 @@ export default class minigameTPScene extends Phaser.Scene {
 
 
     /*          LIST SOCKETS         */
-
-    // socket.on('playerMoved', (playerInfo) => {
-    //   otherPlayersArr.forEach(otherPlayer => {
-    //     if (playerInfo.playerId === otherPlayer.playerId) {
-    //       otherPlayer.setPosition(playerInfo.x, playerInfo.y);
-    //     }
-    //   });
-    // });
 
     socket.on('updatedPlayersHit', (count, totalPlayers, playerHit) => {
 
@@ -179,9 +154,7 @@ export default class minigameTPScene extends Phaser.Scene {
     })
 
     socket.on('updateScores', (playerWhoScored, score) => {
-      console.log('TP - scores', score);
       this.clientScore[playerWhoScored] = score;
-      // this.clientScore = scores;
       this.score1.destroy();
       this.score2.destroy();
       this.score3.destroy();
@@ -194,11 +167,6 @@ export default class minigameTPScene extends Phaser.Scene {
 
 
     /*          GAME ENTITIES CREATED         */
-
-    // Add Background & Scale to game size
-    // const bg = this.add.image(-0, 0, 'sky2');
-    // Align.scaleToGame(bg, 1)
-    // Align.center(bg)
 
     this.platforms = this.physics.add.staticGroup();
 
@@ -252,15 +220,6 @@ export default class minigameTPScene extends Phaser.Scene {
 
 
     this.instructions = this.add.text(350, 150, 'Collect toilet paper! Avoid the virus!', { fontSize: '24px', fill: '#FFF' });
-
-    // Return To Game Button
-    // const returnButton = this.add.text(250, 250, 'Return To Board', { fontSize: '32px', fill: '#FFF' });
-    // returnButton.setInteractive();
-    // returnButton.on('pointerup', () => {
-    //   console.log('returnButton pressed')
-    //   socket.emit("gameOver")
-    // })
-
 
   } // end create
 

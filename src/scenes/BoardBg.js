@@ -1,8 +1,6 @@
 import 'phaser';
 import {socket} from '../index'
 import Align from '../entity/Align';
-// import minigameTPScene from './MinigameTP';
-
 
 export default class BoardBg extends Phaser.Scene {
   constructor() {
@@ -44,7 +42,6 @@ export default class BoardBg extends Phaser.Scene {
 
     //Parse the board data from the map file
     this.data = this.cache.json.get('map');
-    console.log('this in boardbg', this)
     this.tileWidthHalf = this.data.tilewidth / 2;
     this.tileHeightHalf = this.data.tileheight / 2;
 
@@ -87,7 +84,6 @@ export default class BoardBg extends Phaser.Scene {
 
     //listen for changes in queue, update background queue prompt accordingly
     socket.on('changeQueuePrompt', currentPlayer => {
-      console.log("BoardBg - in changeQueuePrompt")
       this.queuePrompt.destroy()
       this.queuePrompt = this.add.text(700, 16, `${this.capitalizeFirst(currentPlayer)}'s turn! Click the Dice`, { fontFamily: 'Verdana', fontSize: 32, fill: '#FFF', stroke: '#000000', strokeThickness: 4 })
 
@@ -96,17 +92,6 @@ export default class BoardBg extends Phaser.Scene {
       this.currentLeader.destroy()
       this.currentLeader = this.add.text(50, 16, `${this.capitalizeFirst(nameCurrent)} is in the lead!`, { fontFamily: 'Verdana', fontSize: 32, fill: '#FFF', stroke: '#000000', strokeThickness: 4  })
     })
-
-    //listen for minigames
-    // socket.on('minigameStarted', () => {
-    //   //make the current scene sleep + starts minigame
-    //   // this.scene.add('minigameTPScene')
-    //   // this.scene.switch('minigameTPScene', {queue: this.queue, player: this.player, otherPlayers: this.otherPlayers})
-    //   this.scene.sleep('BoardBg')
-    //   .sleep('BoardDice')
-    //   .sleep('BoardScene');
-    //   this.scene.run('minigameTPScene')
-    // })
 
   } // end create
 
@@ -139,15 +124,6 @@ export default class BoardBg extends Phaser.Scene {
         }
     }
   }
-  //on transition to Board
-  //place whomever is infront in que to tile 0
-  // placeCharacters(player, queue){
-  //   if (player === queue[0]){
-  //     this.moveCharacter(0, player)
-  //   }
-  // }
-
-
 
   moveCharacter(idx, charName) {
     //if character was already on a tile get its index
@@ -158,13 +134,6 @@ export default class BoardBg extends Phaser.Scene {
 
     //if user throws a dice larger than the spaces left on the board, the user wins
     if((prevIdx  + idx) >= (this.walkablePath.length -1)){
-      console.log('YOU WON');
-      //EMIT THIS TO EVERYONE
-
-      // disable board scene
-      // this.scene.setVisible(false, 'BoardBg')
-      // this.scene.setVisible(false, 'BoardDice')
-      // this.scene.pause('BoardScene')
 
       //data to pass to endScene
       const notWinners = this.queue.filter(name => name !== charName)
@@ -179,13 +148,6 @@ export default class BoardBg extends Phaser.Scene {
       this.scene.stop('BoardBg')
       this.scene.stop('BoardDice')
       this.scene.start('EndScene', data);
-
-      // this.scene.transition({
-      //   target: 'EndScene',
-      //   data: data,
-      //   duration: 100000 //wait 3 seconds before transitioning
-      // })
-
 
       return
     } // end winner function
@@ -208,11 +170,9 @@ export default class BoardBg extends Phaser.Scene {
 
     movedChar.depth = this.centerY + ty
     movedChar.prevIndex = prevIdx + idx
-    console.log('PREVIDX +IDX', movedChar.prevIndex)
 
     // once prevIndex updated, add to distanceToEndObject
     this.distanceToEnd[charName] = this.walkablePath.length - movedChar.prevIndex
-    console.log("distance to the end", this.distanceToEnd)
 
     this.charPosition[charName] = movedChar
     //update characters' previous location index by adding current index
@@ -222,8 +182,6 @@ export default class BoardBg extends Phaser.Scene {
     //trigger minigame if on a coin
     if(charExists &&  this.walkablePath[this.charPosition[charName].prevIndex].length === 3){
       const coin = this.walkablePath[this.charPosition[charName].prevIndex][2]
-      console.log('COIN', coin)
-      console.log("stepped on a coin")
       socket.emit('startMinigame', coin)
     }
   }

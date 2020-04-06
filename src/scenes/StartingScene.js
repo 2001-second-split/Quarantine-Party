@@ -57,7 +57,6 @@ export default class StartingScene extends Phaser.Scene {
 
     //sockets to receive from server
     socket.on('createdOrJoinedRoom', () => {
-      console.log("startingScene - createdOrJoinedRoom")
       //Take user to the waiting scene
       this.scene.start('WaitScene', data)
     })
@@ -81,7 +80,6 @@ export default class StartingScene extends Phaser.Scene {
 
     //disable already selected characters in a room
     socket.on('disableSelectedChars', (selectedChars, room) => {
-      console.log("startingScene - disabled selected chars")
       selectedChars.forEach(char => {
         if (this.room === room){
           const opt = domElement.getChildByID(char)

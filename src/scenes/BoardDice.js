@@ -27,16 +27,7 @@ export default class BoardDice extends Phaser.Scene {
       frameRate: 10,
       repeat: -1,
     });
-    // this.anims.create({
-    //   key: 'random',
-    //   frames: [{ key: 'dice', frame: Math.floor(Math.random() * 6) }],
-    //   frameRate: 10,
-    // });
-    // this.anims.create({
-    //   key: 'reset',
-    //   frames: [{ key: 'dice', frame: 1 }],
-    //   frameRate: 10,
-    // });
+
     this.anims.create({
       key: '1',
       frames: [{ key: 'dice', frame: 0 }],
@@ -79,7 +70,6 @@ export default class BoardDice extends Phaser.Scene {
     //listen for que update requests
     socket.on('unshiftQueue', () => {
       this.unshiftQueue()
-      console.log('QUEUE SHIFTED')
       //emit queue change to boardbg scene so we can update the queue prompt
       socket.emit('changeQueuePrompt', this.queue[0])
 
@@ -102,11 +92,6 @@ export default class BoardDice extends Phaser.Scene {
     socket.on('updateDice', (rolledNum) => {
       this.dice.anims.play(rolledNum)
     })
-
-    //this.dice.setInteractive();
-    // Create sounds
-    // placeholder for dice roll sound
-    // this.diceSound = this.sound.add('dice');
 
   }
   enableDice(){
