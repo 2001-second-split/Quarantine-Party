@@ -236,14 +236,13 @@ io.on('connection', (socket)  => {
 
   socket.on('quitPuzzle', () => {
     const room = players[socket.id].roomId;
-    if (puzzle[room] === 2){
-      puzzle[room] = 0
-      io.in(room).emit('fromPuzzleToBoard')
-    } else {
-      if(typeof puzzle[room] === 'undefined'){
-        puzzle[room] = 1
-      } else {
-        puzzle[room]++
+    if(typeof puzzle[room] === 'undefined'){
+      puzzle[room] = 1
+    } else{
+      puzzle[room]++
+      if(puzzle[room] === roomMaxPlayers - 1){
+        delete puzzle[room]
+        io.in(room).emit('fromPuzzleToBoard')
       }
     }
   })
