@@ -1,20 +1,21 @@
 import { socket } from "../index";
 
-
 export default class PuzzleScene extends Phaser.Scene {
-  constructor(){
+  constructor() {
     super('PuzzleScene')
   }
 
-  preload(){
+  preload() {
     this.load.spritesheet("background", "assets/spriteSheets/puzzle.png",
-    {frameWidth: 250, frameHeight: 250});
+    { frameWidth: 250, frameHeight: 250 });
     this.load.image("black", "assets/sprites/blackBlock.png")
   }
-  create(){
+
+  create() {
     this.allowClick = true;
     this.blockGroup = this.add.group()
     let count = 0;
+
     //Divide the background image into a 3x4 grid
     for (let row=0; row<3; row++){
       for(let col=0; col<4; col++){
@@ -25,6 +26,7 @@ export default class PuzzleScene extends Phaser.Scene {
         this.blockGroup.add(this.block)
       }
     }
+
     //make each block interactive
     this.blockGroup.getChildren().forEach(block => {
       block.setInteractive()
@@ -32,11 +34,18 @@ export default class PuzzleScene extends Phaser.Scene {
         this.selectBlock(block)
       })
     })
+
     //make the last block black, to enable block movement
     this.endBlock = this.block;
     this.endBlock.setTexture("black")
     //scramble the blocks to set up the puzzle
     this.scrambleBlocks()
+
+    //listen for keyboard event and trigger socket
+    const keyObj = this.input.keyboard.addKey('Q');  // Get key object
+    keyObj.on('down', () => {
+      socket.emit('quitPuzzle')
+    })
 
     //sockets
     socket.on('fromPuzzleToBoard', () => {
@@ -48,7 +57,7 @@ export default class PuzzleScene extends Phaser.Scene {
     })
   }
 
-  selectBlock(block){
+  selectBlock(block) {
     if(!this.allowClick){
       return;
     }
@@ -71,7 +80,8 @@ export default class PuzzleScene extends Phaser.Scene {
     this.moveBlock(block, this.endBlock.x, this.endBlock.y)
     this.moveBlock(this.endBlock, tempX, tempY)
   }
-  moveBlock(block, xx, yy){
+
+  moveBlock(block, xx, yy) {
     this.tweens.add({
       targets: block,
       x: xx,
@@ -82,11 +92,10 @@ export default class PuzzleScene extends Phaser.Scene {
         this.allowClick = true
         this.checkWin()
       }
-
     })
   }
 
-  scrambleBlocks(){
+  scrambleBlocks() {
     for (let i = 0; i < 10; i++){
       //get random int btw 0 & num of blocks
       const index1 = Phaser.Math.Between(0, this.blockGroup.getChildren().length - 1);
@@ -98,7 +107,7 @@ export default class PuzzleScene extends Phaser.Scene {
     }
   }
 
-  swapBlocks(block1, block2){
+  swapBlocks(block1, block2) {
     const tempX = block1.x
     const tempY = block1.y
 
@@ -109,17 +118,17 @@ export default class PuzzleScene extends Phaser.Scene {
     block2.y = tempY
   }
 
-  checkWin(){
+  checkWin() {
     let win = true
     this.blockGroup.getChildren().forEach(block => {
       if(block.x !== block.origX || block.y !== block.origY){
         win = false
       }
     })
+
     //return win
     if(win){
       socket.emit('wonPuzzle')
-      console.log('WIN')
     }
   }
 }

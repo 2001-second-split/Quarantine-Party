@@ -1,5 +1,3 @@
-import minigameTPScene from './MinigameTP';
-
 //main game scenes
 import StartingScene from './StartingScene'
 
@@ -13,7 +11,12 @@ import BoardDice from './BoardDice'
 
 import EndScene from './EndScene'
 
+//mini game scenes
+import TPScene from './TPScene';
+import PuzzleScene from './PuzzleScene'
 
-let scenes = [ WaitScene]
+export const scenes = [StartingScene, WaitBg, WaitFg, WaitScene, BoardBg, BoardScene, BoardDice, EndScene, TPScene, PuzzleScene]
 
-export default scenes;
+export const keys = ['StartingScene','WaitBg','WaitFg', 'WaitScene','BoardBg','BoardScene','BoardDice', 'EndScene','TPScene','PuzzleScene']
+
+
