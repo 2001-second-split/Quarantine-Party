@@ -190,14 +190,14 @@ export default class TPScene extends Phaser.Scene {
     this.bombs = this.physics.add.group();
 
     //  The score
-    const scoreStyle = {
+    this.scoreStyle = {
       fontSize: '24px',
       fill: '#FFF' }
-                  this.add.text(16, 16, 'Character   Score', scoreStyle )
-    this.score1 = this.add.text(16, 36, `     Ayse :  ${this.clientScore['ayse']}`, scoreStyle);
-    this.score2 = this.add.text(16, 56, `    Patty :  ${this.clientScore['patty']}`, scoreStyle);
-    this.score3 = this.add.text(16, 76, `  Tiffany :  ${this.clientScore['tiffany']}`, scoreStyle);
-    this.score4 = this.add.text(16, 96, `Stephanie :  ${this.clientScore['stephanie']}`, scoreStyle);
+                  this.add.text(16, 16, 'Character   Score', this.scoreStyle )
+    this.score1 = this.add.text(16, 36, `     Ayse :  ${this.clientScore['ayse']}`, this.scoreStyle);
+    this.score2 = this.add.text(16, 56, `    Patty :  ${this.clientScore['patty']}`, this.scoreStyle);
+    this.score3 = this.add.text(16, 76, `  Tiffany :  ${this.clientScore['tiffany']}`, this.scoreStyle);
+    this.score4 = this.add.text(16, 96, `Stephanie :  ${this.clientScore['stephanie']}`, this.scoreStyle);
 
     // physics things
     this.physics.add.collider(this.player, this.platforms);
@@ -215,11 +215,11 @@ export default class TPScene extends Phaser.Scene {
   update () {
 
     if (this.updateScore) {
-      this.score1 = this.add.text(16, 16, `Ayse's Score: ${this.clientScore['ayse']}`, { fontSize: '24px', fill: '#FFF' });
-      this.score2 = this.add.text(16, 36, `Patty's Score: ${this.clientScore['patty']}`, { fontSize: '24px', fill: '#FFF' });
-      this.score3 = this.add.text(16, 56, `Tiffany's's Score: ${this.clientScore['tiffany']}`, { fontSize: '24px', fill: '#FFF' });
-      this.score4 = this.add.text(16, 76, `Stephanie's's Score: ${this.clientScore['stephanie']}`, { fontSize: '24px', fill: '#FFF' });
-      this.updateScore = false;
+                    this.add.text(16, 16, 'Character   Score', this.scoreStyle )
+      this.score1 = this.add.text(16, 36, `     Ayse :  ${this.clientScore['ayse']}`, this.scoreStyle);
+      this.score2 = this.add.text(16, 56, `    Patty :  ${this.clientScore['patty']}`, this.scoreStyle);
+      this.score3 = this.add.text(16, 76, `  Tiffany :  ${this.clientScore['tiffany']}`, this.scoreStyle);
+      this.score4 = this.add.text(16, 96, `Stephanie :  ${this.clientScore['stephanie']}`, this.scoreStyle);
     }
 
     this.player.update(this.cursors, this.jumpSound)
