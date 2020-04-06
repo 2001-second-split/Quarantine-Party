@@ -5,18 +5,9 @@ export default class WaitScene extends Phaser.Scene {
     super("WaitScene");
   }
 
-  preload() {
-  }
-
   create(data) {
+    //launch wait bg and fg in parallel
     this.scene.launch("WaitBg", data); //passing it roomCreator data
     this.scene.launch("WaitFg");
-    // << LOAD BACKGROUND AND FOREGROUND SCENES IN PARALLEL HERE >>
-    this.cursors = this.input.keyboard.createCursorKeys();
-
-
-
   }
-
-  update() {}
 }

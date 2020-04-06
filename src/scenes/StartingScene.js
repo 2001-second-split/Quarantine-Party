@@ -1,7 +1,5 @@
 import 'phaser'
-// import io from 'socket.io-client';
 import {socket} from '../index'
-// import config from '../config/config'
 import Align from '../entity/Align'
 
 export default class StartingScene extends Phaser.Scene {
@@ -12,50 +10,39 @@ export default class StartingScene extends Phaser.Scene {
 
   preload () {
     //load sprites
-    this.load.spritesheet("ayse", "assets/spriteSheets/ayse-sheet.png", {
-      frameWidth: 300,
-      frameHeight: 300,
-      endFrame: 8
-    });
-    this.load.spritesheet("stephanie", "assets/spriteSheets/stephanie-sheet.png",{
+    const spriteKeys = ["ayse", "stephanie", "tiffany", "patty"]
+    spriteKeys.forEach(key => {
+      this.load.spritesheet(key, `assets/spriteSheets/${key}-sheet.png`, {
         frameWidth: 300,
         frameHeight: 300,
         endFrame: 8
-      }
-    );
-    this.load.spritesheet("tiffany", "assets/spriteSheets/tiffany-sheet.png", {
-      frameWidth: 300,
-      frameHeight: 300,
-      endFrame: 8
-    });
-    this.load.spritesheet("patty", "assets/spriteSheets/patty-sheet.png", {
-      frameWidth: 300,
-      frameHeight: 300,
-      endFrame: 8
-    });
+      });
+    })
 
     //load html element that will prompt user for input
     this.load.html('roomForm', 'assets/text/roomForm.html');
-    this.load.image('pic', 'assets/backgrounds/introscene.png');
+
+    //load background image
     this.load.image('picBg','assets/backgrounds/introBg.png');
 
+    //load bg audio
     this.load.audio('backgroundmusic', 'assets/audio/backgroundmusic.wav');
   }
 
   create () {
-
     let music = this.sound.add('backgroundmusic')
-    //music.play();
+    music.play();
+    music.setVolume(0.25);
+    music.setLoop(true)
 
     let bg = this.add.image(0, 0, 'picBg');
     Align.scaleToGame(bg, 1)
     Align.center(bg)
 
     this.room = ''
-    //data to be passed to WaitBG for button purposes
-    let data = {}
+    let data = {} //data to be passed to WaitBG for button purposes
 
-    //sockets to receive from server
+    /*      SOCKETS       */
     socket.on('createdOrJoinedRoom', () => {
       //Take user to the waiting scene
       this.scene.start('WaitScene', data)
@@ -96,7 +83,7 @@ export default class StartingScene extends Phaser.Scene {
     const roomId = domElement.getChildByName('roomId')
     const spriteSkin = domElement.getChildByName('spriteSkin')
 
-    domElement.on('click', function (event) {
+    domElement.on('click', (event) => {
       if (event.target.name === 'createButton') {
         data.roomCreator = true;
       }
@@ -114,13 +101,12 @@ export default class StartingScene extends Phaser.Scene {
           domElement.removeListener('click'); //  Turn off the click events
           //reset the room
           this.room = ''
-
         } else {
           alert('Please select valid room and/or character')
         }
       }
 
-    }, this);
+    });
 
     this.tweens.add({
         targets: domElement,
@@ -130,7 +116,6 @@ export default class StartingScene extends Phaser.Scene {
         ease: 'Power3'
     });
   }
-
 
   disableCharsCB(evt){
     this.room = evt.target.value
@@ -154,7 +139,6 @@ export default class StartingScene extends Phaser.Scene {
   update(){
     //listen for user input on roomIand get the room name from input tag
     this.disableSelectedChars(roomId, this.disableCharsCB, 1000)
-
   }
 }
 

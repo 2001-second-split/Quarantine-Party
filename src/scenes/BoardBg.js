@@ -21,7 +21,6 @@ export default class BoardBg extends Phaser.Scene {
   }
 
   init(data){
-    console.log('BoardBg - init data', data)
     this.queue = data.queue
     this.player = data.player
     this.otherPlayers = data.otherPlayers
@@ -62,19 +61,17 @@ export default class BoardBg extends Phaser.Scene {
     socket.emit('placeOnBoard', 0, this.queue[0])
 
     socket.on('placedOnBoard', (rolledNum, charName) => {
-      console.log("BoardBG - placed on Board, called by ", this.player.name)
       this.moveCharacter(rolledNum, charName)
     })
 
 
     //listen for movement on board
     socket.on('moveCharOnBoard', (rolledNum, charName) => {
-      console.log("BoardBG - move char on board")
       this.moveCharacter(rolledNum, charName)
 
       //Update queue once a player moves. This will first update the queue in BoardDice and then BoardBg (in next render cycle)
-
       socket.emit('unshiftQueue')
+
       //check the next in player in queue. Place the player on the board if she is not already
       if(typeof this.charPosition[this.queue[1]] === 'undefined'){
         socket.emit('placeOnBoard', 0, this.queue[1])
@@ -84,13 +81,22 @@ export default class BoardBg extends Phaser.Scene {
 
     //listen for changes in queue, update background queue prompt accordingly
     socket.on('changeQueuePrompt', currentPlayer => {
+
+      const queuePromptStyling =  {
+        fontFamily: 'Verdana',
+        fontSize: 32,
+        fill: '#FFF',
+        stroke: '#000000',
+        strokeThickness: 4
+      }
+
       this.queuePrompt.destroy()
-      this.queuePrompt = this.add.text(700, 16, `${this.capitalizeFirst(currentPlayer)}'s turn! Click the Dice`, { fontFamily: 'Verdana', fontSize: 32, fill: '#FFF', stroke: '#000000', strokeThickness: 4 })
+      this.queuePrompt = this.add.text(700, 16, `${this.capitalizeFirst(currentPlayer)}'s turn! Click the Dice`, queuePromptStyling)
 
       let lowestNum = Math.min(...Object.values(this.distanceToEnd))
       let nameCurrent = this.queue.find(name => this.distanceToEnd[name] === lowestNum)
       this.currentLeader.destroy()
-      this.currentLeader = this.add.text(50, 16, `${this.capitalizeFirst(nameCurrent)} is in the lead!`, { fontFamily: 'Verdana', fontSize: 32, fill: '#FFF', stroke: '#000000', strokeThickness: 4  })
+      this.currentLeader = this.add.text(50, 16, `${this.capitalizeFirst(nameCurrent)} is in the lead!`, queuePromptStyling)
     })
 
   } // end create
@@ -130,25 +136,22 @@ export default class BoardBg extends Phaser.Scene {
     const charExists = typeof this.charPosition[charName] !== 'undefined'
 
     const prevIdx = charExists? this.charPosition[charName].prevIndex : 0
-    console.log('MoveCharacter function - CHAR', charName, 'PREV INDEX', prevIdx)
 
     //if user throws a dice larger than the spaces left on the board, the user wins
     if((prevIdx  + idx) >= (this.walkablePath.length -1)){
-
       //data to pass to endScene
       const notWinners = this.queue.filter(name => name !== charName)
-
-      const data = {
+      const playerPlaces = {
         first: charName,
         second: notWinners[0],
         third: notWinners[1],
         fourth: notWinners[2],
       }
-      // transition to end scene
-      this.scene.stop('BoardBg')
-      this.scene.stop('BoardDice')
-      this.scene.start('EndScene', data);
 
+      // transition to end scene
+      this.scene.stop('BoardBg');
+      this.scene.stop('BoardDice');
+      this.scene.start('EndScene', playerPlaces);
       return
     } // end winner function
 
@@ -159,13 +162,14 @@ export default class BoardBg extends Phaser.Scene {
 
     const tx = (x - y) * this.tileWidthHalf;
     const ty = (x + y) * this.tileHeightHalf;
+
     //if character is on the board, remove it from its previous position
     if(charExists){
       this.charPosition[charName].destroy()
       delete this.charPosition[charName]
     }
-    //place character to its new location
 
+    //place character to its new location
     const movedChar = this.add.image(this.centerX + tx, this.centerY + ty, 'tiles', this.characterIndexes[charName]);
 
     movedChar.depth = this.centerY + ty
