@@ -2,7 +2,6 @@ import 'phaser';
 import {socket} from '../index'
 import Align from '../entity/Align';
 
-
 export default class BoardBg extends Phaser.Scene {
   constructor() {
     super('BoardBg');

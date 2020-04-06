@@ -1,5 +1,4 @@
 import { socket } from "../index";
-// import Align from "../entity/Align"; //not being used here?
 import Player from '../entity/Player'
 
 export default class TPScene extends Phaser.Scene {
@@ -78,13 +77,6 @@ export default class TPScene extends Phaser.Scene {
 
     /*     DISPLAY OTHER PLAYER SPRITES     */
 
-    // WE SHOULD TRY TO REFACTOR THIS INTO A FOR EACH
-    // REASON: IF WE ARE TESTING WITH LESS THAN 4 PEOPLE, WE DON'T HAVE TO REMEMBER TO COMMENT OUT A PLAYER
-
-    // passedDataOtherPlayers.forEach( (playerData) => {
-    //   // refactor code here if we get to it
-    // })
-
     const otherPlayer0 = new Player(this, 900, 50, passedDataOtherPlayers[0].name).setScale(0.35)
     otherPlayer0.body.enable = false
     otherPlayer0[name] = passedDataOtherPlayers[0].name
@@ -144,7 +136,6 @@ export default class TPScene extends Phaser.Scene {
 
     socket.on('updateScores', (playerWhoScored, score) => {
       this.clientScore[playerWhoScored] = score;
-
       this.score1.destroy();
       this.score2.destroy();
       this.score3.destroy();
