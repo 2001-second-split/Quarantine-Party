@@ -16,9 +16,7 @@ export default class BoardDice extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 32,
     });
-    // Preload Sounds
   }
-
 
   diceRollAnimations() {
     this.anims.create({
@@ -27,16 +25,6 @@ export default class BoardDice extends Phaser.Scene {
       frameRate: 10,
       repeat: -1,
     });
-    // this.anims.create({
-    //   key: 'random',
-    //   frames: [{ key: 'dice', frame: Math.floor(Math.random() * 6) }],
-    //   frameRate: 10,
-    // });
-    // this.anims.create({
-    //   key: 'reset',
-    //   frames: [{ key: 'dice', frame: 1 }],
-    //   frameRate: 10,
-    // });
     this.anims.create({
       key: '1',
       frames: [{ key: 'dice', frame: 0 }],
@@ -79,7 +67,6 @@ export default class BoardDice extends Phaser.Scene {
     //listen for que update requests
     socket.on('unshiftQueue', () => {
       this.unshiftQueue()
-      console.log('QUEUE SHIFTED')
       //emit queue change to boardbg scene so we can update the queue prompt
       socket.emit('changeQueuePrompt', this.queue[0])
 
@@ -96,25 +83,18 @@ export default class BoardDice extends Phaser.Scene {
     //listen for mouse up event to trigger dice roll
     this.dice.on('pointerup', () => {
       this.rollDice()
-
     });
 
     socket.on('updateDice', (rolledNum) => {
       this.dice.anims.play(rolledNum)
     })
-
-    //this.dice.setInteractive();
-    // Create sounds
-    // placeholder for dice roll sound
-    // this.diceSound = this.sound.add('dice');
-
   }
+
   enableDice(){
-    //this.dice.setActive(true).setVisible(true)
     this.dice.setInteractive()
   }
+
   disableDice(){
-    //this.dice.setActive(false).setVisible(false);
     this.dice.disableInteractive()
   }
 
@@ -126,13 +106,5 @@ export default class BoardDice extends Phaser.Scene {
     this.dice.roll()
     socket.emit('diceRoll', this.dice.rolledNum, this.player.name)
     this.disableDice()
-  }
-
-
-  // time: total time elapsed (ms)
-  // delta: time elapsed (ms) since last update() call. 16.666 ms @ 60fps
-  update(time, delta) {
-    // this.dice.update(this.cursors, this.diceSound); // Add a parameter for the diceSound
-    // this.dice.update()
   }
 }

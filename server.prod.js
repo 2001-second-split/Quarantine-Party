@@ -9,13 +9,16 @@ let players = {};
 let rooms = {};
 let charactersInRoom = {};
 let queue = {};
+let puzzle = {};
 
+let playerHitByBombsCount = 0;
 const roomMaxPlayers = 4;
 
 app.use(express.static(path.join(__dirname + '/public')));
 
 // sends index.html
 app.get('/', (req, res) => {
+  console.log('INSIDE GET', path.join(__dirname, '../public/index.html'))
   res.sendFile(path.join(__dirname, '../public/index.html'))
 })
 
@@ -86,6 +89,7 @@ io.on('connection', (socket)  => {
 
   //update characters in room when a new character is selected
   socket.on('characterSelected', (char, room) => {
+
     if (charactersInRoom.hasOwnProperty(room)){
       charactersInRoom[room].push(char)
     } else {
@@ -145,14 +149,13 @@ io.on('connection', (socket)  => {
 
     let playersInRoom = {};
     const room = players[socket.id].roomId;
-
     Object.keys(players).forEach(id => {
       if (players[id].roomId === room) {
         playersInRoom[id] = players[id];
       }
     });
 
-    socket.emit('currentPlayersInRoom', playersInRoom, room, queue[room]);
+    socket.emit('currentPlayersInRoom', playersInRoom, queue[room]);
   })
 
 
@@ -173,6 +176,7 @@ io.on('connection', (socket)  => {
   //when a player rolls a dice, update their position on self/others' board, shift the queue & update dice for other players
   socket.on('diceRoll', (rolledNum, charName) => {
     const room = players[socket.id].roomId
+
     io.in(room).emit('moveCharOnBoard', rolledNum, charName)
     io.in(room).emit('unshiftQueue')
     io.to(room).emit('updateDice', rolledNum)
@@ -182,7 +186,6 @@ io.on('connection', (socket)  => {
 
   //when BoardBg first initiates, place the first player in line to tile 0 on all players' boards
   socket.on('placeOnBoard', (rolledNum, charName) => {
-    const room = players[socket.id].roomId
     socket.emit('placedOnBoard', rolledNum, charName)
   })
 
@@ -196,17 +199,32 @@ io.on('connection', (socket)  => {
     socket.emit('minigameStarted', coin)
   })
 
+  /*   END MINI GAME SOCKETS   */
 
-  /*     MINI GAME SOCKETS     */
 
-  // socket.on('currentPlayersMG', () => {
-  //   console.log("src/server - currentPlayersMG ")
-  //   const room = players[socket.id].roomId;
-  //   socket.emit('currentPlayersMG', players, room, queue[room]);
-  // })
+  /*   PUZZLE MINIGAME SOCKETS   */
+
+  socket.on('wonPuzzle', () => {
+    const room = players[socket.id].roomId
+    io.in(room).emit('fromPuzzleToBoard')
+    socket.emit('wonMinigame')
+  })
+
+
+  /*   END PUZZLE MINIGAME SOCKETS   */
+
+
+  /*   NOT USED SOCKETS   */
+
+  //this is the old "currentPlayers"
+  socket.on('allPlayersConnected', () => {
+    const room = players[socket.id].roomId;
+    socket.emit('allPlayers', players, room, queue[room]);
+  })
+
+  /*    TP MINI GAME SOCKETS     */
 
   //minigame TP variables
-  let playerHitByBombsCount = 0;
 
   socket.on('resetTPgame', () => {
     playerHitByBombsCount = 0;
@@ -214,6 +232,7 @@ io.on('connection', (socket)  => {
 
   socket.on('playerHit', (player) => {
     ++playerHitByBombsCount;
+
     const room = players[socket.id].roomId
     io.in(room).emit('updatedPlayersHit', playerHitByBombsCount, roomMaxPlayers, player);
   })
@@ -228,13 +247,26 @@ io.on('connection', (socket)  => {
     score += 10;
     const room = players[socket.id].roomId;
     io.in(room).emit('updateScores', playerWhoScored, score);
-    // socket.emit('updateScores', playerWhoScored, score)
   })
 
-  /*   END MINI GAME SOCKETS   */
+  /*   END TP MINIGAME SOCKETS   */
 
 
   /*   PUZZLE MINIGAME SOCKETS   */
+
+  socket.on('quitPuzzle', () => {
+    const room = players[socket.id].roomId;
+    if (puzzle[room] === 2){
+      puzzle[room] = 0
+      io.in(room).emit('fromPuzzleToBoard')
+    } else {
+      if(typeof puzzle[room] === 'undefined'){
+        puzzle[room] = 1
+      } else {
+        puzzle[room]++
+      }
+    }
+  })
 
   socket.on('wonPuzzle', () => {
     const room = players[socket.id].roomId
