@@ -1,6 +1,8 @@
 # Quarantine Party
-A Mario-Party style multiplayer game.
-Created by: Ayse Erduran, Patty Arunyavikul, Stephanie Chiang, Tiffany Ma
+A Mario-Party style multiplayer game. Play here: [super-quarantine-party.herokuapp.com](super-quarantine-party.herokuapp.com)
+<br><br>
+Created by: Ayse Erduran, Patty Arunyavikul, Stephanie Chiang, Tiffany Ma <br>
+
 
 # Instructions
 1. 4 players are required, so find 3 friends!
