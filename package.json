@@ -17,7 +17,7 @@
     "heroku-token": "script/encrypt-heroku-auth-token.js"
   },
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "nodemon": "^2.0.2",
     "phaser": "^3.22.0",
     "phaser3-plugin-isometric": "0.0.7",
